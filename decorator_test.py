@@ -3,6 +3,12 @@ import functools
 import os
 import inspect
 
+class CLI():
+    def __init__(self):
+        self.args = []
+
+cli = CLI()
+
 def my_decorator(func):
     @functools.wraps(func)
     def wrapper(*args, **kwargs):
@@ -13,19 +19,23 @@ def my_decorator(func):
         func(*args, **kwargs)
     return wrapper
 
+def add_arg(func):
+    cli.args.append(func.__name__)
 
-@my_decorator
+@add_arg
 def echo(string: str):
     '''echo a string'''
     print(string)
 
-@my_decorator
+@add_arg
 def add(x : int, y : int):
     '''add two integers'''
     print(x + y)
 
-echo('something')
-add(1,2)
+# echo('something')
+# add(1,2)
+
+print(cli.args)
 
 
 #### TEST CLI ####
@@ -51,3 +61,11 @@ add(1,2)
 #     print(args.string)
 # elif args.command == 'add':
 #     print(args.x + args.y)
+
+
+# swift cli could wrap argparse to dynamically create command parsers for each given function
+# defining the program name as the file name and the function name as the command 
+# as well as defining the function input requirements as the arguments
+
+# this would be the ideal swift cli definition for a series of functions
+# scli([echo, add])
