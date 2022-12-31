@@ -19,7 +19,7 @@ def add(x : int, y : int):
     print(x + y)
 
 @scli.parse
-def minus(x, y):
+def minus(x : int, y : int):
     print(x - y)
 
 @scli.parse
@@ -28,7 +28,7 @@ def do():
 
 scli.init_parser()
 
-print('debug this')
+# print('debug this')
 
 if __name__ == 'main':
     pass
