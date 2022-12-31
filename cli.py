@@ -10,7 +10,6 @@ class CLI():
     self.parser = argparse.ArgumentParser(prog = self.filename, description = desc) 
     self.subparsers = self.parser.add_subparsers(title='commands', dest='command') # add commands subparser
     self.func_dict = {}
-    self.args_dict = {}
 
   def parse(self, func):
     '''create subparsers for the given function 
@@ -25,8 +24,7 @@ class CLI():
     names = inspect.getfullargspec(func).args # collect arg names
     types = list(inspect.getfullargspec(func).annotations.values()) # collect types of args
 
-    self.func_dict.update({func.__name__: func})
-    self.args_dict.update({func.__name__: names})
+    self.func_dict.update({func.__name__: (func, names)}) # collect function and arg names for given function
 
     # if types are provided include type requirements and a help string otherwise just add each arg with name
     if types:
@@ -42,7 +40,6 @@ class CLI():
     '''initialize parsing args'''
     self.input = self.parser.parse_args()
 
-    func = self.func_dict[self.input.command] # collect the function
-    arg_names = self.args_dict[self.input.command] # collect arg names for given command
-    args = [getattr(self.input, arg) for arg in arg_names] # collect given args from namespace in list
+    func, arg_names = self.test_dict[self.input.command] # retrieve function and arg names for given command
+    args = [getattr(self.input, arg) for arg in arg_names] # collect given args from namespace
     func(*args) # run function with given args
