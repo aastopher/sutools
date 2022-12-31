@@ -39,7 +39,7 @@ class CLI():
   def init_parser(self):
     '''initialize parsing args'''
     self.input = self.parser.parse_args()
-
-    func, arg_names = self.test_dict[self.input.command] # retrieve function and arg names for given command
-    args = [getattr(self.input, arg) for arg in arg_names] # collect given args from namespace
-    func(*args) # run function with given args
+    if self.input.command:
+        func, arg_names = self.func_dict[self.input.command] # retrieve function and arg names for given command
+        args = [getattr(self.input, arg) for arg in arg_names] # collect given args from namespace
+        func(*args) # run function with given args

@@ -30,5 +30,5 @@ scli.init_parser()
 
 # print('debug this')
 
-if __name__ == 'main':
+if __name__ == '__main__':
     pass
