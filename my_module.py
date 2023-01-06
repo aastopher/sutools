@@ -5,13 +5,13 @@ import inspect
 
 # scli = sw.cli(__doc__)
 
-test_logger = sw.logger('my_module', ['echo', 'add', 'minus', 'do'])
-echo_logger = test_logger.getLogger('echo')
+# test_logger = sw.logger('my_module', ['echo', 'add', 'minus', 'do'])
+# echo_logger = test_logger.getLogger('echo')
 
 @sw.add
 def echo(string: str):
     '''echo a string'''
-    echo_logger.info(f'echo this {string}')
+    # echo_logger.info(f'echo this {string}')
     print(string)
 
 @sw.add
@@ -27,7 +27,7 @@ def minus(x : int, y : int):
 def do():
   print(f'do {inspect.stack()[0][3]}')
 
-# sw.cli(__doc__)
+sw.cli(__doc__)
 
 # sw.logger()
 
