@@ -1,8 +1,6 @@
-import inspect
-import os
-import argparse
+import inspect, os, argparse
 
-class CLI():
+class Init:
   def __init__(self, desc=None):
     '''init top-level parser'''
     # name the program the file name of the module which is importing this class
@@ -11,7 +9,7 @@ class CLI():
     self.subparsers = self.parser.add_subparsers(title='commands', dest='command') # add commands subparser
     self.func_dict = {}
 
-  def parse(self, func):
+  def add(self, func):
     '''create subparsers for the given function 
     then add arguments for each input'''
 
@@ -36,7 +34,26 @@ class CLI():
 
     return func
   
-  def init_parser(self):
+  def add_funcs(self, func_dict):
+      for func_name, items in func_dict.items():
+        # if the doc string is not empty use that to define the help string else use the default structure
+        if len(items) == 4:
+          semip = self.subparsers.add_parser(func_name, help=items[-1])
+        else:
+          semip = self.subparsers.add_parser(func_name, help=f'execute {func_name} function')
+
+        names = items[1] # collect arg names
+        types = items[2] # collect types of arg
+
+        # if types are provided include type requirements and a help string otherwise just add each arg with name
+        if types:
+          for name, type in zip(names, types):
+            semip.add_argument(name, type=type, help=str(type))
+        else:
+          for name in names:
+            semip.add_argument(name)
+  
+  def parse(self):
     '''initialize parsing args'''
     self.input = self.parser.parse_args()
     if self.input.command:
