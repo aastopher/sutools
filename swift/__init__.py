@@ -1,10 +1,10 @@
 from swift import cli_handler
 from swift import log_handler
-from swift import func_store
+from swift import meta_handler
 
 import inspect, os
 
-store = func_store.Funcs()
+store = meta_handler.Bucket()
 # cli_obj = None
 # log_obj = None
 
@@ -13,12 +13,14 @@ def add(func):
     return func
 
 def cli(doc):
+    store.cli_status = True
     cli_obj = cli_handler.Init(doc)
     cli_obj.add_funcs(store.funcs)
     cli_obj.parse()
     return cli_obj
 
 def logger(log_name=None, loggers=None):
+    store.log_status = True
     if not loggers and store.funcs and not log_name:
         log_obj = log_handler.Init(os.path.basename(inspect.stack()[-1].filename)[:-3], store.funcs.keys())
     elif not loggers and store.funcs and log_name:

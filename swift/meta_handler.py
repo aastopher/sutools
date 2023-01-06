@@ -1,9 +1,11 @@
 import inspect
 
-class Funcs:
+class Bucket:
     '''internal object for storing function dictionary'''
     def __init__(self):
         self.funcs = {}
+        self.cli_status = False
+        self.log_status = False
     
     def add(self, func):
         names = inspect.getfullargspec(func).args # collect arg names
