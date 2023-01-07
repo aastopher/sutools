@@ -8,10 +8,14 @@ import inspect
 # test_logger = sw.logger('my_module', ['echo', 'add', 'minus', 'do'])
 # echo_logger = test_logger.getLogger('echo')
 
+test_logger = sw.logger('my_module', ['echo', 'add', 'minus', 'do'])
+
+
 @sw.add
 def echo(string: str):
     '''echo a string'''
-    # echo_logger.info(f'echo this {string}')
+    # test_logger.loggers.echo.info('testing')
+    print(test_logger.loggers)
     print(string)
 
 @sw.add
@@ -29,11 +33,14 @@ def do():
 
 sw.cli(__doc__)
 
+# test_logger.log()
+
 # sw.logger()
 
 # scli.parse()
 
-# echo('blah blah')
+print(test_logger.loggers)
+echo('test')
 # print(sw.store.funcs)
 
 if __name__ == '__main__':

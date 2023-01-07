@@ -1,4 +1,5 @@
 from swift import cli_handler
+from swift import log_handler_old
 from swift import log_handler
 from swift import meta_handler
 
@@ -21,12 +22,15 @@ def cli(doc):
 
 def logger(log_name=None, loggers=None):
     store.log_status = True
-    if not loggers and store.funcs and not log_name:
-        log_obj = log_handler.Init(os.path.basename(inspect.stack()[-1].filename)[:-3], store.funcs.keys())
-    elif not loggers and store.funcs and log_name:
-        log_obj = log_handler.Init(log_name, store.funcs.keys())
-    else:
-        log_obj = log_handler.Init(log_name, loggers)
+    # log_obj = log_handler.Init(module_name=os.path.basename(inspect.stack()[-1].filename)[:-3], logger_names=store.funcs.keys())
+    log_obj = log_handler_old.Init(log_name, loggers)
+
+    # if not loggers and store.funcs and not log_name:
+    #     log_obj = log_handler_old.Init(os.path.basename(inspect.stack()[-1].filename)[:-3], store.funcs.keys())
+    # elif not loggers and store.funcs and log_name:
+    #     log_obj = log_handler_old.Init(log_name, store.funcs.keys())
+    # else:
+    #     log_obj = log_handler_old.Init(log_name, loggers)
     return log_obj
 
 
