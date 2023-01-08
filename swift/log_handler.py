@@ -1,9 +1,10 @@
 import logging, os, datetime
 
 class Init:
-    def __init__(self, module_name, logger_names, file_fmt='%Y-%m-%d_%H-%M-%S', log_fmt='%H:%M:%S'):
+    def __init__(self, module_name, logger_names, file_fmt='%Y-%m-%d_%H-%M-%S', log_fmt='%H:%M:%S', log_lvl=logging.INFO):
         self.module_name = module_name
         self.loggers = {}
+        self.log_lvl = log_lvl
         self.root_logger = logging.getLogger()
         for name in logger_names:
             logger = logging.getLogger(name)
@@ -18,7 +19,7 @@ class Init:
         if not os.path.exists(f'logs/{self.module_name}'):
             os.mkdir(f'logs/{self.module_name}')
         fh = logging.FileHandler(f'logs/{self.module_name}/{now}.log','w')
-        fh.setLevel(logging.INFO)
+        fh.setLevel(self.log_lvl)
         formatter = logging.Formatter('%(asctime)s,%(msecs)d %(name)s %(levelname)s %(message)s', datefmt=log_fmt)
         fh.setFormatter(formatter)
         for log in self.loggers.keys():
