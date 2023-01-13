@@ -14,9 +14,8 @@ import inspect
 @sw.add
 def echo(string: str):
     '''echo a string'''
-    # test_logger.loggers.echo.info('testing')
-    # print(test_logger.loggers.echo.info('this is a test'))
-    print(test_logger.loggers)
+    test_logger.loggers['echo'].info('this is a test')
+    
     print(string)
 
 @sw.add
