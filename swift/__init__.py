@@ -10,24 +10,24 @@ store = meta_handler.Bucket()
 # log_obj = None
 
 def add(func):
-    store.add(func)
+    store.add_func(func)
     return func
 
 def cli(doc):
-    store.cli_status = True
     cli_obj = cli_handler.Init(doc)
     cli_obj.add_funcs(store.funcs)
     cli_obj.parse()
+    store.add_cli(cli_obj)
     return cli_obj
 
 def logger(log_name=None, loggers=None):
-    store.log_status = True
     if not loggers and store.funcs and not log_name:
         log_obj = log_handler.Init(os.path.basename(inspect.stack()[-1].filename)[:-3], list(store.funcs.keys()))
     elif not loggers and store.funcs and log_name:
         log_obj = log_handler.Init(log_name, list(store.funcs.keys()))
     else:
         log_obj = log_handler.Init(log_name, loggers)
+    store.add_cli(log_obj)
     return log_obj
 
 

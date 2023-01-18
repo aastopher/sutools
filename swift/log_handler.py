@@ -1,4 +1,5 @@
 import logging, os, datetime
+from types import SimpleNamespace
 
 class Init:
     def __init__(self, module_name, logger_names, file_fmt='%Y-%m-%d_%H-%M-%S', log_fmt='%H:%M:%S', log_lvl=logging.INFO):
@@ -27,3 +28,4 @@ class Init:
             logger = logging.getLogger(log)
             logger.addHandler(fh)
             logger.propagate = False
+        self.loggers = SimpleNamespace(**self.loggers)

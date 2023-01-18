@@ -1,13 +1,14 @@
 import inspect, os, argparse
 
 class Init:
-  def __init__(self, desc=None):
+  def __init__(self, desc=None, logger=None):
     '''init top-level parser'''
     # name the program the file name of the module which is importing this class
     self.filename = os.path.basename(inspect.stack()[1].filename)[:-3]
     self.parser = argparse.ArgumentParser(prog = self.filename, description = desc) 
     self.subparsers = self.parser.add_subparsers(title='commands', dest='command') # add commands subparser
     self.func_dict = {}
+    self.logger = logger
 
   # def add(self, func):
   #   '''create subparsers for the given function 

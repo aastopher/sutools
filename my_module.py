@@ -14,7 +14,9 @@ import inspect
 @sw.add
 def echo(string: str):
     '''echo a string'''
-    test_logger.loggers['echo'].info('this is a test')
+    # test_logger.loggers['echo'].info('this is a test')
+    test_logger.loggers.echo.info('this is a test')
+    # print(sw.store.log)
     
     print(string)
 
@@ -40,7 +42,10 @@ sw.cli(__doc__)
 # scli.parse()
 
 # test_logger = sw.logger('my_module', ['echo', 'add', 'minus', 'do'])
+# sw.logger()
 test_logger = sw.logger()
+
+
 # print(test_logger.loggers)
 echo('test')
 # print(sw.store.funcs)
