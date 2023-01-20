@@ -24,4 +24,4 @@ class Bucket:
     
     def add_log(self, log_obj):
         '''adds a logger object to the store'''
-        self.cli = log_obj
+        self.log = log_obj

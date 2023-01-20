@@ -1,7 +1,7 @@
 import logging, os, datetime
 from types import SimpleNamespace
 
-class Init:
+class Logger:
     def __init__(self, module_name, logger_names, file_fmt='%Y-%m-%d_%H-%M-%S', log_fmt='%H:%M:%S', log_lvl=logging.INFO):
         self.module_name = module_name
         self.loggers = {}

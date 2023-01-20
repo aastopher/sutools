@@ -15,7 +15,7 @@ import inspect
 def echo(string: str):
     '''echo a string'''
     # test_logger.loggers['echo'].info('this is a test')
-    test_logger.loggers.echo.info('this is a test')
+    log.echo.info('this is a test')
     # print(sw.store.log)
     
     print(string)
@@ -33,22 +33,16 @@ def minus(x : int, y : int):
 def do():
   print(f'do {inspect.stack()[0][3]}')
 
+
+log = sw.logger()
 sw.cli(__doc__)
-
-# test_logger.log()
-
 # sw.logger()
-
-# scli.parse()
 
 # test_logger = sw.logger('my_module', ['echo', 'add', 'minus', 'do'])
-# sw.logger()
-test_logger = sw.logger()
-
-
+# test_logger = sw.logger()
 # print(test_logger.loggers)
-echo('test')
-# print(sw.store.funcs)
+
+# echo('test')
 
 if __name__ == '__main__':
     pass
