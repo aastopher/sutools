@@ -18,7 +18,6 @@ def cli(doc):
     cli_obj.add_funcs(store.funcs)
     cli_obj.parse()
     store.add_cli(cli_obj)
-    print(cli_obj.sw)
     return cli_obj
 
 def logger(log_name=None, loggers=None):
