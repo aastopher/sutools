@@ -6,21 +6,21 @@
 #     long_description = fh.read()
 
 # setuptools.setup(
-#     name="DeepLogger",
-#     version="0.0.5",
+#     name="swiftutils",
+#     version="0.0.1",
 #     author="Aaron Stopher",
-#     description="Easily configure, simple granular loggers for all your modules.",
+#     description="swiftly setup module specific cli and loggers that work together",
 #     long_description=long_description,
 #     long_description_content_type="text/markdown",
-#     url="https://github.com/aastopher/DeepLogger",
+#     url="https://github.com/aastopher/swiftutils",
 #     project_urls={
-#         "Bug Tracker": "https://github.com/aastopher/DeepLogger/issues",
+#         "Bug Tracker": "https://github.com/aastopher/swiftutils/issues",
 #     },
-#     keywords=['python', 'logger', 'CLI','deep logging','deep logger','deep'],
+#     keywords=['logs', 'logger', 'logging', 'CLI', 'cli', 'utils', 'swift'],
 #     classifiers=[
 #         "Programming Language :: Python :: 3",
 #         "License :: OSI Approved :: MIT License",
-#         "Operating System :: OS Independent",
+#         "Operating System :: Any",
 #     ],
 #     package_dir={"": "src"},
 #     packages=setuptools.find_packages(where="src"),

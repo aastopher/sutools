@@ -1,7 +1,7 @@
-import inspect, os, argparse
+import inspect, os, argparse, logging
 
 class CLI:
-  def __init__(self, desc=None, loggers=None):
+  def __init__(self, desc, logs, loggers=None):
     '''init top-level parser'''
     # name the program the file name of the module which is importing this class
     self.filename = os.path.basename(inspect.stack()[1].filename)[:-3]
@@ -9,6 +9,10 @@ class CLI:
     self.subparsers = self.parser.add_subparsers(title='commands', dest='command') # add commands subparser
     self.func_dict = {}
     self.log = loggers
+    self.logs = logs
+    if not logs:
+      for logger in vars(self.log).values():
+        logger.setLevel(logging.CRITICAL+1)
 
   def add_funcs(self, func_dict):
       self.func_dict = func_dict
@@ -37,4 +41,7 @@ class CLI:
         func_tup = self.func_dict[self.input.command] # retrieve function and arg names for given command
         func, arg_names = func_tup[0], func_tup[1] # unpack just the args and function
         args = [getattr(self.input, arg) for arg in arg_names] # collect given args from namespace
-        func(*args) # run function with given args
+        try:
+          func(*args) # run function with given args
+        except NameError as E:
+          print(E)

@@ -10,11 +10,11 @@ def add(func):
     store.add_func(func)
     return func
 
-def cli(doc):
+def cli(doc=None, logs=True):
     if store.log:
-        cli_obj = cli_handler.CLI(doc, store.log.loggers)
+        cli_obj = cli_handler.CLI(doc, logs, store.log.loggers)
     else:
-        cli_obj = cli_handler.CLI(doc)
+        cli_obj = cli_handler.CLI(doc, logs)
     cli_obj.add_funcs(store.funcs)
     cli_obj.parse()
     store.add_cli(cli_obj)

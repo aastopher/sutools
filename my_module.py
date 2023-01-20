@@ -26,7 +26,8 @@ def do():
 
 log = sw.logger()
 # log = sw.logger('my_module', ['echo', 'add', 'minus', 'do'])
-sw.cli(__doc__)
+# sw.cli(__doc__)
+sw.cli(__doc__, logs=False)
 # log = sw.logger()
 
 # echo('test')
