@@ -2,7 +2,7 @@ from swift import cli_handler
 from swift import log_handler
 from swift import meta_handler
 
-import inspect, os
+import inspect, os, logging
 
 store = meta_handler.Bucket()
 
@@ -10,7 +10,7 @@ def add(func):
     store.add_func(func)
     return func
 
-def cli(doc=None, logs=True):
+def cli(doc=None, logs=False):
     if store.log:
         cli_obj = cli_handler.CLI(doc, logs, store.log.loggers)
     else:
@@ -20,12 +20,17 @@ def cli(doc=None, logs=True):
     store.add_cli(cli_obj)
     return cli_obj
 
-def logger(log_name=None, loggers=None):
-    if not loggers and store.funcs and not log_name:
-        log_obj = log_handler.Logger(os.path.basename(inspect.stack()[-1].filename)[:-3], list(store.funcs.keys()))
-    elif not loggers and store.funcs and log_name:
-        log_obj = log_handler.Logger(log_name, list(store.funcs.keys()))
+def logger(name=None, loggers=None, filefmt='%Y-%m-%d_%H-%M-%S', datefmt='%H:%M:%S', loglvl=logging.INFO, formatter=None):
+    if formatter:
+        fmt = formatter
     else:
-        log_obj = log_handler.Logger(log_name, loggers)
+        fmt = logging.Formatter('%(asctime)s,%(msecs)d %(name)s %(levelname)s %(message)s', datefmt=datefmt)
+        
+    if not loggers and store.funcs and not name:
+        log_obj = log_handler.Logger(os.path.basename(inspect.stack()[-1].filename)[:-3], list(store.funcs.keys()), filefmt, loglvl, fmt)
+    elif not loggers and store.funcs and name:
+        log_obj = log_handler.Logger(name, list(store.funcs.keys()), filefmt, loglvl, fmt)
+    else:
+        log_obj = log_handler.Logger(name, loggers, filefmt, loglvl, fmt)
     store.add_log(log_obj)
     return log_obj.loggers

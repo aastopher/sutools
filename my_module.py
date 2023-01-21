@@ -1,7 +1,7 @@
 """This module does random stuff."""
 
 import swift as sw
-import inspect
+import inspect, logging
 
 
 @sw.add
@@ -23,11 +23,11 @@ def minus(x : int, y : int):
 def do():
   print(f'do {inspect.stack()[0][3]}')
 
-
-log = sw.logger()
+# formatter = logging.Formatter('%(asctime)s,%(msecs)d %(name)s %(levelname)s %(message)s', datefmt='%H:%M:%S')
+log = sw.logger(filefmt='%Y-%m-%d_%H-%M-%S')
 # log = sw.logger('my_module', ['echo', 'add', 'minus', 'do'])
 # sw.cli(__doc__)
-sw.cli(__doc__, logs=False)
+sw.cli(__doc__, logs=True)
 # log = sw.logger()
 
 # echo('test')

@@ -41,7 +41,4 @@ class CLI:
         func_tup = self.func_dict[self.input.command] # retrieve function and arg names for given command
         func, arg_names = func_tup[0], func_tup[1] # unpack just the args and function
         args = [getattr(self.input, arg) for arg in arg_names] # collect given args from namespace
-        try:
-          func(*args) # run function with given args
-        except NameError as E:
-          print(E)
+        func(*args) # run function with given args
