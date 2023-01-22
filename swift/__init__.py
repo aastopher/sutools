@@ -29,7 +29,7 @@ def logger(name = os.path.basename(inspect.stack()[-1].filename)[:-3],
            filename = datetime.datetime.now().strftime('%Y-%m-%d_%H-%M-%S'), 
            filepath = None,
            loglvl = logging.INFO,
-           formatter = logging.Formatter('%(asctime)s, %(msecs)d %(name)s \t %(levelname)s \t %(message)s', datefmt='%H:%M:%S'), 
+           formatter = logging.Formatter('%(asctime)s, %(msecs)d %(name)s %(levelname)s %(message)s', datefmt='%H:%M:%S'), 
            handler = None,
            filecap = None, 
            filetimeout = None,
@@ -56,3 +56,6 @@ def logger(name = os.path.basename(inspect.stack()[-1].filename)[:-3],
 
     store.add_log(log_obj)
     return log_obj
+
+def log():
+    return store.log.loggers
