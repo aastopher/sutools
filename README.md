@@ -7,16 +7,15 @@ Swift utilities are designed to be lightweight easy to setup per module utilitie
 # TO-DO
 
 ## Logger
-* Simplify
 * add stream handling ability (console logging) with ability to pass formatter to that as well
+* if no cli exists logger must create cli for debug command (should have - options to call all levels)
 * de-standardize naming of logger_object if possible. (standardization was forced at first to enable CLI to run functions with loggers in them)
 * alter empty file creation fix to not need separate out call at end of module
-* if no cli exists logger must create cli for debug command (should have - options to call all levels)
 
 ## CLI
-* add debug command for running module with debug level logs
+* add debug command for running whole module with debug level logs (can I do this by using meta logger and just setting the level?)
 * check cli is working with stream handler
-* import importing module int
+* import importing module for running whole module
 
 # __init__
 * import importing module into init after start up to be able to feed module to cli for debug
