@@ -9,6 +9,7 @@ Swift utilities are designed to be lightweight easy to setup per module utilitie
 ## Logger
 * add stream handling ability (console logging) with ability to pass formatter to that as well
 * if no cli exists logger must create cli for debug command (should have - options to call all levels)
+* must init logger before cli at present
 
 ## CLI
 * when running cli func, whole module still runs?
