@@ -16,7 +16,7 @@ def cli(desc=None, logs=False):
     '''init cli and store'''
 
     if store.log:
-        cli_obj = cli_handler.CLI(desc, logs, store.log.loggers)
+        cli_obj = cli_handler.CLI(desc, logs, store.log)
     else:
         cli_obj = cli_handler.CLI(desc, logs)
     cli_obj.add_funcs(store.funcs)

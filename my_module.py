@@ -41,8 +41,5 @@ sw.cli(__doc__, logs=True)
 # add(1,2)
 # do()
 
-# need this for now to prevent empty files
-log.out()
-
 if __name__ == '__main__':
     pass

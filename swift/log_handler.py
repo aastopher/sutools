@@ -1,6 +1,5 @@
-import logging, os, datetime, warnings
+import logging, os, datetime, warnings, atexit
 from types import SimpleNamespace
-from logging.handlers import TimedRotatingFileHandler
 from pathlib import Path
 
 class Logger:
@@ -39,6 +38,9 @@ class Logger:
         if filetimeout and isinstance(filetimeout, str):
             self.timeout(filetimeout)
 
+        atexit.register(self.out)
+
+    # currently not in use
     def setLoglvl(self, lvl):
         self.loglvl = lvl
         self.rootlogger.setLevel(lvl)
@@ -84,17 +86,20 @@ class Logger:
                 print(f'timeout removed {logs_removed} logs')
         except KeyError:
             warnings.warn(f"Invalid time unit: {filetimeout[-1]}", Warning)
-
+    
     def out(self):
-        # check if filepath exists
-        if not os.path.exists(self.filepath):
-            print(f"{self.filepath} does not exist.")
-            return
-
-        # check if first line of the file is blank
+        """
+        Check all loggers in the loggers namespace object for existing logs.
+        If none exist, close the file handlers and remove the empty file
+        """
+        for log in vars(self.loggers).values():
+            if log.hasHandlers():
+                for handler in log.handlers:
+                    handler.close()
+                log.handlers = []
         try:
-            with open(self.filepath, 'r') as f:
-                if not f.readline().strip():
-                    os.remove(self.filepath) # remove log file
-        except:
-            print(f"Error opening {self.filepath}.")
+            file_size = os.path.getsize(self.filepath)
+            if file_size == 0:
+                os.remove(self.filepath)
+        except Exception as e:
+            print(f"Failed to remove file: {e}")

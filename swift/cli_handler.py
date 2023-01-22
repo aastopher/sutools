@@ -2,15 +2,15 @@ import inspect, os, argparse, logging
 
 class CLI:
   '''object designed for swift module CLI configuration'''
-  def __init__(self, desc, logs, loggers=None):
+  def __init__(self, desc, logs, log_obj = None):
     '''init top-level parser'''
     # name the program the file name of the module which is importing this class
     self.filename = os.path.basename(inspect.stack()[1].filename)[:-3]
     self.parser = argparse.ArgumentParser(prog = self.filename, description = desc) 
     self.subparsers = self.parser.add_subparsers(title='commands', dest='command') # add commands subparser
     self.func_dict = {}
-    self.log = loggers
-    self.logs = logs
+    self.log_obj = log_obj
+    self.log = log_obj.loggers
     if not logs:
       for logger in vars(self.log).values():
         logger.setLevel(logging.CRITICAL+1)
