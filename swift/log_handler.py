@@ -1,11 +1,14 @@
-import logging, os, datetime
+import logging, os, datetime, warnings
 from types import SimpleNamespace
 from logging.handlers import TimedRotatingFileHandler
 from pathlib import Path
 
 class Logger:
     '''object designed for swift granular logging configuration'''
-    def __init__(self, name, loggers, filename, filepath, loglvl, formatter, handler, filecap, filetimeout):
+    def __init__(self, name, loggers, filename, filepath, loglvl, formatter, handler, filecap, filetimeout, warn):
+
+        logging.captureWarnings(warn)
+
         self.name = name
         self.loggers = {}
         self.filename = filename
@@ -57,22 +60,30 @@ class Logger:
 
     def timeout(self, filetimeout):
         '''delete any file outside given time range'''
-        parent_folder = Path(self.filepath).parent
-        logs = [os.path.join(parent_folder, f) for f in os.listdir(parent_folder) if f.endswith('.log')]
-        time_units = {'h': 'hours', 'd': 'days', 'm': 'minutes', 'y': 'days'}
-        time_unit = time_units[filetimeout[-1]]
-        time_amount = int(filetimeout[:-1])
-        if time_unit == "minutes":
-            time_threshold = datetime.datetime.now() - datetime.timedelta(minutes=time_amount)
-        else:
-            time_threshold = datetime.datetime.now() - datetime.timedelta(**{time_unit: time_amount*365/12 if time_unit == 'months' else time_amount})
-        logs_removed = 0
-        for log in logs:
-            if os.path.getctime(log) < time_threshold.timestamp():
-                os.remove(log)
-                logs_removed += 1
-        if logs_removed > 0:
-            print(f'timeout removed {logs_removed} logs')
+        try:
+            parent_folder = Path(self.filepath).parent
+            logs = [os.path.join(parent_folder, f) for f in os.listdir(parent_folder) if f.endswith('.log')]
+            time_units = {'m': 'minutes', 'h': 'hours', 'd': 'days', 'o':'months', 'y': 'years'}
+            time_unit = time_units[filetimeout[-1]]
+            time_amount = int(filetimeout[:-1])
+            now = datetime.datetime.now()
+            if time_unit == 'years':
+                time_threshold = now - datetime.timedelta(days=time_amount*365)
+            elif time_unit == "minutes":
+                time_threshold = now - datetime.timedelta(minutes=time_amount)
+            elif time_unit == 'months':
+                time_threshold = now - datetime.timedelta(days=time_amount*30)
+            else:
+                time_threshold = now - datetime.timedelta(**{time_unit: time_amount})
+            logs_removed = 0
+            for log in logs:
+                if os.path.getctime(log) < time_threshold.timestamp():
+                    os.remove(log)
+                    logs_removed += 1
+            if logs_removed > 0:
+                print(f'timeout removed {logs_removed} logs')
+        except KeyError:
+            warnings.warn(f"Invalid time unit: {filetimeout[-1]}", Warning)
 
     def out(self):
         # check if filepath exists
@@ -85,6 +96,5 @@ class Logger:
             with open(self.filepath, 'r') as f:
                 if not f.readline().strip():
                     os.remove(self.filepath) # remove log file
-                    print(f"{self.filepath} removed.")
         except:
             print(f"Error opening {self.filepath}.")

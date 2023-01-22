@@ -28,8 +28,8 @@ def do():
 ### TESTS ###
 # formatter = logging.Formatter('%(asctime)s,%(msecs)d %(name)s %(levelname)s %(message)s', datefmt='%H:%M:%S')
 # log = sw.logger(filecap=5, filetimeout='1m')
-# log = sw.logger(filetimeout='1m')
-log = sw.logger(filecap=5)
+log = sw.logger(filetimeout='1m')
+# log = sw.logger(filecap=5)
 # log = sw.logger()
 
 # log = sw.logger('my_module', ['echo', 'add', 'minus', 'do'])
@@ -37,9 +37,9 @@ log = sw.logger(filecap=5)
 sw.cli(__doc__, logs=True)
 # log = sw.logger()
 
-echo('test')
-add(1,2)
-do()
+# echo('test')
+# add(1,2)
+# do()
 
 # need this for now to prevent empty files
 log.out()
