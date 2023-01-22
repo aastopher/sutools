@@ -1,31 +1,90 @@
 import logging, os, datetime
 from types import SimpleNamespace
+from logging.handlers import TimedRotatingFileHandler
+from pathlib import Path
 
 class Logger:
-    def __init__(self, module_name, logger_names, filefmt, loglvl, formatter):
-        self.module_name = module_name
+    '''object designed for swift granular logging configuration'''
+    def __init__(self, name, loggers, filename, filepath, loglvl, formatter, handler, filecap, filetimeout):
+        self.name = name
         self.loggers = {}
+        self.filename = filename
+        self.filepath = filepath
         self.loglvl = loglvl
-        self.root_logger = logging.getLogger()
+        self.rootlogger = logging.getLogger()
         self.formatter = formatter
-        for name in logger_names:
-            logger = logging.getLogger(name)
-            self.loggers[name] = logger
-            self.root_logger.addHandler(logger)
+        self.handler = handler
 
-        now = datetime.datetime.now()
-        now = now.strftime(filefmt)
-        self.root_logger.setLevel(loglvl)
-        if not os.path.exists('logs'):
-            os.mkdir('logs')
-        if not os.path.exists(f'logs/{self.module_name}'):
-            os.mkdir(f'logs/{self.module_name}')
-        fh = logging.FileHandler(f'logs/{self.module_name}/{now}.log','w')
-        # fh = logging.TimedRotatingFileHandler(f'logs/{self.module_name}/{now}.log','w', when='midnight')
-        fh.setLevel(self.loglvl)
-        fh.setFormatter(self.formatter)
-        for log in self.loggers.keys():
+        for log in loggers:
             logger = logging.getLogger(log)
-            logger.addHandler(fh)
-            logger.propagate = False
+            self.loggers[log] = logger
+            self.rootlogger.addHandler(logger)
+
         self.loggers = SimpleNamespace(**self.loggers)
+        # print(self.loggers) # debug
+        self.rootlogger.setLevel(loglvl)
+        self.handler.setLevel(self.loglvl)
+        self.handler.setFormatter(self.formatter)
+
+        for log in vars(self.loggers).keys():
+            logger = logging.getLogger(log)
+            logger.addHandler(self.handler)
+            logger.propagate = False
+
+        if filecap and isinstance(filecap, int):
+            self.cap(filecap)
+        if filetimeout and isinstance(filetimeout, str):
+            self.timeout(filetimeout)
+
+    def setLoglvl(self, lvl):
+        self.loglvl = lvl
+        self.rootlogger.setLevel(lvl)
+        self.handler.setLevel(lvl)
+
+    def cap(self, filecap):
+        '''delete any file outside of range based on file age'''
+        parent_folder = Path(self.filepath).parent
+        logs = [(os.path.join(parent_folder, f), os.path.getctime(os.path.join(parent_folder, f))) for f in os.listdir(parent_folder) if f.endswith('.log')]
+        logs.sort(key=lambda x: x[1], reverse=True) # sort the logs by their creation time in descending order
+        if len(logs) > filecap:
+            logs_to_remove = len(logs) - filecap # calculate the number of logs to remove
+            for log in logs[filecap:]:
+                os.remove(log[0])
+            if logs_to_remove > 1:
+                print(f'filecap removed {logs_to_remove} logs')
+            else:
+                print("filecap reached")
+
+    def timeout(self, filetimeout):
+        '''delete any file outside given time range'''
+        parent_folder = Path(self.filepath).parent
+        logs = [os.path.join(parent_folder, f) for f in os.listdir(parent_folder) if f.endswith('.log')]
+        time_units = {'h': 'hours', 'd': 'days', 'm': 'minutes', 'y': 'days'}
+        time_unit = time_units[filetimeout[-1]]
+        time_amount = int(filetimeout[:-1])
+        if time_unit == "minutes":
+            time_threshold = datetime.datetime.now() - datetime.timedelta(minutes=time_amount)
+        else:
+            time_threshold = datetime.datetime.now() - datetime.timedelta(**{time_unit: time_amount*365/12 if time_unit == 'months' else time_amount})
+        logs_removed = 0
+        for log in logs:
+            if os.path.getctime(log) < time_threshold.timestamp():
+                os.remove(log)
+                logs_removed += 1
+        if logs_removed > 0:
+            print(f'timeout removed {logs_removed} logs')
+
+    def out(self):
+        # check if filepath exists
+        if not os.path.exists(self.filepath):
+            print(f"{self.filepath} does not exist.")
+            return
+
+        # check if first line of the file is blank
+        try:
+            with open(self.filepath, 'r') as f:
+                if not f.readline().strip():
+                    os.remove(self.filepath) # remove log file
+                    print(f"{self.filepath} removed.")
+        except:
+            print(f"Error opening {self.filepath}.")
