@@ -13,7 +13,6 @@ Swift utilities are designed to be lightweight easy to setup per module utilitie
 ## CLI
 * when running cli func, whole module still runs?
 * add debug command for running whole module with debug level logs (can I do this by using meta logger and just setting the level?)
-* check cli is working with stream handler
 * import importing module for running whole module
 
 # __init__
