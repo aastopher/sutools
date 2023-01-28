@@ -4,7 +4,7 @@ from pathlib import Path
 
 class Logger:
     '''object designed for swift granular logging configuration'''
-    def __init__(self, name, loggers, filename, filepath, loglvl, formatter, handler, filecap, filetimeout, warn):
+    def __init__(self, name, loggers, loglvl, filename, filepath, filefmt, fhandler, filecap, filetimeout, file, streamfmt, shandler, stream, warn):
 
         logging.captureWarnings(warn)
 
@@ -14,8 +14,11 @@ class Logger:
         self.filepath = filepath
         self.loglvl = loglvl
         self.rootlogger = logging.getLogger()
-        self.formatter = formatter
-        self.handler = handler
+        self.filefmt = filefmt
+        self.fhandler = fhandler
+
+        self.streamfmt = streamfmt
+        self.shandler = shandler
 
         for log in loggers:
             logger = logging.getLogger(log)
@@ -25,13 +28,20 @@ class Logger:
         self.loggers = SimpleNamespace(**self.loggers)
         # print(self.loggers) # debug
         self.rootlogger.setLevel(loglvl)
-        self.handler.setLevel(self.loglvl)
-        self.handler.setFormatter(self.formatter)
-
-        for log in vars(self.loggers).keys():
-            logger = logging.getLogger(log)
-            logger.addHandler(self.handler)
-            logger.propagate = False
+        if file:
+            self.fhandler.setLevel(self.loglvl)
+            self.fhandler.setFormatter(self.filefmt)
+            for log in vars(self.loggers).keys():
+                logger = logging.getLogger(log)
+                logger.addHandler(self.fhandler)
+                logger.propagate = False
+        if stream:
+            self.shandler.setLevel(self.loglvl)
+            self.shandler.setFormatter(self.streamfmt)
+            for log in vars(self.loggers).keys():
+                logger = logging.getLogger(log)
+                logger.addHandler(self.shandler)
+                logger.propagate = False
 
         if filecap and isinstance(filecap, int):
             self.cap(filecap)
@@ -44,7 +54,7 @@ class Logger:
     def setLoglvl(self, lvl):
         self.loglvl = lvl
         self.rootlogger.setLevel(lvl)
-        self.handler.setLevel(lvl)
+        self.fhandler.setLevel(lvl)
 
     def cap(self, filecap):
         '''delete any file outside of range based on file age'''
@@ -90,12 +100,12 @@ class Logger:
     def out(self):
         """
         Check all loggers in the loggers namespace object for existing logs.
-        If none exist, close the file handlers and remove the empty file
+        If none exist, close the file fhandlers and remove the empty file
         """
         for log in vars(self.loggers).values():
             if log.hasHandlers():
-                for handler in log.handlers:
-                    handler.close()
+                for fhandler in log.handlers:
+                    fhandler.close()
                 log.handlers = []
         try:
             file_size = os.path.getsize(self.filepath)

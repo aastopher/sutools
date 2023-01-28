@@ -26,13 +26,17 @@ def cli(desc=None, logs=False):
     
 def logger(name = os.path.basename(inspect.stack()[-1].filename)[:-3], 
            loggers = None, 
+           loglvl = logging.INFO,
            filename = datetime.datetime.now().strftime('%Y-%m-%d_%H-%M-%S'), 
            filepath = None,
-           loglvl = logging.INFO,
-           formatter = logging.Formatter('%(asctime)s, %(msecs)d %(name)s %(levelname)s %(message)s', datefmt='%H:%M:%S'), 
-           handler = None,
+           filefmt = logging.Formatter('%(asctime)s, %(msecs)d %(name)s %(levelname)s %(message)s', datefmt='%H:%M:%S'), 
+           fhandler = None,
            filecap = None, 
            filetimeout = None,
+           file = True, 
+           streamfmt = logging.Formatter('%(asctime)s, %(msecs)d %(name)s %(levelname)s %(message)s', datefmt='%H:%M:%S'),
+           shandler = logging.StreamHandler(),
+           stream = False,
            warn = False):
     '''init logger object and store'''
 
@@ -45,14 +49,14 @@ def logger(name = os.path.basename(inspect.stack()[-1].filename)[:-3],
         os.makedirs(Path(filepath).parent) # make parent directory tree for given filepath
     
     # if check for handler must be inside function because filename is not initialized
-    if not handler:
-        handler = logging.FileHandler(filepath, 'w')
+    if not fhandler:
+        fhandler = logging.FileHandler(filepath, 'w')
 
     # if check for loggers must be inside function because func keys will be empty at initialization
     if not loggers and store.funcs:
-        log_obj = log_handler.Logger(name, list(store.funcs.keys()), filename, filepath, loglvl, formatter, handler, filecap, filetimeout, warn)
+        log_obj = log_handler.Logger(name, list(store.funcs.keys()), loglvl, filename, filepath, filefmt, fhandler, filecap, filetimeout, file, streamfmt, shandler, stream, warn)
     else:
-        log_obj = log_handler.Logger(name, loggers, filename, filepath, loglvl, formatter, handler, filecap, filetimeout, warn)
+        log_obj = log_handler.Logger(name, loggers, loglvl, filename, filepath, filefmt, fhandler, filecap, filetimeout, file, streamfmt, shandler, stream, warn)
 
     store.add_log(log_obj)
     return log_obj

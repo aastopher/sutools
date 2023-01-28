@@ -20,7 +20,7 @@ def add(x : int, y : int):
 @sw.add
 def minus(x : int, y : int):
     sw.log().minus.info(x - y)
-    print(x - y)
+    # print(x - y)
 
 @sw.add
 def do():
@@ -34,7 +34,7 @@ def do():
 # log = sw.logger(filecap=5)
 # log = sw.logger()
 
-sw.logger(filecap=5)
+sw.logger(filecap=5, stream=True)
 
 # log = sw.logger('my_module', ['echo', 'add', 'minus', 'do'])
 # sw.cli(__doc__)
