@@ -25,6 +25,8 @@ class Utils:
 
     def add_cli(self, desc, logs):
         '''adds a cli object to the store'''
+        # it should also push to logger?
+        
         if self.log:
             self.cli = CLI(desc, logs, self.log)
         else:
@@ -35,6 +37,8 @@ class Utils:
     
     def add_log(self, name, loggers, loglvl, filename, filepath, filefmt, fhandler, filecap, filetimeout, file, streamfmt, shandler, stream, warn, cli):
         '''adds a logger object to the store'''
+        # it should also push to cli?
+
 
         # if check for filepath must be inside function because filename is not initialized
         if self.cli:
