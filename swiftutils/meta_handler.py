@@ -23,16 +23,19 @@ class Utils:
         else:
             self.funcs.update({func.__name__: (func, names, types)})
 
-    def add_cli(self, desc, logs):
+    def add_cli(self, desc, logs, loggers):
         '''adds a cli object to the store'''
         # it should also push to logger?
-        
+
         if self.log:
             self.cli = CLI(desc, logs, self.log)
+        elif loggers:
+            self.cli = CLI(desc, logs, loggers)
         else:
             self.cli = CLI(desc, logs)
         self.cli.add_funcs(self.funcs)
         self.cli.parse()
+        self.log.cli = True
         return self.cli
     
     def add_log(self, name, loggers, loglvl, filename, filepath, filefmt, fhandler, filecap, filetimeout, file, streamfmt, shandler, stream, warn, cli):

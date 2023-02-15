@@ -9,9 +9,9 @@ def add(func):
     utils.add_func(func)
     return func
 
-def cli(desc = None, logs = False):
+def cli(desc = None, logs = False, loggers = None):
     '''init cli and store'''
-    cli_obj = utils.add_cli(desc, logs)
+    cli_obj = utils.add_cli(desc, logs, loggers)
     return cli_obj
     
 def logger(name = os.path.basename(inspect.stack()[-1].filename)[:-3], 

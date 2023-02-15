@@ -13,6 +13,9 @@ class Logger:
         self.filename = filename
         self.filepath = filepath
         self.loglvl = loglvl
+        self.file = file
+        self.stream = stream
+        self.cli = cli
         self.rootlogger = logging.getLogger()
         self.filefmt = filefmt
         self.fhandler = fhandler
@@ -28,14 +31,14 @@ class Logger:
         self.loggers = SimpleNamespace(**self.loggers)
         # print(self.loggers) # debug
         self.rootlogger.setLevel(loglvl)
-        if file:
+        if self.file:
             self.fhandler.setLevel(self.loglvl)
             self.fhandler.setFormatter(self.filefmt)
             for log in vars(self.loggers).keys():
                 logger = logging.getLogger(log)
                 logger.addHandler(self.fhandler)
                 logger.propagate = False
-        if stream:
+        if self.stream:
             self.shandler.setLevel(self.loglvl)
             self.shandler.setFormatter(self.streamfmt)
             for log in vars(self.loggers).keys():
@@ -50,17 +53,24 @@ class Logger:
 
         atexit.register(self.out)
 
-        if cli:
-            self.create_cli()
+        # if not self.cli:
+        #     self.create_cli()
     
     def create_cli(self):
-        print('cli made')
-        parser = argparse.ArgumentParser(description='Logger command line interface')
-        parser.add_argument('--debug', type=str, choices=['CRITICAL', 'ERROR', 'WARNING', 'INFO', 'DEBUG', 'NOTSET'], help='Define the log level')
-        args = parser.parse_args()
-        log_level = args.debug
-        if log_level:
-            self.rootlogger.setLevel(log_level)
+        if not self.cli:
+            parser = argparse.ArgumentParser(description='Logger command line interface')
+            llDict = {'critical': 50, 'error': 40, 'warning': 30, 'info': 20, 'debug': 10, 'notset': 0}
+            parser.add_argument('--loglevel', type=str, choices=['critical', 'error', 'warning', 'info', 'debug', 'notset'], help='Define the log level')
+            args = parser.parse_args()
+            ll = llDict[args.loglevel]
+            if ll:
+                self.rootlogger.setLevel(ll)
+                if self.file:
+                    self.fhandler.setLevel(ll)
+                if self.stream:
+                    self.shandler.setLevel(ll)
+        else:
+            pass
 
     # currently not in use
     def setLoglvl(self, lvl):

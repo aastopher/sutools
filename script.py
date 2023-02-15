@@ -34,17 +34,17 @@ def do():
 # log = sw.logger(filecap=5)
 # log = sw.logger()
 
-sw.logger(filecap=5, stream=False)
+
 
 # log = sw.logger('my_module', ['echo', 'add', 'minus', 'do'])
-# sw.cli(__doc__)
+sw.cli(__doc__, loggers = sw.logger(filecap=5, stream=True))
 # sw.cli(__doc__, logs=True)
 # log = sw.logger()
 
 echo('test')
-# add(1,2)
-# minus(1,2)
-# do()
+add(1,2)
+minus(1,2)
+do()
 
 if __name__ == '__main__':
     pass
