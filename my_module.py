@@ -30,12 +30,12 @@ def do():
 ### EXAMPLES ###
 # formatter = logging.Formatter('%(asctime)s,%(msecs)d %(name)s %(levelname)s %(message)s', datefmt='%H:%M:%S')
 
-sw.cli(__doc__, logs=True, loggers = sw.logger(filecap=5, stream=True))
+# sw.cli(__doc__, logs=True, loggers = sw.logger(filecap=5, stream=True))
+sw.logger(filecap=5, stream=True)
 
-# sw.logger(filecap=5, stream=True)
 # log = sw.logger('my_module', ['echo', 'add', 'minus', 'do'])
 # sw.cli(__doc__)
-# sw.cli(__doc__, logs=True)
+sw.cli(__doc__, logs=True)
 # log = sw.logger()
 
 

@@ -12,16 +12,11 @@ def add(func):
     store.add_func(func)
     return func
 
-def cli(desc = None, logs = False, loggers = None):
+def cli(desc = None, logs = False):
     '''init cli and store'''
 
     if store.log:
         cli_obj = cli_handler.CLI(desc, logs, store.log)
-    else:
-        cli_obj = cli_handler.CLI(desc, logs)
-
-    if loggers:
-        cli_obj = cli_handler.CLI(desc, logs, loggers)
     else:
         cli_obj = cli_handler.CLI(desc, logs)
 
