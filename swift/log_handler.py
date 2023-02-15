@@ -4,7 +4,7 @@ from pathlib import Path
 
 class Logger:
     '''object designed for swift granular logging configuration'''
-    def __init__(self, name, loggers, loglvl, filename, filepath, filefmt, fhandler, filecap, filetimeout, file, streamfmt, shandler, stream, warn, cli):
+    def __init__(self, name, loggers, loglvl, filename, filepath, filefmt, fhandler, filecap, filetimeout, file, streamfmt, shandler, stream, warn):
 
         logging.captureWarnings(warn)
 
@@ -15,7 +15,6 @@ class Logger:
         self.loglvl = loglvl
         self.file = file
         self.stream = stream
-        self.cli = cli
         self.rootlogger = logging.getLogger()
         self.filefmt = filefmt
         self.fhandler = fhandler
@@ -52,29 +51,6 @@ class Logger:
             self.timeout(filetimeout)
 
         atexit.register(self.out)
-        self.create_cli()
-    
-    def create_cli(self):
-        if not self.cli:
-            parser = argparse.ArgumentParser(description='Logger command line interface')
-            llDict = {'critical': 50, 'error': 40, 'warning': 30, 'info': 20, 'debug': 10, 'notset': 0}
-            parser.add_argument('--loglevel', type=str, choices=['critical', 'error', 'warning', 'info', 'debug', 'notset'], help='Define the log level')
-            args = parser.parse_args()
-            ll = llDict[args.loglevel]
-            if ll:
-                self.rootlogger.setLevel(ll)
-                if self.file:
-                    self.fhandler.setLevel(ll)
-                if self.stream:
-                    self.shandler.setLevel(ll)
-        else:
-            pass
-
-    # currently not in use
-    def setLoglvl(self, lvl):
-        self.loglvl = lvl
-        self.rootlogger.setLevel(lvl)
-        self.fhandler.setLevel(lvl)
 
     def cap(self, filecap):
         '''delete any file outside of range based on file age'''
