@@ -1,4 +1,4 @@
-import inspect, os, argparse, logging
+import inspect, os, argparse, logging, sys
 
 class CLI:
   '''object designed for swift module CLI configuration'''
@@ -45,3 +45,4 @@ class CLI:
         func, arg_names = func_tup[0], func_tup[1] # unpack just the args and function
         args = [getattr(self.input, arg) for arg in arg_names] # collect given args from namespace
         func(*args) # run function with given args
+        sys.exit()
