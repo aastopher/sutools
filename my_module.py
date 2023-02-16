@@ -35,7 +35,6 @@ sw.logger(filecap=5, stream=True)
 
 # log = sw.logger('my_module', ['echo', 'add', 'minus', 'do'])
 # sw.cli(__doc__)
-sw.cli(__doc__, logs=True)
 # log = sw.logger()
 
 
@@ -43,7 +42,8 @@ sw.cli(__doc__, logs=True)
 # echo('test')
 # add(1,2)
 minus(1,2)
-# do()
+do()
 
 if __name__ == '__main__':
-    pass
+    sw.cli(__doc__, logs=True)
+    # sw.cli(__doc__)
