@@ -51,6 +51,31 @@ class Logger:
             self.timeout(filetimeout)
 
         atexit.register(self.out)
+    
+    # def create_cli(self):
+    #     if self.cli:
+    #         self.parser = argparse.ArgumentParser(description='Logger command line interface')
+    #         self.parser.add_argument('--loglevel', type=str, choices=['critical', 'error', 'warning', 'info', 'debug', 'notset'], help='Define the log level')
+    #         return self.parser
+    #     else:
+    #         pass
+
+    # def log_parse(self):
+    #     llDict = {'critical': 50, 'error': 40, 'warning': 30, 'info': 20, 'debug': 10, 'notset': 0}
+    #     args = self.parser.parse_args()
+    #     ll = llDict[args.loglevel]
+    #     if ll:
+    #         self.rootlogger.setLevel(ll)
+    #         if self.file:
+    #             self.fhandler.setLevel(ll)
+    #         if self.stream:
+    #             self.shandler.setLevel(ll)
+
+    # # currently not in use
+    # def setLoglvl(self, lvl):
+    #     self.loglvl = lvl
+    #     self.rootlogger.setLevel(lvl)
+    #     self.fhandler.setLevel(lvl)
 
     def cap(self, filecap):
         '''delete any file outside of range based on file age'''
