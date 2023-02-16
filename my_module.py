@@ -1,6 +1,6 @@
 """This module does random stuff."""
 
-import swift as sw
+import swiftutils as sw
 import inspect
 
 
