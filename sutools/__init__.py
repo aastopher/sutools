@@ -1,6 +1,6 @@
-from swiftutils import cli_handler
-from swiftutils import log_handler
-from swiftutils import meta_handler
+from sutools import cli_handler
+from sutools import log_handler
+from sutools import meta_handler
 
 import inspect, os, logging, datetime, argparse, atexit
 from pathlib import Path
