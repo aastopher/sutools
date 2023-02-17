@@ -5,14 +5,10 @@ Swift utilities are designed to be lightweight easy to setup per module utilitie
 * module logging
 
 # TO-DO
-
-## Logger
-* must init logger before cli at present
-
-## CLI
-* add debug command for running whole module with debug level logs (can I do this by using meta logger and just setting the level?)
-
-## Misc.
-* comment everything
+* clean up
 * build tests
+* comment everything
+* write git action
 * document
+* add version badge
+* add pipeline passing / failing badge
