@@ -5,15 +5,16 @@ from swiftutils import meta_handler
 import inspect, os, logging, datetime, argparse, atexit
 from pathlib import Path
 
+# init store
 store = meta_handler.Bucket()
 
-def add(func):
-    '''add function to store'''
+def register(func):
+    '''register a function to the store'''
     store.add_func(func)
     return func
 
 def cli(desc = None, logs = False):
-    '''init cli and store'''
+    '''init cli and register to store'''
 
     if store.log:
         cli_obj = cli_handler.CLI(desc, logs, store.log)
@@ -39,7 +40,7 @@ def logger(name = os.path.basename(inspect.stack()[-1].filename)[:-3],
            shandler = logging.StreamHandler(),
            stream = False,
            warn = False):
-    '''init logger object and store'''
+    '''init logger object and register to store'''
 
     # if check for filepath must be inside function because filename is not initialized
     if not filepath:
@@ -62,4 +63,5 @@ def logger(name = os.path.basename(inspect.stack()[-1].filename)[:-3],
     return log_obj
 
 def log():
+    '''retrieve loggers namespace from store'''
     return store.log.loggers

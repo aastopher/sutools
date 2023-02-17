@@ -8,7 +8,7 @@ class Bucket:
         self.log = None
     
     def add_func(self, func):
-        '''adds a function to the function dictionary'''
+        '''registers a function to the function dictionary'''
         names = inspect.getfullargspec(func).args # collect arg names
         types = list(inspect.getfullargspec(func).annotations.values()) # collect types of args
 
