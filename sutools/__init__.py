@@ -38,8 +38,7 @@ def logger(name = os.path.basename(inspect.stack()[-1].filename)[:-3],
            file = True, 
            streamfmt = logging.Formatter('%(asctime)s, %(msecs)d %(name)s %(levelname)s %(message)s', datefmt='%H:%M:%S'),
            shandler = logging.StreamHandler(),
-           stream = False,
-           warn = False):
+           stream = False):
     '''init logger object and register to store'''
 
     # if check for filepath must be inside function because filename is not initialized
@@ -56,9 +55,9 @@ def logger(name = os.path.basename(inspect.stack()[-1].filename)[:-3],
 
     # if check for loggers must be inside function because func keys will be empty at initialization
     if not loggers and store.funcs:
-        log_obj = log_handler.Logger(name, list(store.funcs.keys()), loglvl, filename, filepath, filefmt, fhandler, filecap, filetimeout, file, streamfmt, shandler, stream, warn)
+        log_obj = log_handler.Logger(name, list(store.funcs.keys()), loglvl, filename, filepath, filefmt, fhandler, filecap, filetimeout, file, streamfmt, shandler, stream)
     else:
-        log_obj = log_handler.Logger(name, loggers, loglvl, filename, filepath, filefmt, fhandler, filecap, filetimeout, file, streamfmt, shandler, stream, warn)
+        log_obj = log_handler.Logger(name, loggers, loglvl, filename, filepath, filefmt, fhandler, filecap, filetimeout, file, streamfmt, shandler, stream)
     store.add_log(log_obj)
     return log_obj
 

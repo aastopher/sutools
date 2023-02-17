@@ -1,12 +1,10 @@
-import logging, os, datetime, warnings, atexit, argparse
+import logging, os, datetime, warnings, atexit
 from types import SimpleNamespace
 from pathlib import Path
 
 class Logger:
     '''object designed for swift granular logging configuration'''
-    def __init__(self, name, loggers, loglvl, filename, filepath, filefmt, fhandler, filecap, filetimeout, file, streamfmt, shandler, stream, warn):
-
-        logging.captureWarnings(warn)
+    def __init__(self, name, loggers, loglvl, filename, filepath, filefmt, fhandler, filecap, filetimeout, file, streamfmt, shandler, stream):
 
         self.name = name
         self.loggers = {}
