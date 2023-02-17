@@ -16,7 +16,6 @@ class Logger:
         self.rootlogger = logging.getLogger()
         self.filefmt = filefmt
         self.fhandler = fhandler
-
         self.streamfmt = streamfmt
         self.shandler = shandler
 
