@@ -5,9 +5,7 @@ su (Super User) tools are designed to be lightweight easy to configure, per modu
 * module logging
 
 # TO-DO
-* clean up
 * build tests
-* comment everything
 * write git action
 * document
 * add version badge
