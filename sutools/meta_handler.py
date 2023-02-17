@@ -3,16 +3,16 @@ import inspect
 class Bucket:
     '''internal object for storing function dictionary'''
     def __init__(self):
-        self.funcs = {}
-        self.cli = None
-        self.log = None
+        self.funcs = {} # init function registration dictionary
+        self.cli = None # init cli object store
+        self.log = None # init logger object store
     
     def add_func(self, func):
         '''registers a function to the function dictionary'''
         names = inspect.getfullargspec(func).args # collect arg names
         types = list(inspect.getfullargspec(func).annotations.values()) # collect types of args
 
-        # update dictionary 
+        # update function dictionary 
         if func.__doc__:
             self.funcs.update({func.__name__: (func, names, types, func.__doc__)})
         else:

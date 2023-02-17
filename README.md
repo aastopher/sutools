@@ -1,5 +1,5 @@
 # Overview
-su (Super User) tools are designed to be lightweight easy to setup per module utilities
+su (Super User) tools are designed to be lightweight easy to configure, per module utilities
 
 * module cli
 * module logging

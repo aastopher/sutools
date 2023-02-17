@@ -32,8 +32,8 @@ def do():
 # by default this will be the filename
 # su.logger(name='optional_name')
 
-# optionally pass in your own set of functional logger names 
-# to add to the namespace of loggers
+# optionally pass in your own set of functional logger names to add to the namespace of loggers
+# by default this namespace will be defined as the set of names for all registered functions
 # su.logger(loggers=['logger1','logger2','logger3'])
 
 # optionally pass in your own log level default
@@ -79,7 +79,7 @@ def do():
 # for development
 su.logger(filecap=5, stream=True, loglvl=logging.DEBUG)
 
-### FUNCTION TESTS ###
+# function tests for development
 # echo('test')
 # add(1,2)
 # minus(1,2)
