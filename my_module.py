@@ -45,7 +45,7 @@ def do():
 # su.logger(filename=datetime.datetime.now().strftime('%Y-%m-%d_%H-%M-%S'))
 
 # optionally pass in a file path
-# by default this will be ./logs/
+# by default this will be ./logs/my_module/
 # su.logger(filepath='./app/myLogs/')
 
 # optionally pass in your own formatter to change the format of either the file or stream handler
