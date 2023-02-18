@@ -43,7 +43,7 @@ su.logger(
     filecap = 5, 
     filetimeout = '1h',
     file = True, 
-    streamfmt = logging.Formatter(myFormat, datefmt='%H:%M:%S'),
+    streamfmt = logging.Formatter(logformat, datefmt='%H:%M:%S'),
     shandler = logging.StreamHandler(),
     stream = False
     )
