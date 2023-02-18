@@ -45,7 +45,8 @@ su.logger(
     file = True, 
     streamfmt = logging.Formatter(myFormat, datefmt='%H:%M:%S'),
     shandler = logging.StreamHandler(),
-    stream = False)
+    stream = False
+    )
 
 # script level function calls...
 
