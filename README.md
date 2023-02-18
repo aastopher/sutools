@@ -56,21 +56,47 @@ if __name__ == '__main__':
 </br>
 
 ## Property Descriptions
-* **name:** name of root module logger defines the name of log subfolder | `<str>` | default = `module file name`
-* **loggers:** names of functional loggers | `<str>` | default = `names of registered functions`
-* **loglvl:** optionally pass in your own log level this can also be an integer. Check out the defined [log levels](https://docs.python.org/3/library/logging.html#logging-levels) | `<int>` | default = `logging.INFO`
-* **filename:** defines name of log file instances | `<str>` | default = `datetime.datetime.now().strftime('%Y-%m-%d_%H-%M-%S')`
-* **filepath:** defines path for log files | `<str>`, `<Path>` | default = `logs/name_of_logger/filename`
-* **filefmt:** defines the log format for the file handler | `<Formatter>` | default = `logging.Formatter('%(asctime)s, %(msecs)d %(name)s %(levelname)s %(message)s', datefmt='%H:%M:%S')`
-* **fhandler:** define a custom file handler | `<FileHandler>` | default = `logging.FileHandler(filepath, 'w')`
-* **filecap:** defines a file cap, removing oldest files when cap is reached | `<int>` | default = `None`
-* **filetimeout:** defines a file time out period | `<str>` | default = `None`
-  * define a timeout period by combining time unit characters with the desired integer for a specified time unit i.e. (10m = 10 minute, 2h = 2 hours, ...)
-  * time_units = {'m': 'minutes', 'h': 'hours', 'd': 'days', 'o':'months', 'y': 'years'}
-* **file:** define if file logging is enabled | `<bool>` | default = `True`
-* **streamfmt:** defines the log format for the stream handler | `<str>` | default = `logging.Formatter('%(asctime)s, %(msecs)d %(name)s %(levelname)s %(message)s', datefmt='%H:%M:%S')`
-* **shandler:** define a custom stream handler | `<StreamHandler>` | default = `logging.StreamHandler()`
-* **stream:** define if stream logging is enabled | `<bool>` | default = `False`
+* **name:** name of root module logger defines the name of log subfolder 
+  * ****type:**** `<str>`
+  * **default:** `module file name`
+* **loggers:** names of functional loggers |
+    * ****type:**** `<str>`
+    *  `names of registered functions`
+* **loglvl:** optionally pass in your own log level this can also be an integer. Check out the defined [log levels](https://docs.python.org/3/library/logging.html#logging-levels) 
+  * **type:** `<int>` 
+  * **default:** `logging.INFO`
+* **filename:** defines name of log file instances
+  * `<str>`
+  * **default:** `datetime.datetime.now().strftime('%Y-%m-%d_%H-%M-%S')`
+* **filepath:** defines path for log files
+  * **type:** `<str>`, `<Path>`
+  * default: `logs/name_of_logger/filename`
+* **filefmt:** defines the log format for the file handler 
+  * **type:** `<Formatter>` 
+  * default: `logging.Formatter('%(asctime)s, %(msecs)d %(name)s %(levelname)s %(message)s', datefmt='%H:%M:%S')`
+* **fhandler:** define a custom file handler
+  * `<FileHandler>` 
+  * default: `logging.FileHandler(filepath, 'w')`
+* **filecap:** defines a file cap, removing oldest files when cap is reached
+  * **type:** `<int>` 
+  * default: `None`
+* **filetimeout:** defines a file time out period 
+  * **type:** `<str>` 
+  * **default:** `None`
+  * **usage:** define a timeout period by combining time unit characters with the desired integer for a specified time unit i.e. `(10m = 10 minute, 2h = 2 hours, ...)`
+  * **unit key:** `{'m': 'minutes', 'h': 'hours', 'd': 'days', 'o':'months', 'y': 'years'}`
+* **file:** define if file logging is enabled 
+  * **type:** `<bool>`
+  * **default:** `True`
+* **streamfmt:** defines the log format for the stream handler 
+  * **type:** `<str>` 
+  * **default:** `logging.Formatter('%(asctime)s, %(msecs)d %(name)s %(levelname)s %(message)s', datefmt='%H:%M:%S')`
+* **shandler:** define a custom stream handler 
+  * **type:** `<StreamHandler>`
+  * **default:** `logging.StreamHandler()`
+* **stream:** define if stream logging is enabled 
+  * **type:** `<bool>` 
+  * **default:** `False`
 
 ***
 
