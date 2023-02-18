@@ -5,9 +5,9 @@ class CLI:
 
   def __init__(self, desc, logs, log_obj = None):
     '''init top-level parser'''
-
+  
     # define the name of the cli application as the file name of the module which is importing this class
-    self.name = os.path.basename(inspect.stack()[1].filename)[:-3] # define the name of the cli application
+    self.name = os.path.basename(inspect.stack()[2].filename)[:-3] # define the name of the cli application
     self.parser = argparse.ArgumentParser(prog = self.name, description = desc) # define root parser
     self.subparsers = self.parser.add_subparsers(title='commands', dest='command') # add commands subparser
     self.func_dict = {} # init empty func dict

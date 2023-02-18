@@ -76,9 +76,52 @@ if __name__ == '__main__':
 
 ***
 
-## CLI Usage Examples
+## CLI Usage Example
 
 </br>
+
+```python
+import sutools as su
+
+@su.register
+def add(x : int, y : int):
+    '''add two integers'''
+    su.log().add.info(f'{x} + {y} = {x+y}') # optional
+    print(x + y).
+
+su.logger() # optional
+
+# script level function calls...
+
+if __name__ == '__main__':
+    # main code (will run even when using cli commands)...
+    su.cli(desc = __doc__)
+    # main code (will NOT run when using cli commands)...
+```
+
+</br>
+
+**help output:**
+```
+usage: module.py add [-h] x y
+
+positional arguments:
+  x           <class 'int'>
+  y           <class 'int'>
+
+options:
+  -h, --help  show this help message and exit
+```
+
+**command usage:**
+
+```
+python module.py add 1 2
+```
+**output:**
+```
+3
+```
 
 ***
 
