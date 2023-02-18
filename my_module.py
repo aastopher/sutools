@@ -81,8 +81,8 @@ su.logger(stream=True)
 
 # script level function tests for development
 # echo('test')
-add(1,2)
-minus(1,2)
+# add(1,2)
+# minus(1,2)
 # do()
 
 
