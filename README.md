@@ -59,7 +59,7 @@ if __name__ == '__main__':
 * **name:** name of root module logger defines the name of log subfolder 
   * **type:** `<str>`
   * **default:** `module file name`
-* **loggers:** names of functional loggers |
+* **loggers:** names of functional loggers
     * **type:** `<str>`
     * **default:** `names of registered functions`
 * **loglvl:** optionally pass in your own log level this can also be an integer. Check out the defined [log levels](https://docs.python.org/3/library/logging.html#logging-levels) 
@@ -102,18 +102,23 @@ if __name__ == '__main__':
 
 ## Logger Usage Examples
 
+</br>
+
 ***
 
-## Initializing the CLI
-</br>
-
-The CLI should be instantiated after only if the script is called directly thus it is suggested to define this after `if __name__ == '__main__'`. Any code before the cli will run even if a cli command is used; code after the cli definition will not run when passing a cli command. 
-
-**NOTE:** The CLI should at the very least be defined after the logger if you choose to use the two utilities in parallel.
+## CLI - Initialization Standard
 
 </br>
 
-**Logger Initialization Structure**
+It is suggested to define the command line interface after `if __name__ == '__main__'`. Any code before the cli will run even if a cli command is used; code after the cli definition will not run when passing a cli command. 
+
+**NOTE:** The CLI should be defined after the logger if you choose to use the two utilities in parallel.
+
+</br>
+
+***
+## CLI - Properties
+
 ```python
 import sutools as su
 
@@ -125,57 +130,24 @@ su.logger() # optional
 
 if __name__ == '__main__':
     # main code (will run even when using cli commands)...
-    su.cli()
+    su.cli(desc = 'cli description', logs = False)
     # main code (will NOT run when using cli commands)...
 ```
-
-***
-## Logger Properties
 </br>
 
-**Default Example**
-* init an sutools cli with all default settings
-```python
-import sutools as su
-
-# module code...
-
-if __name__ == '__main__':
-    su.cli()
-```
-
-</br>
-
-**Named Example**
-* optionally add a cli description 
-* by default this is `None`
-* it is suggested to pass in your modules doc string
-```python
-import sutools as su
-
-# module code...
-
-if __name__ == '__main__':
-    su.cli(__doc__)
-```
-
-</br>
-
-**Log Example**
-* optionally turn logs on or off when running cli commands
-* by default this is False (i.e. logs will not run)
-```python
-import sutools as su
-
-# module code...
-
-if __name__ == '__main__':
-    su.cli(logs=True)
-```
+## Property Descriptions
+* **desc:** name of root module logger defines the name of log subfolder 
+  * **type:** `<str>`
+  * **default:** `''`
+* **logs:** enable logging inside cli commands
+    * **type:** `<bool>`
+    * **default:** `False`
 
 ***
 
 ## CLI Usage Examples
+
+</br>
 
 ***
 
