@@ -5,10 +5,36 @@ Per module utilities, designed to be lightweight, easy to configure, and reduce 
 
 ***
 
+
 ## Install
+
+</br>
+
 ```
 pip install sutools
 ```
+***
+
+## Register Functions with sutools
+
+</br>
+
+Using the register decorator `@su.register` on your functions will register it with sutools `meta_handler`. Stored functions are available across tools. This registry is intended to be used by logger and cli utilities.
+
+```python
+import sutools as su
+
+@su.register
+def add(x : int, y : int):
+    '''add two integers'''
+    print(x + y)
+
+```
+
+**NOTE:** Adding type hinting to your functions enforces types in the cli and adds positional arg class identifiers in the help docs for the command.
+
+</br>
+
 ***
 
 ## Logger - Initialization Standard
@@ -110,7 +136,7 @@ if __name__ == '__main__':
 
 </br>
 
-It is suggested to define the command line interface after `if __name__ == '__main__'`. Any code before the cli will run even if a cli command is used; code after the cli definition will not run when passing a cli command. 
+It is suggested to define the command line interface after `if __name__ == '__main__'`. Any code before the cli will run even if a cli command is used; code after the cli definition will not run when passing a cli command.
 
 **NOTE:** The CLI should be defined after the logger if you choose to use the two utilities in parallel.
 
