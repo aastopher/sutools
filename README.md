@@ -37,6 +37,51 @@ def add(x : int, y : int):
 
 ***
 
+## CLI - Initialization Standard
+
+</br>
+
+It is suggested to define the command line interface after `if __name__ == '__main__'`. Any code before the cli will run even if a cli command is used; code after the cli definition will not run when passing a cli command.
+
+**NOTE:** The CLI should be defined after the logger if you choose to use the two utilities in parallel.
+
+</br>
+
+***
+## CLI - Properties
+
+```python
+import sutools as su
+
+# registered functions...
+
+su.logger() # optional
+
+# script level function calls...
+
+if __name__ == '__main__':
+    # main code (will run even when using cli commands)...
+    su.cli(desc = 'cli description', logs = False)
+    # main code (will NOT run when using cli commands)...
+```
+</br>
+
+## Property Descriptions
+* **desc:** name of root module logger defines the name of log subfolder 
+  * **type:** `<str>`
+  * **default:** `''`
+* **logs:** enable logging inside cli commands
+    * **type:** `<bool>`
+    * **default:** `False`
+
+***
+
+## CLI Usage Examples
+
+</br>
+
+***
+
 ## Logger - Initialization Standard
 
 </br>
@@ -127,51 +172,6 @@ if __name__ == '__main__':
 ***
 
 ## Logger Usage Examples
-
-</br>
-
-***
-
-## CLI - Initialization Standard
-
-</br>
-
-It is suggested to define the command line interface after `if __name__ == '__main__'`. Any code before the cli will run even if a cli command is used; code after the cli definition will not run when passing a cli command.
-
-**NOTE:** The CLI should be defined after the logger if you choose to use the two utilities in parallel.
-
-</br>
-
-***
-## CLI - Properties
-
-```python
-import sutools as su
-
-# registered functions...
-
-su.logger() # optional
-
-# script level function calls...
-
-if __name__ == '__main__':
-    # main code (will run even when using cli commands)...
-    su.cli(desc = 'cli description', logs = False)
-    # main code (will NOT run when using cli commands)...
-```
-</br>
-
-## Property Descriptions
-* **desc:** name of root module logger defines the name of log subfolder 
-  * **type:** `<str>`
-  * **default:** `''`
-* **logs:** enable logging inside cli commands
-    * **type:** `<bool>`
-    * **default:** `False`
-
-***
-
-## CLI Usage Examples
 
 </br>
 
