@@ -219,6 +219,10 @@ if __name__ == '__main__':
 ## Logger Usage Examples
 
 </br>
+ 
+ accessing defined loggers is done with a `log()` helper function. Note the use of `su.log()` in the below functions to access a specified logger before defining the log level and message.
+
+</br>
 
 **using registered function names**
 
