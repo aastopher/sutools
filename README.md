@@ -57,29 +57,29 @@ if __name__ == '__main__':
 
 ## Property Descriptions
 * **name:** name of root module logger defines the name of log subfolder 
-  * ****type:**** `<str>`
+  * **type:** `<str>`
   * **default:** `module file name`
 * **loggers:** names of functional loggers |
-    * ****type:**** `<str>`
-    *  `names of registered functions`
+    * **type:** `<str>`
+    * **default:** `names of registered functions`
 * **loglvl:** optionally pass in your own log level this can also be an integer. Check out the defined [log levels](https://docs.python.org/3/library/logging.html#logging-levels) 
   * **type:** `<int>` 
   * **default:** `logging.INFO`
 * **filename:** defines name of log file instances
-  * `<str>`
+  * **type:** `<str>`
   * **default:** `datetime.datetime.now().strftime('%Y-%m-%d_%H-%M-%S')`
 * **filepath:** defines path for log files
   * **type:** `<str>`, `<Path>`
-  * default: `logs/name_of_logger/filename`
+  * **default:** `logs/name_of_logger/filename`
 * **filefmt:** defines the log format for the file handler 
   * **type:** `<Formatter>` 
-  * default: `logging.Formatter('%(asctime)s, %(msecs)d %(name)s %(levelname)s %(message)s', datefmt='%H:%M:%S')`
+  * **default:** `logging.Formatter('%(asctime)s, %(msecs)d %(name)s %(levelname)s %(message)s', datefmt='%H:%M:%S')`
 * **fhandler:** define a custom file handler
-  * `<FileHandler>` 
-  * default: `logging.FileHandler(filepath, 'w')`
+  * **type:** `<FileHandler>` 
+  * **default:** `logging.FileHandler(filepath, 'w')`
 * **filecap:** defines a file cap, removing oldest files when cap is reached
   * **type:** `<int>` 
-  * default: `None`
+  * **default:** `None`
 * **filetimeout:** defines a file time out period 
   * **type:** `<str>` 
   * **default:** `None`
