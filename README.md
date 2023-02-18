@@ -57,7 +57,7 @@ import sutools as su
 
 su.logger() # optional
 
-# script level function calls...
+# module level function calls...
 
 if __name__ == '__main__':
     # main code (will run even when using cli commands)...
@@ -91,7 +91,7 @@ def add(x : int, y : int):
 
 su.logger() # optional
 
-# script level function calls...
+# module level function calls...
 
 if __name__ == '__main__':
     # main code (will run even when using cli commands)...
@@ -101,9 +101,11 @@ if __name__ == '__main__':
 
 </br>
 
+**NOTE:** Adding type hinting to your functions enforces types in the cli and adds positional arg class identifiers in the help docs for the command.
+
 **help output:**
 ```
-usage: module.py add [-h] x y
+usage: module add [-h] x y
 
 positional arguments:
   x           <class 'int'>
@@ -129,7 +131,7 @@ python module.py add 1 2
 
 </br>
 
-The logger utility should be instantiated after any registered functions but before any script level functions.
+The logger utility should be instantiated after any registered functions but before any module level functions.
 
 
 </br>
@@ -140,29 +142,29 @@ The logger utility should be instantiated after any registered functions but bef
 ```python
 import sutools as su
 from pathlib import Path
-import inspect, logging, datetime
+import os,inspect, logging, datetime
 
 # registered functions...
 
 logformat = '%(asctime)s, %(msecs)d %(name)s %(levelname)s %(message)s'
 
 su.logger(
-    name = 'logger_name', 
-    loggers = ['logger1','logger2','logger3'], 
-    loglvl = logging.DEBUG,
+    name = os.path.basename(inspect.stack()[-1].filename)[:-3], 
+    loggers = None, # <names of registered functions> 
+    loglvl = logging.INFO,
     filename = datetime.datetime.now().strftime('%Y-%m-%d_%H-%M-%S'), 
     filepath = Path(filepath),
     filefmt = logging.Formatter(logformat, datefmt='%H:%M:%S'), 
     fhandler = logging.FileHandler(filepath, 'w'),
-    filecap = 5, 
-    filetimeout = '1h',
+    filecap = None, 
+    filetimeout = None,
     file = True, 
     streamfmt = logging.Formatter(logformat, datefmt='%H:%M:%S'),
     shandler = logging.StreamHandler(),
     stream = False
     )
 
-# script level function calls...
+# module level function calls...
 
 if __name__ == '__main__':
     # main code...
@@ -217,6 +219,84 @@ if __name__ == '__main__':
 ## Logger Usage Examples
 
 </br>
+
+**using registered function names**
+
+
+```python
+import sutools as su
+
+@su.register
+def add(x : int, y : int):
+    '''add two integers'''
+    su.log().add.info(f'{x} + {y} = {x+y}')
+    print(x + y)
+
+@su.register
+def minus(x : int, y : int):
+    '''subtract two integers'''
+    su.log().minus.info(f'{x} - {y} = {x-y}')
+    print(x - y).
+
+su.logger()
+
+# module level function calls
+add(1,2)
+minus(1,2)
+
+if __name__ == '__main__':
+    # main code (will run even when using cli commands)...
+    su.cli() # optional
+    # main code (will NOT run when using cli commands)...
+```
+
+</br>
+
+**log output**
+```
+16:16:34, 961 add INFO 1 + 2 = 3
+16:16:34, 961 minus INFO 1 - 2 = -1
+```
+
+</br>
+
+**using custom logger names**
+
+
+```python
+import sutools as su
+
+@su.register
+def add(x : int, y : int):
+    '''add two integers'''
+    su.log().logger1.info(f'{x} + {y} = {x+y}')
+    print(x + y)
+
+@su.register
+def minus(x : int, y : int):
+    '''subtract two integers'''
+    su.log().logger2.info(f'{x} - {y} = {x-y}')
+    print(x - y).
+
+su.logger(loggers=['logger1','logger2'])
+
+# module level function calls
+add(1,2)
+minus(1,2)
+
+if __name__ == '__main__':
+    # main code (will run even when using cli commands)...
+    su.cli() # optional
+    # main code (will NOT run when using cli commands)...
+```
+
+</br>
+
+**log output**
+```
+16:16:34, 961 logger1 INFO 1 + 2 = 3
+16:16:34, 961 logger2 INFO 1 - 2 = -1
+```
 
 ***
 
