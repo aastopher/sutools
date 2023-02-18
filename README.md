@@ -26,7 +26,7 @@ The logger utility should be instantiated after any registered functions but bef
 ```python
 import sutools as su
 from pathlib import Path
-import inspect
+import inspect, logging, datetime
 
 # registered functions...
 
