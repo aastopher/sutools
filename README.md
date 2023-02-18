@@ -15,7 +15,7 @@ pip install sutools
 
 </br>
 
-The logger should be instantiated after any registered functions but before any script level functions. The loggers will not exist for function calls in this case.
+The logger utility should be instantiated after any registered functions but before any script level functions.
 
 
 </br>
