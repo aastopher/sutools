@@ -79,11 +79,12 @@ def do():
 # for development
 su.logger(filecap=5, stream=True, loglvl=logging.DEBUG)
 
-# function tests for development
+# script level function tests for development
 # echo('test')
 # add(1,2)
 # minus(1,2)
 # do()
+
 
 if __name__ == '__main__':
     ### CLI EXAMPLES ###
