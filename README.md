@@ -11,7 +11,7 @@ pip install sutools
 ```
 ***
 
-## Initializing the Logger
+## Logger - Initialization Standard
 
 </br>
 
@@ -20,86 +20,56 @@ The logger should be instantiated after any registered functions but before any 
 
 </br>
 
-**Logger Initialization Structure**
+***
+## Logger - Properties
+
 ```python
 import sutools as su
+from pathlib import Path
+import inspect
 
 # registered functions...
 
-su.logger()
+logformat = '%(asctime)s, %(msecs)d %(name)s %(levelname)s %(message)s'
+
+su.logger(
+    name = 'logger_name', 
+    loggers = ['logger1','logger2','logger3'], 
+    loglvl = logging.DEBUG,
+    filename = datetime.datetime.now().strftime('%Y-%m-%d_%H-%M-%S'), 
+    filepath = Path(filepath),
+    filefmt = logging.Formatter(logformat, datefmt='%H:%M:%S'), 
+    fhandler = logging.FileHandler(filepath, 'w'),
+    filecap = 5, 
+    filetimeout = '1h',
+    file = True, 
+    streamfmt = logging.Formatter(myFormat, datefmt='%H:%M:%S'),
+    shandler = logging.StreamHandler(),
+    stream = False)
 
 # script level function calls...
 
 if __name__ == '__main__':
     # main code...
 ```
-
-***
-## Logger Properties
 </br>
 
-
-**Default Example**
-* init an sutools logger with all default settings
-```python
-import sutools as su
-
-# module code...
-
-su.logger()
-
-if __name__ == '__main__':
-    # main code...
-```
-
-</br>
-
-**Named Property**
-* optionally pass in the name of your root application logger
-* by default this will be the filename
-```python
-import sutools as su
-
-# module code...
-
-su.logger(name='optional_name')
-
-if __name__ == '__main__':
-    # main code...
-```
-
-</br>
-
-**Functional Loggers Property**
-* optionally pass in your own set of functional logger names to add to the namespace of loggers
-* by default this namespace will be defined as the set of names for all registered functions
-```python
-import sutools as su
-
-# module code...
-
-su.logger(loggers=['logger1','logger2','logger3'])
-
-if __name__ == '__main__':
-    # main code...
-```
-
-</br>
-
-**Log Level Property**
-* optionally pass in your own log level this can also be an integer check out the defined [log levels](https://docs.python.org/3/library/logging.html#logging-levels)
-* by default this will be defined as `logging.INFO`
-```python
-import logging
-import sutools as su
-
-# module code...
-
-su.logger(loglvl=logging.DEBUG)
-
-if __name__ == '__main__':
-    # main code...
-```
+## Property Descriptions
+* **name:** name of root module logger defines the name of log subfolder | `<str>` | default = `module file name`
+* **loggers:** names of functional loggers | `<str>` | default = `names of registered functions`
+* **loglvl:** optionally pass in your own log level this can also be an integer. Check out the defined [log levels](https://docs.python.org/3/library/logging.html#logging-levels) | `<int>` | default = `logging.INFO`
+* **filename:** defines name of log file instances | `<str>` | default = `datetime.datetime.now().strftime('%Y-%m-%d_%H-%M-%S')`
+* **filepath:** defines path for log files | `<str>`, `<Path>` | default = `logs/name_of_logger/filename`
+* **filefmt:** defines the log format for the file handler | `<Formatter>` | default = `logging.Formatter('%(asctime)s, %(msecs)d %(name)s %(levelname)s %(message)s', datefmt='%H:%M:%S')`
+* **fhandler:** define a custom file handler | `<FileHandler>` | default = `logging.FileHandler(filepath, 'w')`
+* **filecap:** defines a file cap, removing oldest files when cap is reached | `<int>` | default = `None`
+* **filetimeout:** defines a file time out period | `<str>` | default = `None`
+  * define a timeout period by combining time unit characters with the desired integer for a specified time unit i.e. (10m = 10 minute, 2h = 2 hours, ...)
+  * time_units = {'m': 'minutes', 'h': 'hours', 'd': 'days', 'o':'months', 'y': 'years'}
+* **file:** define if file logging is enabled | `<bool>` | default = `True`
+* **streamfmt:** defines the log format for the stream handler | `<str>` | default = `logging.Formatter('%(asctime)s, %(msecs)d %(name)s %(levelname)s %(message)s', datefmt='%H:%M:%S')`
+* **shandler:** define a custom stream handler | `<StreamHandler>` | default = `logging.StreamHandler()`
+* **stream:** define if stream logging is enabled | `<bool>` | default = `False`
 
 ***
 
