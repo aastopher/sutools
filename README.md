@@ -19,9 +19,6 @@ pip install sutools
 ```
 ***
 
-[DOCS](https://sutools.readthedocs.io/en/latest/index.html)
-
-
 ## TO-DO
 * sphinx autodocs partially complete
 * build tests
