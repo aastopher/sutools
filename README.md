@@ -19,6 +19,7 @@ pip install sutools
 
 ## TO-DO
 * sphinx autodocs partially complete
+* add basic usage back into readme
 * build tests
 * write git action
 * add version badge
