@@ -1,4 +1,9 @@
-# Description
+[![Documentation Status](https://readthedocs.org/projects/sutools/badge/?version=latest)](https://sutools.readthedocs.io/en/latest/?badge=latest)
+
+</br>
+
+## Description
+
 **su (Super User) tools**
 
 Per module utilities, designed to be lightweight, easy to configure, and reduce boilerplate code.
