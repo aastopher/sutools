@@ -39,6 +39,57 @@ It is suggested to define the command line interface after `if __name__ == '__ma
 
 **NOTE:** The CLI should be defined after the logger if you choose to use the two utilities in parallel.
 
+cli - usage example
+===================
+
+The logger utility should be instantiated after any registered functions but before any module level functions.
+
+.. code-block:: python
+
+    import sutools as su
+
+    @su.register
+    def add(x : int, y : int):
+        '''add two integers'''
+        su.log().add.info(f'{x} + {y} = {x+y}') # optional log line
+        print(x + y).
+
+    su.logger() # optional
+
+    # module level function calls...
+
+    if __name__ == '__main__':
+        # main code (will run even when using cli commands)...
+        su.cli(desc = __doc__)
+        # main code (will NOT run when using cli commands)...
+
+**NOTE:** Adding type hinting to your functions enforces types in the cli and adds positional arg class identifiers in the help docs for the command.
+
+**help output:**
+
+.. code-block:: console
+
+    usage: module add [-h] x y
+
+    positional arguments:
+    x           <class 'int'>
+    y           <class 'int'>
+
+    options:
+    -h, --help  show this help message and exit
+
+**command usage:**
+
+.. code-block:: console
+
+    python module.py add 1 2
+
+**output:**
+
+.. code-block:: console
+
+    3
+
 logger - initialization standard
 ================================
 
@@ -58,3 +109,82 @@ The logger utility should be instantiated after any registered functions but bef
         # main code (will run even when using cli commands)...
         su.cli(**args) # optional
         # main code (will NOT run when using cli commands)...
+
+
+logger - usage examples
+=======================
+
+ accessing defined loggers is done with a `log()` helper function. Note the use of `su.log()` in the below functions to access a specified logger before defining the log level and message.
+
+
+**using registered function names**
+
+.. code-block:: python
+
+    import sutools as su
+
+    @su.register
+    def add(x : int, y : int):
+        '''add two integers'''
+        su.log().add.info(f'{x} + {y} = {x+y}')
+        print(x + y)
+
+    @su.register
+    def minus(x : int, y : int):
+        '''subtract two integers'''
+        su.log().minus.info(f'{x} - {y} = {x-y}')
+        print(x - y)
+
+    su.logger() # logger definition
+
+    # module level function calls
+    add(1,2)
+    minus(1,2)
+
+    if __name__ == '__main__':
+        # main code (will run even when using cli commands)...
+        su.cli() # optional
+        # main code (will NOT run when using cli commands)...
+
+**log output**
+
+.. code-block:: console
+
+    16:16:34, 961 add INFO 1 + 2 = 3
+    16:16:34, 961 minus INFO 1 - 2 = -1
+
+**using custom logger names**
+
+.. code-block:: python
+
+    import sutools as su
+
+    @su.register
+    def add(x : int, y : int):
+        '''add two integers'''
+        su.log().logger1.info(f'{x} + {y} = {x+y}')
+        print(x + y)
+
+    @su.register
+    def minus(x : int, y : int):
+        '''subtract two integers'''
+        su.log().logger2.info(f'{x} - {y} = {x-y}')
+        print(x - y)
+
+    su.logger(loggers=['logger1','logger2']) # logger definition
+
+    # module level function calls
+    add(1,2)
+    minus(1,2)
+
+    if __name__ == '__main__':
+        # main code (will run even when using cli commands)...
+        su.cli() # optional
+        # main code (will NOT run when using cli commands)...
+
+**log output**
+
+.. code-block:: console
+
+    16:16:34, 961 add INFO 1 + 2 = 3
+    16:16:34, 961 minus INFO 1 - 2 = -1
