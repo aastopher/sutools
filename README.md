@@ -180,9 +180,9 @@ python module.py add 1 2
 
 
 ## TO-DO
-* sphinx autodocs partially complete
-* add basic usage back into readme
+* sphinx autodocs complete?
 * build tests
 * write git action
+* add version tagging
 * add version badge
 * add pipeline passing / failing badge
