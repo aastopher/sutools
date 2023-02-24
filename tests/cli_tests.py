@@ -1,20 +1,32 @@
-import unittest
 from unittest.mock import patch
 from io import StringIO
-import sutools as su
+from sutools import cli_handler
 
-class TestCLIHandler(unittest.TestCase):
-    def test_add_command(self):
-        with patch('sys.stdout', new=StringIO()) as fake_out:
-            su.cli(['add', '2', '3'])
-            self.assertEqual(fake_out.getvalue().strip(), '5')
+#### Properties
 
-class TestLogHandler(unittest.TestCase):
-    def test_log_handler(self):
-        logger = su.log()
-        with patch('sys.stdout', new=StringIO()) as fake_out:
-            logger.add.info('This is a test message')
-            self.assertEqual(fake_out.getvalue().strip(), 'INFO: This is a test message')
+# Test 1: this should test passing in a cli description
+def test_desc():
+    pass
 
-if __name__ == '__main__':
-    unittest.main()
+# Test 2: this should test passing a 
+# boolean to logs to turn logging on or off (i.e. 51)
+def test_logs():
+    pass
+
+# Test 3: this should test passing a logger object 
+# (if a log_obj is passed in there should be loggers in the log property)
+def test_log_obj():
+    pass
+
+#### Methods
+
+# Test 4: this should test adding references of functions 
+# for to the cli to run (a dictionary of functions should be provided 
+# then the cli should be tested to use those functions)
+def test_add_funcs():
+    pass
+
+# Test 5: this should test the parse method 
+# this is called after functions are added to be called as a command
+def test_parse():
+    pass

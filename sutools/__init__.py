@@ -44,6 +44,8 @@ def logger(name = os.path.basename(inspect.stack()[-1].filename)[:-3],
     # if check for filepath must be inside function because filename is not initialized
     if not filepath:
         filepath = os.path.join('logs', name, f'{filename}.log')
+    elif filepath:
+        filepath = os.path.join(filepath, name, f'{filename}.log')
 
     # check if log path parent directory has been initialized
     if not os.path.exists(Path(filepath).parent):
