@@ -1,9 +1,7 @@
 from unittest.mock import patch
-from io import StringIO, FileIO
-import os, sys, inspect, logging, datetime
-sys.path.append("../")
+from io import StringIO
+import sys, inspect, logging
 from sutools import cli_handler, log_handler
-from pathlib import Path
 
 
 # Test 1: this should test passing in a cli description

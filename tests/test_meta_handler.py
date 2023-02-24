@@ -1,5 +1,3 @@
-from unittest.mock import patch
-from io import StringIO
 import logging
 from sutools import meta_handler, cli_handler, log_handler
 
