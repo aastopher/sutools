@@ -12,10 +12,12 @@ class CLI:
     self.subparsers = self.parser.add_subparsers(title='commands', dest='command') # add commands subparser
     self.func_dict = {} # init empty func dict
     self.log_obj = log_obj # store copy of the log object for logging compatibility
-    self.log = log_obj.loggers # extract functional logger list
+
+    if log_obj:
+      self.log = log_obj.loggers # extract functional logger list
 
     # toggles logs for cli commands
-    if not logs:
+    if not logs and log_obj:
       for logger in vars(self.log).values(): # iterates through all loggers
         logger.setLevel(logging.CRITICAL+1) # sets logs to 1 above critical i.e. 51
 

@@ -1,4 +1,4 @@
-import logging, os, datetime, warnings, atexit
+import logging, os, datetime, warnings, atexit, sys
 from types import SimpleNamespace
 from pathlib import Path
 
@@ -41,6 +41,7 @@ class Logger:
                 logger = logging.getLogger(log)
                 logger.addHandler(self.fhandler) # add the file handler to the logger
                 logger.propagate = False # disable propagation of log messages to ancestor loggers
+            atexit.register(self.out) # register out function at interpreter exit
 
         # if stream property enabled create stream logger
         if self.stream:
@@ -58,8 +59,6 @@ class Logger:
         # if a file timout is defined and type is str run filetimeout function
         if filetimeout and isinstance(filetimeout, str):
             self.timeout(filetimeout)
-
-        atexit.register(self.out) # register out function at interpreter exit
 
     def cap(self, filecap):
         '''delete any file outside of range based on file age'''
@@ -123,7 +122,7 @@ class Logger:
         Check all loggers in the loggers namespace object for existing logs.
         If none exist, close the file fhandlers and remove the empty file
         """
-
+        
         # check each logger for existing handlers and set to null if they exist
         for log in vars(self.loggers).values():
             if log.hasHandlers():
