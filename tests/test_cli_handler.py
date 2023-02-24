@@ -85,7 +85,7 @@ def test_cli_logs_on(capsys, monkeypatch):
 
 # Test 3: this should test passing a 
 # boolean to logs to turn logging off (i.e. 51)
-def test_cli_logs_on(capsys, monkeypatch):
+def test_cli_logs_off(capsys, monkeypatch):
 
     def func_test():
         log_obj.loggers.func_test.info('fail')
