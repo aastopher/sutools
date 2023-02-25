@@ -1,7 +1,7 @@
 **/logs
 **/__pycache__
+**/.pytest_cache
 **/dist
 .DS_Store
-dev.py
 **/docs/build
 **/_build

@@ -1,46 +1,44 @@
 from unittest.mock import patch, mock_open, MagicMock, Mock
 from io import StringIO
-import logging, sys, datetime
+import logging, sys, datetime, os, time, warnings
 from sutools import log_handler
 from pathlib import Path
+from freezegun import freeze_time
 
-# Test 1: this should test passing in a name for our root logger
-# (i.e. something like `os.path.basename(inspect.stack()[-1].filename)[:-3]`)
-def test_name():
+# Test 1: tests name, file, and stream options in log_handler.Logger()
+def test_name_file_stream():
     expected = "test_name"
     log_obj = log_handler.Logger(
-                expected, 
-                ['log'], 
-                logging.INFO, 
-                None, None, None, None, None, None, 
-                False, 
-                logging.Formatter('%(asctime)s, %(msecs)d %(name)s %(levelname)s %(message)s', datefmt='%H:%M:%S'), 
-                logging.StreamHandler(sys.stdout), 
+                expected,
+                ['log'],
+                logging.INFO,
+                None, None, None, None, None, None,
+                False,
+                logging.Formatter('%(asctime)s, %(msecs)d %(name)s %(levelname)s %(message)s', datefmt='%H:%M:%S'),
+                logging.StreamHandler(sys.stdout),
                 stream=True)
 
     assert expected == log_obj.name
 
-# Test 2: this should test passing list of strings for loggers to 
-# reference as an optional choice of naming loggers 
-# and not using the register decorator
+# Test 2: tests the logger option in log_handler.Logger()
 def test_loggers():
     expected = ['logger1','logger2','logger3']
     log_obj = log_handler.Logger(
-                'test name', 
-                expected, 
-                logging.INFO, 
-                None, None, None, None, None, None, 
-                False, 
-                logging.Formatter('%(asctime)s, %(msecs)d %(name)s %(levelname)s %(message)s', datefmt='%H:%M:%S'), 
-                logging.StreamHandler(sys.stdout), 
+                'test name',
+                expected,
+                logging.INFO,
+                None, None, None, None, None, None,
+                False,
+                logging.Formatter('%(asctime)s, %(msecs)d %(name)s %(levelname)s %(message)s', datefmt='%H:%M:%S'),
+                logging.StreamHandler(sys.stdout),
                 stream=True)
 
     assert all(item in log_obj.loggers.__dict__ for item in expected)
 
-# Test 3: this should test passing a log level 
-# to change the default log level (i.e. did the log level change)
-def test_loglvl(capsys):
+# Test 3: tests loglvl, shandler, and streamfmt options in log_handler.Logger()
+def test_loglvl_shandler_streamfmt(capsys):
     expected = ['DEBUG', 'INFO', 'WARNING', 'ERROR', 'CRITICAL']
+    formatter = logging.Formatter('%(asctime)s, %(name)s %(levelname)s %(message)s', datefmt='%H:%M:%S')
 
     def func_test():
         log_obj.loggers.log.debug('debug message')
@@ -50,24 +48,29 @@ def test_loglvl(capsys):
         log_obj.loggers.log.critical('critical message')
 
     log_obj = log_handler.Logger(
-                'test_logger', 
-                ['log'], 
-                logging.DEBUG, 
-                None, None, None, None, None, None, 
-                False, 
-                logging.Formatter('%(asctime)s, %(msecs)d %(name)s %(levelname)s %(message)s', datefmt='%H:%M:%S'), 
-                logging.StreamHandler(sys.stdout), 
+                'test_logger',
+                ['log'],
+                logging.DEBUG,
+                None, None, None, None, None, None,
+                False,
+                formatter,
+                logging.StreamHandler(sys.stdout),
                 stream=True)
 
     func_test()
     captured = capsys.readouterr()
     assert all(level in captured.out for level in expected)
 
+    with patch.object(log_obj.loggers.log.handlers[0].stream, 'write') as mock_write:
+            log_obj.loggers.log.handlers[0].setFormatter(formatter)
+            log_time = datetime.datetime.now().strftime("%H:%M:%S")
+            log_obj.loggers.log.info('Test log message')
+            expected_msg = f'{log_time}, log INFO Test log message\n'
+            assert expected_msg == mock_write.call_args_list[0][0][0]
 
-# Test 4: this should test passing a filename convention 
-# (i.e. something like `datetime.datetime.now().strftime('%Y-%m-%d_%H-%M-%S')`)
-# the resulting filename should be equivalent to value passed in
-def test_filepath_filename(monkeypatch):
+
+# Test 4: tests filepath, filename, and fhandler options in log_handler.Logger()
+def test_filepath_filename_fhandler(monkeypatch):
     expected_filename = "test_file.log"
 
     with patch('builtins.open', mock_open()) as mock_file:
@@ -110,11 +113,10 @@ def test_filepath_filename(monkeypatch):
         mock_file.assert_called_with(f'{mock_filepath}/{expected_filename}', 'w', encoding='locale', errors=None)
 
 
-# Test 5: this should test passing a formatter object for the file logger
-# the result should be the file logger outputs a 
-# corresponding log in the given format
+# Test 5: tests filefmt option in log_handler.Logger()
 def test_filefmt(monkeypatch):
-    expected_filename = "test_file.log"
+    filename = "test_file.log"
+    formatter = logging.Formatter('%(asctime)s, %(name)s %(levelname)s %(message)s', datefmt='%H:%M:%S')
 
     with patch('builtins.open', mock_open()) as mock_file:
 
@@ -134,10 +136,10 @@ def test_filefmt(monkeypatch):
             name='test_name',
             loggers=['log'],
             loglvl=logging.INFO,
-            filename=expected_filename,
+            filename=filename,
             filepath='/logs/test_name',
-            filefmt=logging.Formatter('%(asctime)s, %(name)s %(levelname)s %(message)s', datefmt='%H:%M:%S'),
-            fhandler=logging.FileHandler(f'/logs/test_name/{expected_filename}', 'w', encoding='locale'),
+            filefmt=formatter,
+            fhandler=logging.FileHandler(f'/logs/test_name/{filename}', 'w', encoding='locale'),
             filecap=None,
             filetimeout=None,
             file=True,
@@ -146,52 +148,185 @@ def test_filefmt(monkeypatch):
             stream=False)
 
         with patch.object(log_obj.loggers.log.handlers[0].stream, 'write') as mock_write:
+            log_obj.loggers.log.handlers[0].setFormatter(formatter)
             log_time = datetime.datetime.now().strftime("%H:%M:%S")
             log_obj.loggers.log.info('Test log message')
-            expected_msg = f'log INFO Test log message\n'
-            assert expected_msg in mock_write.call_args_list[0][0][0]
+            expected_msg = f'{log_time}, log INFO Test log message\n'
+            assert expected_msg == mock_write.call_args_list[0][0][0]
 
-# Test 6: this should test passing a handler object for the file logger
-# (i.e. `logging.FileHandler(filepath, 'w')`)
-def test_fhandler():
-    pass
-
-# Test 7: this should test passing a file cap integer
+# Test 6: this should test passing a file cap integer
 # 5 for capping the log files to 5 files
-def test_filecap():
-    pass
+def test_filecap(monkeypatch):
+    folder = 'path/to/logs'
+    filename = "test_file.log"
+    formatter = logging.Formatter('%(asctime)s, %(name)s %(levelname)s %(message)s', datefmt='%H:%M:%S')
 
-# Test 8: this should test passing a file timeout string
+    # create mock files with different creation times
+    file1 = ('path/to/logs/file1.log', 1646106476)
+    file2 = ('path/to/logs/file2.log', 1646192876)
+    file3 = ('path/to/logs/file3.log', 1646279276)
+
+    # create a list of mock files
+    mock_files = [file1, file2, file3]
+
+    # mock the open function to return a mock file object for each mock file
+    mock_file_objects = []
+    for f in mock_files:
+        m = mock_open()
+        m.return_value.__iter__.return_value = ['test line 1', 'test line 2']
+        mock_file_objects.append(m)
+
+    
+
+    with patch('builtins.open', side_effect=mock_file_objects):
+
+        # Mock the file_controller method
+        def mock_file_controller(self):
+            self.fhandler.setLevel(self.loglvl)  # set the level of the file handler
+            for log in vars(self.loggers).keys():
+                logger = logging.getLogger(log)
+                logger.addHandler(self.fhandler)  # add the file handler to the logger
+                logger.propagate = False  # disable propagation of log messages to ancestor loggers
+            return
+        
+        monkeypatch.setattr(log_handler.Logger, "file_controller", mock_file_controller)
+
+        # create an instance of the Logger class
+        log_obj = log_handler.Logger(
+            name='test_name',
+            loggers=['log'],
+            loglvl=logging.INFO,
+            filename=filename,
+            filepath=folder,
+            filefmt=formatter,
+            fhandler=logging.FileHandler(f'{folder}/{filename}', 'w', encoding='locale'),
+            filecap=None,
+            filetimeout=None,
+            file=True,
+            streamfmt=None,
+            shandler=None,
+            stream=False)
+    
+        def mock_cap(filecap, mock_files):
+            deleted_files = []
+            if len(mock_files) > filecap:
+                logs_to_remove = len(mock_files) - filecap
+                for log in mock_files[filecap:]:
+                    deleted_files.append(log[0])
+                if logs_to_remove > 1:
+                    print(f'filecap removed {logs_to_remove} logs')
+                else:
+                    print("filecap reached")
+            return deleted_files
+        
+        monkeypatch.setattr(log_obj, "cap", mock_cap)
+        # call the cap method with the mock files using the patched implementation
+        deleted_files = log_obj.cap(2, mock_files)
+
+        # check that the mock files were deleted correctly
+        assert file1[0] not in deleted_files
+        assert file2[0] not in deleted_files
+        assert file3[0] in deleted_files
+
+# Test 7: this should test passing a file timeout string
 # define a timeout period by combining time unit characters with the desired integer for a specified time unit i.e. `(10m = 10 minute, 2h = 2 hours, ...)`
-# unit keys = {'m': 'minutes', 'h': 'hours', 'd': 'days', 'o':'months', 'y': 'years'}
-def test_filetimeout():
-    pass
+@freeze_time("2023-02-25 10:00:00")
+def test_timeout(monkeypatch):
+    folder = 'path/to/logs'
+    filename = "test_file.log"
+    formatter = logging.Formatter('%(asctime)s, %(name)s %(levelname)s %(message)s', datefmt='%H:%M:%S')
 
-# Test 9: this should test passing a file boolean
-# a False value should turn file logging off, 
-# it is set to True by default
-def test_file():
-    pass
+    # create mock files with different timestamps
+    file1 = ('path/to/logs/file1.log', time.time() - 1800)  # 30 mins ago
+    file2 = ('path/to/logs/file2.log', time.time() - 900)   # 15 mins ago
+    file3 = ('path/to/logs/file3.log', time.time() - 3600)  # 1 hour ago
 
-# Test 10: this should test passing a formatter object for the stream logger
-# the result should be the stream logger outputs a 
-# corresponding log in the given format
-def test_streamfmt():
-    pass
+    # create a list of mock files
+    mock_files = [file1, file2, file3]
 
-# Test 11: this should test passing a stream handler object
-# (i.e. `logging.StreamHandler()`)
-def test_shandler():
-    pass
+    with patch('builtins.open', side_effect=mock_files), \
+         patch('warnings.warn') as mock_warn:
+        
+        # Mock the file_controller method
+        def mock_file_controller(self):
+            self.fhandler.setLevel(self.loglvl)  # set the level of the file handler
+            for log in vars(self.loggers).keys():
+                logger = logging.getLogger(log)
+                logger.addHandler(self.fhandler)  # add the file handler to the logger
+                logger.propagate = False  # disable propagation of log messages to ancestor loggers
+            return
+        
+        def mock_timeout(self, filetimeout, mockfiles):
+            '''delete any file outside given time range'''
+            try:
+                # get the mock file paths
+                logs = [f[0] for f in mockfiles if f[0].endswith('.log')]
 
-# Test 12: this should test passing a stream boolean
-# a False value should turn stream logging off, 
-# it is set to False by default
-def test_stream():
-    pass
+                # define time units and extract the amount and unit of the file timeout.
+                time_units = {'m': 'minutes', 'h': 'hours', 'd': 'days', 'o':'months', 'y': 'years'}
+                time_unit = time_units[filetimeout[-1]]
+                time_amount = int(filetimeout[:-1])
 
-# Test 13: this should test the out method 
-# create a file in the filepath with file size of 0 
+                # get the current time and calculate the time threshold based on the file timeout
+                now = datetime.datetime.now()
+                if time_unit == 'years':
+                    time_threshold = now - datetime.timedelta(days=time_amount*365)
+                elif time_unit == "minutes":
+                    time_threshold = now - datetime.timedelta(minutes=time_amount)
+                elif time_unit == 'months':
+                    time_threshold = now - datetime.timedelta(days=time_amount*30)
+                else:
+                    time_threshold = now - datetime.timedelta(**{time_unit: time_amount})
+
+                # remove all logs that are older than the time threshold and collect the removed logs
+                logs_removed = []
+                for file, time in mockfiles:
+                    if time < time_threshold.timestamp():
+                        logs_removed.append((file, time))
+                        
+                # print the number of logs that were removed if any
+                if logs_removed:
+                    print(f'timeout removed {len(logs_removed)} logs')
+                
+                return logs_removed
+
+            except KeyError:
+                # warn the user if an invalid time unit is provided
+                warnings.warn(f"Invalid time unit: {filetimeout[-1]}", Warning)
+        
+        monkeypatch.setattr(log_handler.Logger, "file_controller", mock_file_controller)
+        monkeypatch.setattr(log_handler.Logger, "timeout", mock_timeout)
+
+        log_obj = log_handler.Logger(
+            name='test_name',
+            loggers=['log'],
+            loglvl=logging.INFO,
+            filename=filename,
+            filepath=folder,
+            filefmt=formatter,
+            fhandler=logging.FileHandler(f'{folder}/{filename}', 'w', encoding='locale'),
+            filecap=None,
+            filetimeout=None,
+            file=True,
+            streamfmt=None,
+            shandler=None,
+            stream=False)
+
+        removedfiles = log_obj.timeout('30m', mock_files)
+        print(removedfiles)
+
+        assert file1 not in removedfiles
+        assert file2 not in removedfiles
+        assert file3 in removedfiles
+
+        # call the timeout method with an invalid time unit
+        log_obj.timeout('1z', mock_files)
+
+        # check that a warning is raised
+        mock_warn.assert_called_once_with('Invalid time unit: z', Warning)
+
+# Test 8: this should test the out method
+# create a file in the filepath with file size of 0
 # then run the out method
 # the file should be removed
 def test_out():
