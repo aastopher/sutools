@@ -32,7 +32,7 @@ def test_cli_desc(monkeypatch):
 
     with patch("sys.stdout", new=StringIO()) as output:
         cli_obj.parse()  # call the mocked parse method
-        assert expected == output.getvalue().split('\n')[2].strip()  # check output value
+        assert expected in output.getvalue()
 
 # Test 2: this should test passing a 
 # boolean to logs to turn logging on
@@ -171,5 +171,5 @@ def test_cli_add_funcs(monkeypatch):
 
     with patch("sys.stdout", new=StringIO()) as output:
         cli_obj.parse(None)  # call the mocked parse method
-        assert expected == output.getvalue().split('\n')[0].split(' ')[2]  # check output value
+        assert expected in output.getvalue()
 

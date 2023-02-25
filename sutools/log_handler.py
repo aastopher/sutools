@@ -6,7 +6,22 @@ class Logger:
     '''object designed for swift granular logging configuration'''
 
     def __init__(self, name, loggers, loglvl, filename, filepath, filefmt, fhandler, filecap, filetimeout, file, streamfmt, shandler, stream):
-        '''init logging structure'''
+        """Constructor method for the Logger class
+
+        :param name: the name of the logger (str)
+        :param loggers: list of names of the loggers to create (list)
+        :param loglvl: the logging level to use (int)
+        :param filename: the name of the log file (str)
+        :param filepath: the full path of the log file (str)
+        :param filefmt: the format of the log file (logging.Formatter)
+        :param fhandler: the file handler to use for logging (logging.FileHandler)
+        :param filecap: the maximum size of the log file in bytes (int)
+        :param filetimeout: the time interval after which a new log file should be created (int)
+        :param file: whether to log to a file or not (bool)
+        :param streamfmt: the format of the stream (logging.Formatter)
+        :param shandler: the stream handler to use for logging (logging.StreamHandler)
+        :param stream: whether to log to the stream or not (bool)
+        """
 
         # set properties
         self.name = name
@@ -35,13 +50,8 @@ class Logger:
 
         # if file property enabled create file logger
         if self.file:
-            self.fhandler.setLevel(self.loglvl) # set the level of the file handler
-            self.fhandler.setFormatter(self.filefmt) # set the formatter for the file handler
-            for log in vars(self.loggers).keys():
-                logger = logging.getLogger(log)
-                logger.addHandler(self.fhandler) # add the file handler to the logger
-                logger.propagate = False # disable propagation of log messages to ancestor loggers
-            atexit.register(self.out) # register out function at interpreter exit
+            self.file_controller()
+            
 
         # if stream property enabled create stream logger
         if self.stream:
@@ -59,6 +69,15 @@ class Logger:
         # if a file timout is defined and type is str run filetimeout function
         if filetimeout and isinstance(filetimeout, str):
             self.timeout(filetimeout)
+
+    def file_controller(self):
+        self.fhandler.setLevel(self.loglvl) # set the level of the file handler
+        self.fhandler.setFormatter(self.filefmt) # set the formatter for the file handler
+        for log in vars(self.loggers).keys():
+            logger = logging.getLogger(log)
+            logger.addHandler(self.fhandler) # add the file handler to the logger
+            logger.propagate = False # disable propagation of log messages to ancestor loggers
+        atexit.register(self.out) # register out function at interpreter exit
 
     def cap(self, filecap):
         '''delete any file outside of range based on file age'''
@@ -138,3 +157,11 @@ class Logger:
         except Exception as e:
             # print an error message if the file cannot be removed
             print(f"Failed to remove file: {e}")
+
+    def __enter__(self):
+        if not self.rootlogger.handlers:
+            self.rootlogger.addHandler(logging.NullHandler())
+        return self
+
+    def __exit__(self, exc_type, exc_value, traceback):
+        logging.shutdown()
