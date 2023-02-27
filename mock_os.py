@@ -52,13 +52,16 @@ class MockOS():
             raise FileNotFoundError(f'"{dir}" does not exist') from OSError
         return 1
 
+    # test these error raises!!
     def makedir(self, dir):
         if dir['path'][-1] != '/':
             raise FileNotFoundError(f'"{dir}" is not a directory') from OSError
+        elif dir['path'] in self.filesystem.keys():
+            raise FileExistsError(f'"{dir}" already exists') from OSError
         try:
            self.filesystem[dir['path']] = dir
         except KeyError:
-            raise FileNotFoundError(f'"{dir}" does is exist') from OSError
+            raise FileNotFoundError(f'"{dir}" is not a directory') from OSError
         return 1
         # self.filesystem[dir['path']] = dir
 
