@@ -82,7 +82,8 @@ class Logger:
     def cap(self, filecap):
         '''delete any file outside of range based on file age'''
 
-        parent_folder = Path(self.filepath).parent # collect the parent folder for the log path
+        # parent_folder = Path(self.filepath).parent # collect the parent folder for the log path
+        parent_folder = os.path.dirname(self.filepath)
 
         # create list of tuples with filename and its creation time for all files ending with '.log' in parent folder
         logs = [(os.path.join(parent_folder, f), os.path.getctime(os.path.join(parent_folder, f))) for f in os.listdir(parent_folder) if f.endswith('.log')]
@@ -102,7 +103,8 @@ class Logger:
         '''delete any file outside given time range'''
         try:
             # get the path of the parent folder and find all log files in it
-            parent_folder = Path(self.filepath).parent
+            # parent_folder = Path(self.filepath).parent
+            parent_folder = os.path.dirname(self.filepath)
             logs = [os.path.join(parent_folder, f) for f in os.listdir(parent_folder) if f.endswith('.log')]
 
             # define time units and extract the amount and unit of the file timeout.

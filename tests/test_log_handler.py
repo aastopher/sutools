@@ -329,5 +329,127 @@ def test_timeout(monkeypatch):
 # create a file in the filepath with file size of 0
 # then run the out method
 # the file should be removed
-def test_out():
-    pass
+# def test_out(monkeypatch):
+#     folder = 'path/to/logs'
+#     filename = "test_file.log"
+#     formatter = logging.Formatter('%(asctime)s, %(name)s %(levelname)s %(message)s', datefmt='%H:%M:%S')
+
+#     # create mock files with different timestamps
+#     file1 = ('path/to/logs/file1.log', time.time() - 1800)  # 30 mins ago
+#     file2 = ('path/to/logs/file2.log', time.time() - 900)   # 15 mins ago
+#     file3 = ('path/to/logs/file3.log', time.time() - 3600)  # 1 hour ago
+
+#     # create a list of mock files
+#     mock_files = [file1, file2, file3]
+
+#     with patch('builtins.open', side_effect=mock_files):
+        
+#         # # Mock the file_controller method
+#         # def mock_file_controller(self):
+#         #     self.fhandler.setLevel(self.loglvl)  # set the level of the file handler
+#         #     for log in vars(self.loggers).keys():
+#         #         logger = logging.getLogger(log)
+#         #         logger.addHandler(self.fhandler)  # add the file handler to the logger
+#         #         logger.propagate = False  # disable propagation of log messages to ancestor loggers
+#         #     return
+
+#         def mock_out(self):
+#             """
+#             Check all loggers in the loggers namespace object for existing logs.
+#             If none exist, close the file fhandlers and remove the empty file
+#             """
+            
+#             # check each logger for existing handlers and set to null if they exist
+#             for log in vars(self.loggers).values():
+#                 if log.hasHandlers():
+#                     for fhandler in log.handlers:
+#                         fhandler.close()
+#                     log.handlers = []
+            
+#             # check if the log file is empty and remove it
+#             try:
+#                 file_size = os.path.getsize(self.filepath)
+#                 if file_size == 0:
+#                     os.remove(self.filepath)
+#             except Exception as e:
+#                 # print an error message if the file cannot be removed
+#                 print(f"Failed to remove file: {e}")
+        
+        
+#         # monkeypatch.setattr(log_handler.Logger, "out", mock_out)
+
+#         log_obj = log_handler.Logger(
+#             name='test_name',
+#             loggers=['log'],
+#             loglvl=logging.INFO,
+#             filename=filename,
+#             filepath=folder,
+#             filefmt=formatter,
+#             fhandler=logging.FileHandler(f'{folder}/{filename}', 'w', encoding='locale'),
+#             filecap=None,
+#             filetimeout=None,
+#             file=True,
+#             streamfmt=None,
+#             shandler=None,
+#             stream=False)
+
+#         removedfiles = log_obj.out(mock_files)
+#         print(removedfiles)
+
+#         assert file1 not in removedfiles
+#         assert file2 not in removedfiles
+#         assert file3 in removedfiles
+
+def test_test(monkeypatch):
+    folder = 'path/to/logs'
+    filename = "test_file.log"
+    formatter = logging.Formatter('%(asctime)s, %(name)s %(levelname)s %(message)s', datefmt='%H:%M:%S')
+
+    # create mock files with different creation times
+    file1 = ('path/to/logs/file1.log', 1646106476)
+    file2 = ('path/to/logs/file2.log', 1646192876)
+    file3 = ('path/to/logs/file3.log', 1646279276)
+
+    # create a list of mock files
+    mock_files = [file1, file2, file3]
+    
+
+
+    # Mock the file_controller method
+    def mock_os_path_getsize(path):
+        pass
+        return
+    
+    def mock_os_path_remove(path):
+        pass
+        return
+    
+    def mock_os_path_getctime(path):
+        pass
+        return
+    
+    def mock_os_path_join(path):
+        pass
+        return
+    
+    def mock_os_path_dirname(path):
+        pass
+        return
+
+    monkeypatch.setattr(log_handler.Logger, "os.path.getsize", mock_os_path_getsize)
+
+    # create an instance of the Logger class
+    log_obj = log_handler.Logger(
+        name='test_name',
+        loggers=['log'],
+        loglvl=logging.INFO,
+        filename=filename,
+        filepath=folder,
+        filefmt=formatter,
+        fhandler=logging.FileHandler(f'{folder}/{filename}', 'w', encoding='locale'),
+        filecap=None,
+        filetimeout=None,
+        file=True,
+        streamfmt=None,
+        shandler=None,
+        stream=False)
