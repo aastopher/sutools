@@ -20,13 +20,23 @@ class MockOS():
     def path_getsize(self, dir):
         parent_dir = self.path_dirname(dir)
         filename = dir.split('/')[-1].split('.')[0]
-        size = self.filesystem[parent_dir]['contents'][filename]['size']
+        if parent_dir not in self.filesystem.keys():
+            raise FileNotFoundError(f'"{dir}" does not exist') from OSError
+        try:
+            size = self.filesystem[parent_dir]['contents'][filename]['size']
+        except KeyError:
+            raise FileExistsError(f'"{filename}" does not exist') from OSError
         return size
 
     def path_getctime(self, dir):
         parent_dir = self.path_dirname(dir)
         filename = dir.split('/')[-1].split('.')[0]
-        ctime = self.filesystem[parent_dir]['contents'][filename]['ctime']
+        if parent_dir not in self.filesystem.keys():
+            raise FileNotFoundError(f'"{dir}" does not exist') from OSError
+        try:
+            ctime = self.filesystem[parent_dir]['contents'][filename]['ctime']
+        except KeyError:
+            raise FileExistsError(f'"{filename}" does not exist') from OSError
         return ctime
     
     def path_join(self, *args):
@@ -52,7 +62,6 @@ class MockOS():
             raise FileNotFoundError(f'"{dir}" does not exist') from OSError
         return 1
 
-    # test these error raises!!
     def makedir(self, dir):
         if dir['path'][-1] != '/':
             raise FileNotFoundError(f'"{dir}" is not a directory') from OSError
@@ -63,7 +72,6 @@ class MockOS():
         except KeyError:
             raise FileNotFoundError(f'"{dir}" is not a directory') from OSError
         return 1
-        # self.filesystem[dir['path']] = dir
 
 mock_os = MockOS()
 mock_os.makedir(mock_dir)
@@ -71,13 +79,6 @@ mock_os.filesystem[mock_dir['path']]['contents']['file1'] = file1
 mock_os.filesystem[mock_dir['path']]['contents']['file2'] = file2
 mock_os.filesystem[mock_dir['path']]['contents']['file3'] = file3
 # print(mock_os.filesystem)
-
-def test():
-    joined = mock_os.path.join('test/', 'me/myself/', 'silly.log')
-    dirlist = mock_os.listdir(mock_dir['contents']['file1']['filepath'])
-    parentfolder = mock_os.path.dirname(file1['filepath'])
-
-    print(f'test: \njoined = {joined}\ndirlist = {dirlist}\nparentfolder = {parentfolder}\n')
 
 def test1():
     parentfolder = mock_os.path.dirname(file1['filepath'])
@@ -96,11 +97,9 @@ def test3():
 
 def test4():
     parentfolder = mock_os.path.dirname(file1['filepath'])
-    filesize = mock_os.path.getsize(file2['filepath']) # dpesn't exist should thrown not found error
+    filesize = mock_os.path.getsize(file3['filepath'])
     print(f'test 4: \nparent folder = {parentfolder}\nfilesize = {filesize}\n')
-    # filesize = os.path.getsize(self.filepath)
 
-# test()
 test1()
 test2()
 test3()
