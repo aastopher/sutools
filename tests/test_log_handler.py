@@ -6,6 +6,29 @@ from pathlib import Path
 from freezegun import freeze_time
 import pytest
 
+
+### FIXTURES
+@pytest.fixture
+def mock_os(monkeypatch):
+    mock_os = Mock()
+    monkeypatch.setattr(log_handler, "os", mock_os)
+    return mock_os
+
+@pytest.fixture
+def mock_file_controller(monkeypatch):
+    def _mock_file_controller(self):
+        self.fhandler.setLevel(self.loglvl) # set the level of the file handler
+        self.fhandler.setFormatter(self.filefmt) # set the formatter for the file handler
+        for log in vars(self.loggers).keys():
+            logger = logging.getLogger(log)
+            logger.addHandler(self.fhandler) # add the file handler to the logger
+            logger.propagate = False # disable propagation of log messages to ancestor loggers
+        return
+
+    monkeypatch.setattr(log_handler.Logger, "file_controller", _mock_file_controller)
+
+### TESTS
+
 # Test 1: tests name, file, and stream options in log_handler.Logger()
 def test_name_file_stream():
     expected = "test_name"
@@ -71,7 +94,7 @@ def test_loglvl_shandler_streamfmt(capsys):
 
 
 # Test 4: tests filepath, filename, and fhandler options in log_handler.Logger()
-def test_filepath_filename_fhandler(monkeypatch):
+def test_filepath_filename_fhandler(mock_file_controller):
     expected_filename = "test_file.log"
 
     with patch('builtins.open', mock_open()) as mock_file:
@@ -80,18 +103,6 @@ def test_filepath_filename_fhandler(monkeypatch):
             log_obj.loggers.log.info('info msg')
 
         mock_filepath = '/logs/test_name'
-
-        # mock the file_controller method
-        def mock_file_controller(self):
-            self.fhandler.setLevel(self.loglvl) # set the level of the file handler
-            self.fhandler.setFormatter(self.filefmt) # set the formatter for the file handler
-            for log in vars(self.loggers).keys():
-                logger = logging.getLogger(log)
-                logger.addHandler(self.fhandler) # add the file handler to the logger
-                logger.propagate = False # disable propagation of log messages to ancestor loggers
-            return
-
-        monkeypatch.setattr(log_handler.Logger, "file_controller", mock_file_controller)
 
         log_obj = log_handler.Logger(
                     name='test_name',
@@ -115,23 +126,11 @@ def test_filepath_filename_fhandler(monkeypatch):
 
 
 # Test 5: tests filefmt option in log_handler.Logger()
-def test_filefmt(monkeypatch):
+def test_filefmt(mock_file_controller):
     filename = "test_file.log"
     formatter = logging.Formatter('%(asctime)s, %(name)s %(levelname)s %(message)s', datefmt='%H:%M:%S')
 
     with patch('builtins.open', mock_open()) as mock_file:
-
-        # mock the file_controller method
-        def mock_file_controller(self):
-            self.fhandler.setLevel(self.loglvl) # set the level of the file handler
-            self.fhandler.setFormatter(self.filefmt) # set the formatter for the file handler
-            for log in vars(self.loggers).keys():
-                logger = logging.getLogger(log)
-                logger.addHandler(self.fhandler) # add the file handler to the logger
-                logger.propagate = False # disable propagation of log messages to ancestor loggers
-            return
-
-        monkeypatch.setattr(log_handler.Logger, "file_controller", mock_file_controller)
 
         log_obj = log_handler.Logger(
             name='test_name',
@@ -157,7 +156,7 @@ def test_filefmt(monkeypatch):
 
 # Test 6: this should test passing a file cap integer
 # 5 for capping the log files to 5 files
-def test_filecap(monkeypatch):
+def test_filecap(monkeypatch, mock_file_controller):
     folder = 'path/to/logs'
     filename = "test_file.log"
     formatter = logging.Formatter('%(asctime)s, %(name)s %(levelname)s %(message)s', datefmt='%H:%M:%S')
@@ -177,20 +176,7 @@ def test_filecap(monkeypatch):
         m.return_value.__iter__.return_value = ['test line 1', 'test line 2']
         mock_file_objects.append(m)
 
-    
-
     with patch('builtins.open', side_effect=mock_file_objects):
-
-        # Mock the file_controller method
-        def mock_file_controller(self):
-            self.fhandler.setLevel(self.loglvl)  # set the level of the file handler
-            for log in vars(self.loggers).keys():
-                logger = logging.getLogger(log)
-                logger.addHandler(self.fhandler)  # add the file handler to the logger
-                logger.propagate = False  # disable propagation of log messages to ancestor loggers
-            return
-        
-        monkeypatch.setattr(log_handler.Logger, "file_controller", mock_file_controller)
 
         # create an instance of the Logger class
         log_obj = log_handler.Logger(
@@ -232,7 +218,7 @@ def test_filecap(monkeypatch):
 # Test 7: this should test passing a file timeout string
 # define a timeout period by combining time unit characters with the desired integer for a specified time unit i.e. `(10m = 10 minute, 2h = 2 hours, ...)`
 @freeze_time("2023-02-25 10:00:00")
-def test_timeout(monkeypatch):
+def test_timeout(monkeypatch, mock_file_controller):
     folder = 'path/to/logs'
     filename = "test_file.log"
     formatter = logging.Formatter('%(asctime)s, %(name)s %(levelname)s %(message)s', datefmt='%H:%M:%S')
@@ -247,15 +233,6 @@ def test_timeout(monkeypatch):
 
     with patch('builtins.open', side_effect=mock_files), \
          patch('warnings.warn') as mock_warn:
-        
-        # Mock the file_controller method
-        def mock_file_controller(self):
-            self.fhandler.setLevel(self.loglvl)  # set the level of the file handler
-            for log in vars(self.loggers).keys():
-                logger = logging.getLogger(log)
-                logger.addHandler(self.fhandler)  # add the file handler to the logger
-                logger.propagate = False  # disable propagation of log messages to ancestor loggers
-            return
         
         def mock_timeout(self, filetimeout, mockfiles):
             '''delete any file outside given time range'''
@@ -295,7 +272,6 @@ def test_timeout(monkeypatch):
                 # warn the user if an invalid time unit is provided
                 warnings.warn(f"Invalid time unit: {filetimeout[-1]}", Warning)
         
-        monkeypatch.setattr(log_handler.Logger, "file_controller", mock_file_controller)
         monkeypatch.setattr(log_handler.Logger, "timeout", mock_timeout)
 
         log_obj = log_handler.Logger(
@@ -330,20 +306,12 @@ def test_timeout(monkeypatch):
 # create a file in the filepath with file size of 0
 # then run the out method
 # the file should be removed
-@pytest.fixture
-def mock_os(monkeypatch):
-    mock_os = Mock()
-    monkeypatch.setattr(log_handler, "os", mock_os)
-    return mock_os
-
-
-def test_out(mock_os):
+def test_out(mock_os, mock_file_controller):
     folder = 'path/to/logs/'
     filename = "test_file.log"
     formatter = logging.Formatter('%(asctime)s, %(name)s %(levelname)s %(message)s', datefmt='%H:%M:%S')
 
-    with patch('builtins.open', mock_open()) as mock_file, \
-         patch('warnings.warn') as mock_warn:
+    with patch('builtins.open', mock_open()) as mock_file:
 
         # create an instance of the Logger class
         log_obj = log_handler.Logger(
@@ -360,7 +328,8 @@ def test_out(mock_os):
             streamfmt=None,
             shandler=None,
             stream=False)
-    
+
+
         ##### test file size 0 #####
         # mock the getsize() and remove() methods of the os.path module
         mock_os.path.getsize = MagicMock(return_value=0)
@@ -386,3 +355,4 @@ def test_out(mock_os):
         mock_os.path.getsize.assert_called_once_with(folder)
         # Verify that the remove method was not called
         mock_os.remove.assert_not_called()
+        
