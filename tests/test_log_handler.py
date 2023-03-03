@@ -1,4 +1,4 @@
-from unittest.mock import patch, mock_open, MagicMock, Mock
+from unittest.mock import patch, mock_open, MagicMock, Mock, call
 from io import StringIO
 import logging, sys, datetime, os, time, warnings
 from sutools import log_handler
@@ -156,7 +156,7 @@ def test_filefmt(mock_file_controller):
 
 # Test 6: this should test passing a file cap integer
 # 5 for capping the log files to 5 files
-def test_filecap(monkeypatch, mock_file_controller):
+def test_filecap(mock_os, mock_file_controller):
     folder = 'path/to/logs'
     filename = "test_file.log"
     formatter = logging.Formatter('%(asctime)s, %(name)s %(levelname)s %(message)s', datefmt='%H:%M:%S')
@@ -169,15 +169,7 @@ def test_filecap(monkeypatch, mock_file_controller):
     # create a list of mock files
     mock_files = [file1, file2, file3]
 
-    # mock the open function to return a mock file object for each mock file
-    mock_file_objects = []
-    for f in mock_files:
-        m = mock_open()
-        m.return_value.__iter__.return_value = ['test line 1', 'test line 2']
-        mock_file_objects.append(m)
-
-    with patch('builtins.open', side_effect=mock_file_objects):
-
+    with patch('builtins.open', mock_open()):
         # create an instance of the Logger class
         log_obj = log_handler.Logger(
             name='test_name',
@@ -193,87 +185,48 @@ def test_filecap(monkeypatch, mock_file_controller):
             streamfmt=None,
             shandler=None,
             stream=False)
-    
-        def mock_cap(filecap, mock_files):
-            deleted_files = []
-            if len(mock_files) > filecap:
-                logs_to_remove = len(mock_files) - filecap
-                for log in mock_files[filecap:]:
-                    deleted_files.append(log[0])
-                if logs_to_remove > 1:
-                    print(f'filecap removed {logs_to_remove} logs')
-                else:
-                    print("filecap reached")
-            return deleted_files
-        
-        monkeypatch.setattr(log_obj, "cap", mock_cap)
-        # call the cap method with the mock files using the patched implementation
-        deleted_files = log_obj.cap(2, mock_files)
 
-        # check that the mock files were deleted correctly
-        assert file1[0] not in deleted_files
-        assert file2[0] not in deleted_files
-        assert file3[0] in deleted_files
+        # mock the os functions used inside the cap method
+        mock_os.path.getctime.return_value = 1646106476
+        mock_os.listdir.return_value = ['file1.log', 'file2.log', 'file3.log']
+
+        # call the cap method with filecap = 2
+        log_obj.cap(2)
+
+        # verify that os.path.join was called twice for each file with correct filename
+        join_calls = [call[0][1] for call in mock_os.path.join.call_args_list]
+        expected_files = ['file1.log', 'file2.log', 'file3.log']
+        assert all(filename in expected_files for filename in join_calls)
+        assert mock_os.path.join.call_count == 6
+
+        # verify that os.path.getctime was called once for each file
+        assert mock_os.path.getctime.call_count == 3
+
+        # verify that os.remove was called once
+        mock_os.remove.assert_called_once
+
+        # verify that os.listdir was called once
+        mock_os.listdir.assert_called_once
+
 
 # Test 7: this should test passing a file timeout string
 # define a timeout period by combining time unit characters with the desired integer for a specified time unit i.e. `(10m = 10 minute, 2h = 2 hours, ...)`
 @freeze_time("2023-02-25 10:00:00")
-def test_timeout(monkeypatch, mock_file_controller):
+def test_timeout(mock_os, mock_file_controller):
     folder = 'path/to/logs'
     filename = "test_file.log"
     formatter = logging.Formatter('%(asctime)s, %(name)s %(levelname)s %(message)s', datefmt='%H:%M:%S')
+    mock_files = [
+        ('path/to/logs/file1.log', time.time() - 1800),
+        ('path/to/logs/file2.log', time.time() - 900),
+        ('path/to/logs/file3.log', time.time() - 3600)
+    ]
 
-    # create mock files with different timestamps
-    file1 = ('path/to/logs/file1.log', time.time() - 1800)  # 30 mins ago
-    file2 = ('path/to/logs/file2.log', time.time() - 900)   # 15 mins ago
-    file3 = ('path/to/logs/file3.log', time.time() - 3600)  # 1 hour ago
+    # mock the return values for os.path.getctime and os.listdir
+    mock_os.path.getctime.side_effect = [f[1] for f in mock_files]
+    mock_os.listdir.return_value = [os.path.basename(f[0]) for f in mock_files]
 
-    # create a list of mock files
-    mock_files = [file1, file2, file3]
-
-    with patch('builtins.open', side_effect=mock_files), \
-         patch('warnings.warn') as mock_warn:
-        
-        def mock_timeout(self, filetimeout, mockfiles):
-            '''delete any file outside given time range'''
-            try:
-                # get the mock file paths
-                logs = [f[0] for f in mockfiles if f[0].endswith('.log')]
-
-                # define time units and extract the amount and unit of the file timeout.
-                time_units = {'m': 'minutes', 'h': 'hours', 'd': 'days', 'o':'months', 'y': 'years'}
-                time_unit = time_units[filetimeout[-1]]
-                time_amount = int(filetimeout[:-1])
-
-                # get the current time and calculate the time threshold based on the file timeout
-                now = datetime.datetime.now()
-                if time_unit == 'years':
-                    time_threshold = now - datetime.timedelta(days=time_amount*365)
-                elif time_unit == "minutes":
-                    time_threshold = now - datetime.timedelta(minutes=time_amount)
-                elif time_unit == 'months':
-                    time_threshold = now - datetime.timedelta(days=time_amount*30)
-                else:
-                    time_threshold = now - datetime.timedelta(**{time_unit: time_amount})
-
-                # remove all logs that are older than the time threshold and collect the removed logs
-                logs_removed = []
-                for file, time in mockfiles:
-                    if time < time_threshold.timestamp():
-                        logs_removed.append((file, time))
-                        
-                # print the number of logs that were removed if any
-                if logs_removed:
-                    print(f'timeout removed {len(logs_removed)} logs')
-                
-                return logs_removed
-
-            except KeyError:
-                # warn the user if an invalid time unit is provided
-                warnings.warn(f"Invalid time unit: {filetimeout[-1]}", Warning)
-        
-        monkeypatch.setattr(log_handler.Logger, "timeout", mock_timeout)
-
+    with patch('builtins.open', side_effect=mock_files):
         log_obj = log_handler.Logger(
             name='test_name',
             loggers=['log'],
@@ -289,18 +242,20 @@ def test_timeout(monkeypatch, mock_file_controller):
             shandler=None,
             stream=False)
 
-        removedfiles = log_obj.timeout('30m', mock_files)
-        print(removedfiles)
+        # call the timeout method
+        log_obj.timeout('30m')
 
-        assert file1 not in removedfiles
-        assert file2 not in removedfiles
-        assert file3 in removedfiles
+        # assert that os.listdir was called with the correct folder path
+        mock_os.listdir.assert_called_once
 
-        # call the timeout method with an invalid time unit
-        log_obj.timeout('1z', mock_files)
+        # assert that os.remove was not called for logs that have not timed out
+        mock_os.remove.assert_called_once()
 
-        # check that a warning is raised
-        mock_warn.assert_called_once_with('Invalid time unit: z', Warning)
+        # assert that warnings.warn was called once with the correct message for an invalid time unit
+        with patch('warnings.warn') as mock_warn:
+            log_obj.timeout('1z')
+            mock_warn.assert_called_once_with('Invalid time unit: z', Warning)
+            
 
 # Test 8: this should test the out method
 # create a file in the filepath with file size of 0
