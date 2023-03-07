@@ -143,7 +143,6 @@ class Logger:
         Check all loggers in the loggers namespace object for existing logs.
         If none exist, close the file fhandlers and remove the empty file
         """
-        
         # check each logger for existing handlers and set to null if they exist
         for log in vars(self.loggers).values():
             if log.hasHandlers():
@@ -159,6 +158,24 @@ class Logger:
         except Exception as e:
             # print an error message if the file cannot be removed
             print(f"Failed to remove file: {e}")
+
+        # check if the module folder is empty and remove it
+        try:
+            m_folder = os.path.dirname(self.filepath)
+            if not os.listdir(m_folder): # check if folder is empty
+                os.rmdir(m_folder) # remove empty folder
+        except Exception as e:
+            # print an error message if the folder cannot be removed
+            print(f"Failed to remove module folder: {e}")
+
+        # check if the log folder is empty and remove it
+        try:
+            l_folder = os.path.dirname(os.path.dirname(self.filepath))
+            if not os.listdir(l_folder): # check if folder is empty
+                os.rmdir(l_folder) # remove empty folder
+        except Exception as e:
+            # print an error message if the folder cannot be removed
+            print(f"Failed to remove log folder: {e}")
 
     def __enter__(self):
         if not self.rootlogger.handlers:

@@ -180,7 +180,9 @@ python module.py add 1 2
 
 
 ## TO-DO
-* sphinx autodocs complete?
+* add support for defaults in cli
+  * if default value given define optional arg with default value
+* sphinx autodocs add more
 * build tests
 * write git action
 * add version tagging

@@ -10,13 +10,14 @@ class Bucket:
     def add_func(self, func):
         '''registers a function to the function dictionary'''
         names = inspect.getfullargspec(func).args # collect arg names
-        types = list(inspect.getfullargspec(func).annotations.values()) # collect types of args
+        types = inspect.getfullargspec(func).annotations # collect types of args
 
         # update function dictionary 
         if func.__doc__:
             self.funcs.update({func.__name__: (func, names, types, func.__doc__)})
         else:
             self.funcs.update({func.__name__: (func, names, types)})
+
 
     def add_cli(self, cli_obj):
         '''adds a cli object to the store'''

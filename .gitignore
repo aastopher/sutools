@@ -5,3 +5,4 @@
 .DS_Store
 **/docs/build
 **/_build
+dev.py

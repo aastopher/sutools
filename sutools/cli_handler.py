@@ -29,28 +29,28 @@ class CLI:
       # iterate through registered functions
       for func_name, items in func_dict.items():
 
-
-        # define sub-parsers:
-        # if doc string exists define it as the help string 
-        # else use a default structure
-        if len(items) == 4:
-          subp = self.subparsers.add_parser(func_name, help=items[-1])
-        else:
-          subp = self.subparsers.add_parser(func_name, help=f'execute {func_name} function')
-
         names = items[1] # collect arg names
         types = items[2] # collect types of arg
+        arg_types = [types.get(name, None) for name in names]
 
-        # define args for sub-parser:
-        # if types are provided include type requirements and a help string 
-        # otherwise just add each arg with just a name
-        if types:
-          for name, type in zip(names, types):
-            subp.add_argument(name, type=type, help=str(type))
-        else:
-          for name in names:
-            subp.add_argument(name)
-  
+        # init arg help and arg description
+        ahelp = f'execute {func_name} function'
+        adesc = None
+
+        # if docstring assign arg help
+        if len(items) == 4:
+          ahelp = items[-1]
+
+        # if return type define arg description
+        if 'return' in types:
+          adesc = f'returns {types["return"]}'
+
+        # init sub parser
+        subp = self.subparsers.add_parser(func_name, help=ahelp, description=adesc)
+
+        for name, atype in zip(names, arg_types):
+            subp.add_argument(name, type=atype, help=str(atype) if atype is not None else None)
+
   def parse(self):
     '''initialize parsing args'''
 

@@ -27,6 +27,20 @@ def do():
     su.log().do.debug('this function is do do')
     print(f'do {inspect.stack()[0][3]}')
 
+
+@su.register
+def multi(x : int, y : int) -> int:
+    su.log().multi.info(x * y)
+    # print(x - y)
+
+@su.register
+def calc(x : int, y : int, atype = '+') -> int:
+    if atype == '+':
+        su.log().calc.info(x + y)
+    elif atype == '-':
+        su.log().calc.info(x - y)
+    # print(x - y)
+
 ### LOGGER EXAMPLES ###
 # optionally pass in the name of your root application logger 
 # by default this will be the filename
@@ -80,11 +94,12 @@ def do():
 su.logger(stream=True, filecap=5)
 
 # script level function tests for development
-echo('test')
+# echo('test')
 # add(1,2)
 # minus(1,2)
 # do()
-
+# multi(2,3)
+# calc(2,3,atype='-')
 
 if __name__ == '__main__':
     ### CLI EXAMPLES ###
