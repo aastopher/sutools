@@ -10,6 +10,20 @@ import sutools as su
 # none empty dictionary for the func property
 def test_register():
 
+    def _get_defaults(func):
+        '''helper function to collect default func args'''
+
+        # get the signature of the function
+        sig = inspect.signature(func)
+
+        # collect a dictionary of default argument values
+        defaults = {}
+        for param in sig.parameters.values():
+            if param.default is not inspect.Parameter.empty:
+                defaults[param.name] = param.default
+
+        return defaults
+
     @su.register
     def func_test(x: int, y: int) -> int:
         '''this is a test function'''
@@ -17,7 +31,10 @@ def test_register():
     
     names = inspect.getfullargspec(func_test).args # collect arg names
     types = inspect.getfullargspec(func_test).annotations # collect types of args
-    expected_dict = {func_test.__name__ : (func_test, names, types, func_test.__doc__)}
+    defaults = _get_defaults(func_test)
+    desc = func_test.__doc__
+
+    expected_dict = {func_test.__name__: (func_test, names, types, defaults, desc)}
     
     assert expected_dict == su.store.funcs
 

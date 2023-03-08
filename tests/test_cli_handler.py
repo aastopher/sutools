@@ -1,23 +1,21 @@
 from unittest.mock import patch
 from io import StringIO
 import sys, inspect, logging
-from sutools import cli_handler, log_handler
+from sutools import cli_handler, log_handler, meta_handler
 
 
 # Test 1: this should test passing in a cli description
 def test_cli_desc(monkeypatch):
 
-    def test_func():
+    def func_test():
         pass
-    
-    func_dict = {}
-    names = inspect.getfullargspec(test_func).args # collect arg names
-    types = list(inspect.getfullargspec(test_func).annotations.values()) # collect types of args
-    func_dict.update({test_func.__name__: (test_func, names, types)})
+
+    store = meta_handler.Bucket()
+    store.add_func(func_test)
 
     expected = "Test CLI"
     cli_obj = cli_handler.CLI(expected, False)
-    cli_obj.add_funcs(func_dict)
+    cli_obj.add_funcs(store.funcs)
 
     # mock sys.exit() so it doesn't stop the test
     monkeypatch.setattr(sys, 'exit', lambda x: None)
@@ -43,11 +41,12 @@ def test_cli_logs_on(capsys, monkeypatch):
     def func_test():
         log_obj.loggers.func_test.info(expected)
 
-    func_dict = {func_test.__name__ : (func_test, [], [])}
+    store = meta_handler.Bucket()
+    store.add_func(func_test)
 
     log_obj = log_handler.Logger(
             'test_logger', 
-            list(func_dict.keys()), 
+            list(store.funcs.keys()), 
             logging.INFO, 
             None, None, None, None, None, None, 
             False, 
@@ -57,7 +56,7 @@ def test_cli_logs_on(capsys, monkeypatch):
             )
 
     cli_obj = cli_handler.CLI('description', True, log_obj=log_obj)
-    cli_obj.add_funcs(func_dict)
+    cli_obj.add_funcs(store.funcs)
 
     # mock sys.exit() so it doesn't stop the test
     monkeypatch.setattr(sys, 'exit', lambda x: None)
@@ -89,11 +88,12 @@ def test_cli_logs_off(capsys, monkeypatch):
         log_obj.loggers.func_test.info('fail')
         print('pass')
 
-    func_dict = {func_test.__name__ : (func_test, [], [])}
+    store = meta_handler.Bucket()
+    store.add_func(func_test)
 
     log_obj = log_handler.Logger(
             'test_logger', 
-            list(func_dict.keys()), 
+            list(store.funcs.keys()), 
             logging.INFO, 
             None, None, None, None, None, None, 
             False, 
@@ -103,7 +103,7 @@ def test_cli_logs_off(capsys, monkeypatch):
             )
 
     cli_obj = cli_handler.CLI('description', False, log_obj=log_obj)
-    cli_obj.add_funcs(func_dict)
+    cli_obj.add_funcs(store.funcs)
 
     # mock sys.exit() so it doesn't stop the test
     monkeypatch.setattr(sys, 'exit', lambda x: None)
@@ -157,7 +157,11 @@ def test_cli_add_funcs(monkeypatch):
 
     expected = func_test.__name__
     cli_obj = cli_handler.CLI('description', False)
-    cli_obj.add_funcs({func_test.__name__ : (func_test, [], [])})
+
+    store = meta_handler.Bucket()
+    store.add_func(func_test)
+
+    cli_obj.add_funcs(store.funcs)
 
     # mock sys.exit() so it doesn't stop the test
     monkeypatch.setattr(sys, 'exit', lambda x: None)
