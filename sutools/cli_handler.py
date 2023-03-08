@@ -1,4 +1,4 @@
-import inspect, os, argparse, logging, sys
+import inspect, os, argparse, logging, sys, textwrap
 
 class CLI:
   '''object designed for swift module CLI configuration'''
@@ -48,9 +48,6 @@ class CLI:
 
         # init sub parser
         subp = self.subparsers.add_parser(func_name, help=ahelp, description=adesc, argument_default=argparse.SUPPRESS, add_help=False)
-
-        # for name, atype in zip(names, arg_types):
-        #     subp.add_argument(name, type=atype, help=str(atype) if atype is not None else None)
 
         for name, atype in zip(names, arg_types):
           if name in defaults:
