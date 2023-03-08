@@ -34,9 +34,10 @@ def multi(x : int, y : int) -> int:
     # print(x - y)
 
 @su.register
-def calc(x : int, y : int, atype = '+') -> int:
+def calc(x : int, y : int, atype : str = '+') -> int:
     if atype == '+':
         su.log().calc.info(x + y)
+        test_var = 2
     elif atype == '-':
         su.log().calc.info(x - y)
     # print(x - y)

@@ -32,13 +32,14 @@ class CLI:
         names = items[1] # collect arg names
         types = items[2] # collect types of arg
         arg_types = [types.get(name, None) for name in names]
+        defaults = items[3] # collect default args
 
         # init arg help and arg description
         ahelp = f'execute {func_name} function'
         adesc = None
 
         # if docstring assign arg help
-        if len(items) == 4:
+        if items[-1] != None:
           ahelp = items[-1]
 
         # if return type define arg description
@@ -46,10 +47,22 @@ class CLI:
           adesc = f'returns {types["return"]}'
 
         # init sub parser
-        subp = self.subparsers.add_parser(func_name, help=ahelp, description=adesc)
+        subp = self.subparsers.add_parser(func_name, help=ahelp, description=adesc, argument_default=argparse.SUPPRESS, add_help=False)
+
+        # for name, atype in zip(names, arg_types):
+        #     subp.add_argument(name, type=atype, help=str(atype) if atype is not None else None)
 
         for name, atype in zip(names, arg_types):
-            subp.add_argument(name, type=atype, help=str(atype) if atype is not None else None)
+          if name in defaults:
+              subp.add_argument(f"-{name[0]}", f"--{name}", 
+                                metavar=str(atype) if atype is not None else None, 
+                                type=atype,  
+                                default=defaults[name])
+          else:
+              subp.add_argument(name, type=atype, help=str(atype) if atype is not None else None)
+        
+        # overide help & place at end of options
+        subp.add_argument('-h', '--help', action='help', help='Show this help message and exit.')
 
   def parse(self):
     '''initialize parsing args'''

@@ -11,12 +11,13 @@ class Bucket:
         '''registers a function to the function dictionary'''
         names = inspect.getfullargspec(func).args # collect arg names
         types = inspect.getfullargspec(func).annotations # collect types of args
+        defaults = self._get_defaults(func)
+        desc = None
 
-        # update function dictionary 
         if func.__doc__:
-            self.funcs.update({func.__name__: (func, names, types, func.__doc__)})
-        else:
-            self.funcs.update({func.__name__: (func, names, types)})
+            desc = func.__doc__
+
+        self.funcs.update({func.__name__: (func, names, types, defaults, desc)})
 
 
     def add_cli(self, cli_obj):
@@ -26,3 +27,17 @@ class Bucket:
     def add_log(self, log_obj):
         '''adds a logger object to the store'''
         self.log = log_obj
+
+    def _get_defaults(self, func):
+        '''helper function to collect default func args'''
+
+        # get the signature of the function
+        sig = inspect.signature(func)
+
+        # collect a dictionary of default argument values
+        defaults = {}
+        for param in sig.parameters.values():
+            if param.default is not inspect.Parameter.empty:
+                defaults[param.name] = param.default
+
+        return defaults
