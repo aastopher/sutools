@@ -50,7 +50,13 @@ class Logger:
 
         # if file property enabled create file logger
         if self.file:
-            self.file_controller()
+            self.fhandler.setLevel(self.loglvl) # set the level of the file handler
+            self.fhandler.setFormatter(self.filefmt) # set the formatter for the file handler
+            for log in vars(self.loggers).keys():
+                logger = logging.getLogger(log)
+                logger.addHandler(self.fhandler) # add the file handler to the logger
+                logger.propagate = False # disable propagation of log messages to ancestor loggers
+            atexit.register(self.out) # register out function at interpreter exit
             
 
         # if stream property enabled create stream logger
@@ -69,15 +75,6 @@ class Logger:
         # if a file timout is defined and type is str run filetimeout function
         if filetimeout and isinstance(filetimeout, str):
             self.timeout(filetimeout)
-
-    def file_controller(self):
-        self.fhandler.setLevel(self.loglvl) # set the level of the file handler
-        self.fhandler.setFormatter(self.filefmt) # set the formatter for the file handler
-        for log in vars(self.loggers).keys():
-            logger = logging.getLogger(log)
-            logger.addHandler(self.fhandler) # add the file handler to the logger
-            logger.propagate = False # disable propagation of log messages to ancestor loggers
-        atexit.register(self.out) # register out function at interpreter exit
 
     def cap(self, filecap):
         '''delete any file outside of range based on file age'''

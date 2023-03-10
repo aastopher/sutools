@@ -64,12 +64,12 @@ class CLI:
   def parse(self):
     '''initialize parsing args'''
 
-    self.input = self.parser.parse_args() # parse
+    self.input = self.parser.parse_args()
 
     # if command in input namespace
     if self.input.command:
-        func_tup = self.func_dict[self.input.command] # retrieve function and arg names for given command
-        func, arg_names = func_tup[0], func_tup[1] # unpack just the args and function
-        args = [getattr(self.input, arg) for arg in arg_names] # collect given args from namespace
-        func(*args) # run function with given args
-        sys.exit() # exit the interpreter so the entire script is not run
+      func_tup = self.func_dict[self.input.command] # retrieve function and arg names for given command
+      func, arg_names = func_tup[0], func_tup[1] # unpack just the args and function
+      args = [getattr(self.input, arg) for arg in arg_names] # collect given args from namespace
+      func(*args) # run function with given args
+      sys.exit() # exit the interpreter so the entire script is not run

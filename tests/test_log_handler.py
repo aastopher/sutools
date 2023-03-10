@@ -15,17 +15,10 @@ def mock_os(monkeypatch):
     return mock_os
 
 @pytest.fixture
-def mock_file_controller(monkeypatch):
-    def _mock_file_controller(self):
-        self.fhandler.setLevel(self.loglvl) # set the level of the file handler
-        self.fhandler.setFormatter(self.filefmt) # set the formatter for the file handler
-        for log in vars(self.loggers).keys():
-            logger = logging.getLogger(log)
-            logger.addHandler(self.fhandler) # add the file handler to the logger
-            logger.propagate = False # disable propagation of log messages to ancestor loggers
-        return
-
-    monkeypatch.setattr(log_handler.Logger, "file_controller", _mock_file_controller)
+def mock_atexit_register(monkeypatch):
+    mock_atexit_register = Mock()
+    monkeypatch.setattr(log_handler.atexit, "register", mock_atexit_register)
+    return mock_atexit_register
 
 ### TESTS
 
@@ -94,7 +87,7 @@ def test_loglvl_shandler_streamfmt(capsys):
 
 
 # Test 4: tests filepath, filename, and fhandler options in log_handler.Logger()
-def test_filepath_filename_fhandler(mock_file_controller):
+def test_filepath_filename_fhandler(mock_atexit_register):
     expected_filename = "test_file.log"
 
     with patch('builtins.open', mock_open()) as mock_file:
@@ -123,10 +116,13 @@ def test_filepath_filename_fhandler(mock_file_controller):
 
         # check that the file was opened with the expected arguments
         mock_file.assert_called_with(f'{mock_filepath}/{expected_filename}', 'w', encoding='locale', errors=None)
+        
+        # verify that atexit.register called once
+        mock_atexit_register.assert_called_once()
 
 
 # Test 5: tests filefmt option in log_handler.Logger()
-def test_filefmt(mock_file_controller):
+def test_filefmt(mock_atexit_register):
     filename = "test_file.log"
     formatter = logging.Formatter('%(asctime)s, %(name)s %(levelname)s %(message)s', datefmt='%H:%M:%S')
 
@@ -153,10 +149,13 @@ def test_filefmt(mock_file_controller):
             log_obj.loggers.log.info('Test log message')
             expected_msg = f'{log_time}, log INFO Test log message\n'
             assert expected_msg == mock_write.call_args_list[0][0][0]
+            
+            # verify that atexit.register called once
+            mock_atexit_register.assert_called_once()
 
 # Test 6: this should test passing a file cap integer
 # 5 for capping the log files to 5 files
-def test_filecap(mock_os, mock_file_controller):
+def test_filecap(mock_os, mock_atexit_register):
     folder = 'path/to/logs'
     filename = "test_file.log"
     formatter = logging.Formatter('%(asctime)s, %(name)s %(levelname)s %(message)s', datefmt='%H:%M:%S')
@@ -208,11 +207,14 @@ def test_filecap(mock_os, mock_file_controller):
         # verify that os.listdir was called once
         mock_os.listdir.assert_called_once
 
+        # verify that atexit.register called once
+        mock_atexit_register.assert_called_once()
+
 
 # Test 7: this should test passing a file timeout string
 # define a timeout period by combining time unit characters with the desired integer for a specified time unit i.e. `(10m = 10 minute, 2h = 2 hours, ...)`
 @freeze_time("2023-02-25 10:00:00")
-def test_timeout(mock_os, mock_file_controller):
+def test_timeout(mock_os, mock_atexit_register):
     folder = 'path/to/logs'
     filename = "test_file.log"
     formatter = logging.Formatter('%(asctime)s, %(name)s %(levelname)s %(message)s', datefmt='%H:%M:%S')
@@ -255,13 +257,17 @@ def test_timeout(mock_os, mock_file_controller):
         with patch('warnings.warn') as mock_warn:
             log_obj.timeout('1z')
             mock_warn.assert_called_once_with('Invalid time unit: z', Warning)
+        
+        # verify that atexit.register called twice, 
+        # one for each timeout call
+        assert mock_atexit_register.call_count == 2
             
 
 # Test 8: this should test the out method
 # create a file in the filepath with file size of 0
 # then run the out method
 # the file should be removed
-def test_out(mock_os, mock_file_controller):
+def test_out(mock_os, mock_atexit_register):
     folder = 'path/to/logs/'
     filename = "test_file.log"
     formatter = logging.Formatter('%(asctime)s, %(name)s %(levelname)s %(message)s', datefmt='%H:%M:%S')
@@ -308,6 +314,10 @@ def test_out(mock_os, mock_file_controller):
         
         # Verify that the getsize method was called once
         mock_os.path.getsize.assert_called_once_with(folder)
+
         # Verify that the remove method was not called
         mock_os.remove.assert_not_called()
+
+        # verify that atexit.register called once
+        mock_atexit_register.assert_called_once()
         
