@@ -1,7 +1,14 @@
-from unittest.mock import patch
+from unittest.mock import patch, Mock
 from io import StringIO
-import inspect
+import inspect, pytest, sys, argparse, logging
 import sutools as su
+
+#### Fixtures
+@pytest.fixture
+def mock_atexit_register(monkeypatch):
+    mock_atexit_register = Mock()
+    monkeypatch.setattr(su.log_handler.atexit, "register", mock_atexit_register)
+    return mock_atexit_register
 
 #### Methods
 
@@ -66,12 +73,36 @@ def test_log():
 
     assert 'func_test' in vars(su.log()).keys()
 
-#### Integrations
+#### Integration
 
 # Test 5: this should test integrations for cli and logger compatibility
 # this should init both a logger and a cli as well as 
 # at least one registered test function.
 # the result should be that the log statements in the cli are 
 # logged if the cli has logs set to True
-def test_logger_cli():
-    pass
+def test_logger_cli(capsys, mock_atexit_register, monkeypatch):
+    expected_cli = "Test CLI"
+    expected_log = 'test log'
+
+    @su.register
+    def func_test():
+        su.log().func_test.info(expected_log)
+
+    su.logger(stream = True, shandler = logging.StreamHandler(sys.stdout))
+
+    # patch the input namespace with the desired command
+    namespace = argparse.Namespace(command='func_test')
+
+    with patch('sutools.cli_handler.argparse.ArgumentParser.parse_args', return_value=namespace):
+
+        # patch the sys.exit function so it doesn't exit the interpreter during the test
+        monkeypatch.setattr(sys, 'exit', lambda *args: None)
+
+        # call the cli() function to execute the desired command and capture the log output
+        su.cli(desc=expected_cli, logs=True)
+ 
+    captured = capsys.readouterr()
+
+    assert expected_log in captured.out
+
+

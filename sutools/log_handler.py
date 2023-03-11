@@ -40,6 +40,7 @@ class Logger:
         # iterate through loggers and add each to the root logger
         for log in loggers:
             logger = logging.getLogger(log)
+            logger.setLevel(loglvl)  # set logger level
             self.loggers[log] = logger
             self.rootlogger.addHandler(logger)
 

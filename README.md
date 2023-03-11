@@ -180,11 +180,11 @@ python module.py add 1 2
 
 
 ## TO-DO
-* add support for defaults in cli
-  * if default value given define optional arg with default value
-* sphinx autodocs add more
-* build tests
-* write git action
+* sphinx autodocs add more docs / update docs
+* add coverage reports
+* comment / clean up tests
+* write git action for testing on push
 * add version tagging
+  * build docs and coverage reports for release
 * add version badge
 * add pipeline passing / failing badge
