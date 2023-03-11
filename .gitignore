@@ -6,3 +6,5 @@
 **/docs/build
 **/_build
 dev.py
+.coverage
+**/htmlcov

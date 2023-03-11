@@ -49,12 +49,20 @@ def test_register():
 # Test 2: this should test the cli from sutools
 # the result should be that the cli property is not None in su.store
 # the cli object should contain commands for any registered functions
-def test_cli():
+def test_cli(mock_atexit_register, monkeypatch):
+    # patch the input namespace with the desired command
+    namespace = argparse.Namespace(command='' ,help=True)
 
-    su.cli()
+    with patch('sutools.cli_handler.argparse.ArgumentParser.parse_args', return_value=namespace):
+
+        # patch the sys.exit function so it doesn't exit the interpreter during the test
+        monkeypatch.setattr(sys, 'exit', lambda *args: None)
+
+        su.cli()
+
     assert su.store.cli != None
 
-# Test 3: this should test the logger from sutools
+# Test 3: thisfunc_test should test the logger from sutools
 # the result should be that the log property is no None in su.store
 # the log object should also contain a property loggers with 
 # the names of the loggers passed in to loggers property in the logger
