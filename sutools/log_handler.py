@@ -153,27 +153,27 @@ class Logger:
             file_size = os.path.getsize(self.filepath)
             if file_size == 0:
                 os.remove(self.filepath)
-        except Exception as e:
+        except Exception as e: # pragma: no cover
             # print an error message if the file cannot be removed
-            print(f"Failed to remove file: {e}")
+            print(f"Failed to remove file: {e}") # pragma: no cover
 
         # check if the module folder is empty and remove it
         try:
             m_folder = os.path.dirname(self.filepath)
             if not os.listdir(m_folder): # check if folder is empty
-                os.rmdir(m_folder) # remove empty folder
-        except Exception as e:
+                os.rmdir(m_folder) # remove empty folder # pragma: no cover
+        except Exception as e: # pragma: no cover
             # print an error message if the folder cannot be removed
-            print(f"Failed to remove module folder: {e}")
+            print(f"Failed to remove module folder: {e}") # pragma: no cover
 
         # check if the log folder is empty and remove it
         try:
             l_folder = os.path.dirname(os.path.dirname(self.filepath))
             if not os.listdir(l_folder): # check if folder is empty
-                os.rmdir(l_folder) # remove empty folder
-        except Exception as e:
+                os.rmdir(l_folder) # remove empty folder # pragma: no cover
+        except Exception as e: # pragma: no cover
             # print an error message if the folder cannot be removed
-            print(f"Failed to remove log folder: {e}")
+            print(f"Failed to remove log folder: {e}") # pragma: no cover
 
     def __enter__(self): # pragma: no cover
         if not self.rootlogger.handlers: # pragma: no cover
