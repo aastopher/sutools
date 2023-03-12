@@ -180,9 +180,11 @@ python module.py add 1 2
 
 
 ## TO-DO
-* sphinx autodocs add more docs / update docs
-* add coverage reports
+* add support for default value display in command help?
 * comment / clean up tests
+* sphinx autodocs add more docs / update docs
+  * docs for default args
+* add coverage reports
 * write git action for testing on push
 * add version tagging
   * build docs and coverage reports for release
