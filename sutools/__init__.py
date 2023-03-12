@@ -48,8 +48,8 @@ def logger(name = os.path.basename(inspect.stack()[-1].filename)[:-3],
         filepath = os.path.join(filepath, name, f'{filename}.log')
 
     # check if log path parent directory has been initialized
-    if not os.path.exists(Path(filepath).parent):
-        os.makedirs(Path(filepath).parent) # make parent directory tree for given filepath
+    if not os.path.exists(os.path.dirname(filepath)):
+        os.makedirs(os.path.dirname(filepath)) # make parent directory tree for given filepath
     
     # if check for handler must be inside function because filename is not initialized
     if not fhandler:

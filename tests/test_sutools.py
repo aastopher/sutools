@@ -1,9 +1,16 @@
-from unittest.mock import patch, Mock
+from unittest.mock import patch, Mock, mock_open
 from io import StringIO
 import inspect, pytest, sys, argparse, logging
 import sutools as su
 
 #### Fixtures
+@pytest.fixture
+def mock_os(monkeypatch):
+    mock_os = Mock()
+    mock_os.makedirs.side_effect = lambda path: None
+    monkeypatch.setattr(su, "os", mock_os)
+    return mock_os
+
 @pytest.fixture
 def mock_atexit_register(monkeypatch):
     mock_atexit_register = Mock()
@@ -68,7 +75,30 @@ def test_cli(mock_atexit_register, monkeypatch):
 # the names of the loggers passed in to loggers property in the logger
 def test_logger():
     su.logger()
+
     assert su.store.log != None
+    assert 'log' in su.store.log.filepath
+
+def test_logger_path(mock_os, mock_atexit_register):
+    expected_filename = "test_file.log"
+    mock_filepath = '/logs/test_name'
+
+    mock_os.makedirs = Mock()
+    mock_os.path.exists.return_value = False
+
+    with patch('builtins.open', mock_open()):
+        su.logger(filepath=mock_filepath, fhandler=logging.FileHandler(f'{mock_filepath}/{expected_filename}', 'w', encoding='locale'))
+
+        assert su.store.log != None
+        assert mock_os.path.join.call_args[0][0] == mock_filepath
+        assert mock_os.makedirs.called_once()
+
+def test_logger_cloggers():
+    expected = ['logger1', 'logger2', 'logger3']
+    su.logger(loggers=expected)
+
+    assert su.store.log is not None
+    assert all(name in vars(su.store.log.loggers) for name in expected)
 
 # Test 4: this should test the log helper function
 # the should return a namespace of loggers defined 
@@ -79,6 +109,7 @@ def test_log():
     def func_test():
         pass
 
+    su.logger()
     assert 'func_test' in vars(su.log()).keys()
 
 #### Integration

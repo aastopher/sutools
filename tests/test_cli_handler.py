@@ -133,13 +133,13 @@ def test_cli_log_obj():
 # then the cli should be tested to use those functions)
 def test_cli_add_funcs(capsys, monkeypatch):
 
-    def func_test():
+    def func_test(x : int, y : int , c : str = '-') -> int:
         pass
 
     expected = func_test.__name__
 
     # patch the input namespace with the desired command
-    namespace = argparse.Namespace(command='func_test', help=True)
+    namespace = argparse.Namespace(command='func_test', help=True, x=1, y=2, c='+')
 
     with patch('sutools.cli_handler.argparse.ArgumentParser.parse_args', return_value=namespace):
         cli_obj = cli_handler.CLI('description', False)
