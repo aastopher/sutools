@@ -54,7 +54,8 @@ class CLI:
               subp.add_argument(f"-{name[0]}", f"--{name}", 
                                 metavar=str(atype) if atype is not None else None, 
                                 type=atype,  
-                                default=defaults[name])
+                                default=defaults[name],
+                                help=f'default: {defaults[name]}')
           else:
               subp.add_argument(name, type=atype, help=str(atype) if atype is not None else None)
         

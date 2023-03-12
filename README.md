@@ -180,7 +180,6 @@ python module.py add 1 2
 
 
 ## TO-DO
-* add support for default value display in command help?
 * comment / clean up tests
 * sphinx autodocs add more docs / update docs
   * docs for default args
