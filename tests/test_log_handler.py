@@ -23,7 +23,7 @@ def mock_atexit_register(monkeypatch):
 ### TESTS
 
 # Test 1: tests name, file, and stream options in log_handler.Logger()
-def test_name_file_stream():
+def test_name_file_stream(mock_atexit_register):
     expected = "test_name"
     log_obj = log_handler.Logger(
                 expected,
@@ -38,7 +38,7 @@ def test_name_file_stream():
     assert expected == log_obj.name
 
 # Test 2: tests the logger option in log_handler.Logger()
-def test_loggers():
+def test_loggers(mock_atexit_register):
     expected = ['logger1','logger2','logger3']
     log_obj = log_handler.Logger(
                 'test name',
@@ -53,7 +53,7 @@ def test_loggers():
     assert all(item in log_obj.loggers.__dict__ for item in expected)
 
 # Test 3: tests loglvl, shandler, and streamfmt options in log_handler.Logger()
-def test_loglvl_shandler_streamfmt(capsys):
+def test_loglvl_shandler_streamfmt(capsys, mock_atexit_register):
     expected = ['DEBUG', 'INFO', 'WARNING', 'ERROR', 'CRITICAL']
     formatter = logging.Formatter('%(asctime)s, %(name)s %(levelname)s %(message)s', datefmt='%H:%M:%S')
 
@@ -332,10 +332,6 @@ def test_timeout(mock_os, mock_atexit_register):
                 assert mock_os.remove.call_count == expected_removed_files
 
 
-
-
-
-
 # Test 8: this should test the out method
 # create a file in the filepath with file size of 0
 # then run the out method
@@ -393,4 +389,75 @@ def test_out(mock_os, mock_atexit_register):
 
         # verify that atexit.register called once
         mock_atexit_register.assert_called_once()
+
+
+def test_out_file_fail(capsys, mock_os, mock_atexit_register):
+    folder = 'path/to/logs/'
+    filename = "test_file.log"
+    formatter = logging.Formatter('%(asctime)s, %(name)s %(levelname)s %(message)s', datefmt='%H:%M:%S')
+
+    with patch('builtins.open', mock_open()) as mock_file:
+
+        # create an instance of the Logger class
+        log_obj = log_handler.Logger(
+            name='test_name',
+            loggers=['log'],
+            loglvl=logging.INFO,
+            filename=filename,
+            filepath=folder,
+            filefmt=formatter,
+            fhandler=logging.FileHandler(f'{folder}/{filename}', 'w', encoding='locale'),
+            filecap=None,
+            filetimeout=None,
+            file=True,
+            streamfmt=None,
+            shandler=None,
+            stream=False)
+
+
+        mock_os.path.getsize = MagicMock(return_value=0)
+        mock_os.remove = MagicMock(side_effect=FileNotFoundError())
         
+        log_obj.out()
+        captured = capsys.readouterr()
+        assert 'Failed to remove file' in captured.out
+        
+        # Verify that the getsize method was called once
+        mock_os.path.getsize.assert_called_once_with(folder)
+
+
+def test_out_folder_fail(capsys, mock_os, mock_atexit_register):
+    folder = 'path/to/logs/'
+    filename = "test_file.log"
+    formatter = logging.Formatter('%(asctime)s, %(name)s %(levelname)s %(message)s', datefmt='%H:%M:%S')
+
+    with patch('builtins.open', mock_open()) as mock_file:
+
+        # create an instance of the Logger class
+        log_obj = log_handler.Logger(
+            name='test_name',
+            loggers=['log'],
+            loglvl=logging.INFO,
+            filename=filename,
+            filepath=folder,
+            filefmt=formatter,
+            fhandler=logging.FileHandler(f'{folder}/{filename}', 'w', encoding='locale'),
+            filecap=None,
+            filetimeout=None,
+            file=True,
+            streamfmt=None,
+            shandler=None,
+            stream=False)
+
+        mock_os.path.getsize = MagicMock(return_value=0)
+        mock_os.remove = MagicMock(return_value=None)
+        mock_os.listdir = MagicMock(return_value=[])
+        mock_os.rmdir = MagicMock(side_effect=FileNotFoundError())
+        
+        log_obj.out()
+        captured = capsys.readouterr()
+        assert 'Failed to remove module folder' in captured.out
+        assert 'Failed to remove log folder' in captured.out
+        
+        # Verify that the getsize method was called once
+        mock_os.path.getsize.assert_called_once_with(folder)

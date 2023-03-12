@@ -174,11 +174,3 @@ class Logger:
         except Exception as e:
             # print an error message if the folder cannot be removed
             print(f"Failed to remove log folder: {e}")
-
-    def __enter__(self): # pragma: no cover
-        if not self.rootlogger.handlers: # pragma: no cover
-            self.rootlogger.addHandler(logging.NullHandler()) # pragma: no cover
-        return self # pragma: no cover
-
-    def __exit__(self, exc_type, exc_value, traceback): # pragma: no cover
-        logging.shutdown() # pragma: no cover

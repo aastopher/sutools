@@ -1,7 +1,15 @@
-from unittest.mock import patch
+from unittest.mock import patch, Mock
 from io import StringIO
-import sys, inspect, logging, argparse
+import sys, inspect, logging, argparse, pytest
 from sutools import cli_handler, log_handler, meta_handler
+
+
+#### Fixtures
+@pytest.fixture
+def mock_atexit_register(monkeypatch):
+    mock_atexit_register = Mock()
+    monkeypatch.setattr(log_handler.atexit, "register", mock_atexit_register)
+    return mock_atexit_register
 
 
 # Test 1: this should test passing in a cli description
@@ -33,7 +41,7 @@ def test_cli_desc(capsys, monkeypatch):
             
 # Test 2: this should test passing a 
 # boolean to logs to turn logging on
-def test_cli_logs_on(capsys, monkeypatch):
+def test_cli_logs_on(capsys, monkeypatch, mock_atexit_register):
     expected = "test log"
 
     def func_test():
@@ -71,7 +79,7 @@ def test_cli_logs_on(capsys, monkeypatch):
     
 # Test 3: this should test passing a 
 # boolean to logs to turn logging off (i.e. 51)
-def test_cli_logs_off(capsys, monkeypatch):
+def test_cli_logs_off(capsys, monkeypatch, mock_atexit_register):
     def func_test():
         log_obj.loggers.func_test.info('fail')
         print('pass')
@@ -111,7 +119,7 @@ def test_cli_logs_off(capsys, monkeypatch):
 
 # Test 4: this should test passing a logger object 
 # (if a log_obj is passed in there should be loggers in the log property)
-def test_cli_log_obj():
+def test_cli_log_obj(mock_atexit_register):
     expected = ['logger1','logger2','logger3']
 
     log_obj = log_handler.Logger(

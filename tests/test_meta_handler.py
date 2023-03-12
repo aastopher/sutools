@@ -1,5 +1,13 @@
-import logging
+from unittest.mock import Mock
+import logging, pytest
 from sutools import meta_handler, cli_handler, log_handler
+
+#### Fixtures
+@pytest.fixture
+def mock_atexit_register(monkeypatch):
+    mock_atexit_register = Mock()
+    monkeypatch.setattr(log_handler.atexit, "register", mock_atexit_register)
+    return mock_atexit_register
 
 # Test 1: this should test adding references of functions 
 # for to the cli to run (a dictionary of functions should be provided 
@@ -23,7 +31,7 @@ def test_add_cli():
 
 # Test 2: this should test the parse method 
 # this is called after functions are added to be called as a command
-def test_add_log():
+def test_add_log(mock_atexit_register):
     store = meta_handler.Bucket()
 
     log_obj = log_handler.Logger(

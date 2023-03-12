@@ -17,7 +17,7 @@ def mock_atexit_register(monkeypatch):
     monkeypatch.setattr(su.log_handler.atexit, "register", mock_atexit_register)
     return mock_atexit_register
 
-#### Methods
+# #### Methods
 
 # Test 1: this should test the register decorator from sutools
 # the result should be that the su.store contains a 
@@ -73,11 +73,13 @@ def test_cli(mock_atexit_register, monkeypatch):
 # the result should be that the log property is no None in su.store
 # the log object should also contain a property loggers with 
 # the names of the loggers passed in to loggers property in the logger
-def test_logger():
-    su.logger()
+def test_logger(mock_atexit_register, monkeypatch):
+    with patch('builtins.open', mock_open()) as mock_file:
+        monkeypatch.setattr(su.os, 'makedirs', lambda *args, **kwargs: None)
+        su.logger(filepath='path')
 
     assert su.store.log != None
-    assert 'log' in su.store.log.filepath
+    assert mock_file.called
 
 def test_logger_path(mock_os, mock_atexit_register):
     expected_filename = "test_file.log"
@@ -87,15 +89,17 @@ def test_logger_path(mock_os, mock_atexit_register):
     mock_os.path.exists.return_value = False
 
     with patch('builtins.open', mock_open()):
-        su.logger(filepath=mock_filepath, fhandler=logging.FileHandler(f'{mock_filepath}/{expected_filename}', 'w', encoding='locale'))
+        su.logger(loggers=['logger1', 'logger2', 'logger3'] , filepath=mock_filepath, fhandler=logging.FileHandler(f'{mock_filepath}/{expected_filename}', 'w', encoding='locale'))
 
         assert su.store.log != None
         assert mock_os.path.join.call_args[0][0] == mock_filepath
         assert mock_os.makedirs.called_once()
 
-def test_logger_cloggers():
+def test_logger_cloggers(mock_os, mock_atexit_register):
     expected = ['logger1', 'logger2', 'logger3']
-    su.logger(loggers=expected)
+
+    with patch('builtins.open', mock_open()) as mock_file:
+        su.logger(loggers=expected, fhandler=logging.FileHandler(f'test/folder/test_log.log', 'w', encoding='locale'))
 
     assert su.store.log is not None
     assert all(name in vars(su.store.log.loggers) for name in expected)
@@ -103,13 +107,14 @@ def test_logger_cloggers():
 # Test 4: this should test the log helper function
 # the should return a namespace of loggers defined 
 # in the log object in the su.store
-def test_log():
+def test_log(mock_os, mock_atexit_register):
     
     @su.register
     def func_test():
         pass
 
-    su.logger()
+    with patch('builtins.open', mock_open()):
+        su.logger(fhandler=logging.FileHandler(f'test/folder/test_log.log', 'w', encoding='locale'))
     assert 'func_test' in vars(su.log()).keys()
 
 #### Integration
@@ -119,7 +124,7 @@ def test_log():
 # at least one registered test function.
 # the result should be that the log statements in the cli are 
 # logged if the cli has logs set to True
-def test_logger_cli(capsys, mock_atexit_register, monkeypatch):
+def test_logger_cli(capsys, mock_os, mock_atexit_register, monkeypatch):
     expected_cli = "Test CLI"
     expected_log = 'test log'
 
@@ -127,7 +132,8 @@ def test_logger_cli(capsys, mock_atexit_register, monkeypatch):
     def func_test():
         su.log().func_test.info(expected_log)
 
-    su.logger(stream = True, shandler = logging.StreamHandler(sys.stdout))
+    with patch('builtins.open', mock_open()):
+        su.logger(file = False, fhandler=logging.FileHandler(f'test/folder/test_log.log', 'w', encoding='locale'), stream = True, shandler = logging.StreamHandler(sys.stdout))
 
     # patch the input namespace with the desired command
     namespace = argparse.Namespace(command='func_test')
