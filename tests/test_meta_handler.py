@@ -3,37 +3,52 @@ import logging, pytest
 from sutools import meta_handler, cli_handler, log_handler
 
 #### Fixtures
+
+# Define a fixture that monkeypatches the atexit module's register function
+# with a Mock object, so that we can test if it gets called correctly
 @pytest.fixture
 def mock_atexit_register(monkeypatch):
     mock_atexit_register = Mock()
     monkeypatch.setattr(log_handler.atexit, "register", mock_atexit_register)
     return mock_atexit_register
 
-# Test 1: this should test adding references of functions 
-# for to the cli to run (a dictionary of functions should be provided 
-# then the cli should be tested to use those functions)
+### Tests
+
+# Define a test function for the add_func method of the meta_handler.Bucket class
 def test_add_func():
 
     def func_test():
         pass
 
+    # Create a new meta_handler.Bucket object
     store = meta_handler.Bucket()
+
+    # Add the func_test function to the store
     store.add_func(func_test)
+
+    # Assert that the function was added correctly
     assert 'func_test' in store.funcs.keys()
 
-# Test 2: this should test the add_cli method 
-# this the store should contain a cli obj
+# Define a test function for the add_cli method of the meta_handler.Bucket class
 def test_add_cli():
+    # Create a new meta_handler.Bucket object
     store = meta_handler.Bucket()
+
+    # Create a new cli_handler.CLI object
     cli_obj = cli_handler.CLI('desc', False)
+
+    # Add the cli_handler.CLI object to the store
     store.add_cli(cli_obj)
+
+    # Assert that the CLI object was added correctly
     assert isinstance(store.cli, cli_handler.CLI)
 
-# Test 2: this should test the parse method 
-# this is called after functions are added to be called as a command
+# Define a test function for the add_log method of the meta_handler.Bucket class
 def test_add_log(mock_atexit_register):
+    # Create a new meta_handler.Bucket object
     store = meta_handler.Bucket()
 
+    # Create a new log_handler.Logger object
     log_obj = log_handler.Logger(
                 'test_logger', 
                 ['logger1','logger2','logger3'], 
@@ -45,6 +60,8 @@ def test_add_log(mock_atexit_register):
                 stream=True
               )
 
+    # Add the log_handler.Logger object to the store
     store.add_log(log_obj)
-    assert isinstance(store.log, log_handler.Logger)
 
+    # Assert that the Logger object was added correctly
+    assert isinstance(store.log, log_handler.Logger)

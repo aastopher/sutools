@@ -206,7 +206,8 @@ def test_filecap(mock_os, mock_atexit_register):
         # verify that atexit.register called once
         mock_atexit_register.assert_called_once()
 
-
+# Test 7: tests if filecap was turned on after logs generated 
+# forcing more than 1 file removed
 def test_filecap_tomany(mock_os, mock_atexit_register):
     folder = 'path/to/logs'
     filename = "test_file.log"
@@ -263,8 +264,10 @@ def test_filecap_tomany(mock_os, mock_atexit_register):
 
 
 
-# # Test 7: this should test passing a file timeout string
-# # define a timeout period by combining time unit characters with the desired integer for a specified time unit i.e. `(10m = 10 minute, 2h = 2 hours, ...)`
+# Test 8: this should test passing a file timeout string
+# define a timeout period by combining time unit characters 
+# with the desired integer for a specified time unit 
+# i.e. `(10m = 10 minute, 2h = 2 hours, ...)`
 @freeze_time("2023-02-25 10:00:00")
 def test_timeout(mock_os, mock_atexit_register):
     folder = 'path/to/logs'
@@ -330,7 +333,7 @@ def test_timeout(mock_os, mock_atexit_register):
                 assert mock_os.remove.call_count == expected_removed_files
 
 
-# Test 8: this should test the out method
+# Test 9: this should test the out method
 # create a file in the filepath with file size of 0
 # then run the out method
 # the file should be removed
@@ -389,6 +392,7 @@ def test_out(mock_os, mock_atexit_register):
         mock_atexit_register.assert_called_once()
 
 
+# Test 10: Test out method failing to remove file
 def test_out_file_fail(capsys, mock_os, mock_atexit_register):
     folder = 'path/to/logs/'
     filename = "test_file.log"
@@ -423,7 +427,7 @@ def test_out_file_fail(capsys, mock_os, mock_atexit_register):
         # Verify that the getsize method was called once
         mock_os.path.getsize.assert_called_once_with(folder)
 
-
+# Test 11: test out failing to remove folder
 def test_out_folder_fail(capsys, mock_os, mock_atexit_register):
     folder = 'path/to/logs/'
     filename = "test_file.log"

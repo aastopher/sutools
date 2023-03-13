@@ -217,8 +217,7 @@ python module.py add 1 2
 
 ## TO-DO
 * comment / clean up tests
-* sphinx autodocs add more docs / update docs
-  * docs for default args
+* formatter - black?
 * add coverage reports
 * write git action for testing on push
 * add version tagging
