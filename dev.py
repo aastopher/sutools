@@ -43,6 +43,14 @@ def calc(x : int, y : int, atype : str = '+') -> int:
         su.log().calc.info(x - y)
     # print(x - y)
 
+@su.register
+def meeting(name : str, greeting : str = 'hello', salutation : str = 'goodbye') -> str:
+    '''meet a person'''
+    output = f'\n{greeting} {name}\n{salutation} {name}'
+    su.log().meeting.info(output)
+    # return output
+
+
 ### LOGGER EXAMPLES ###
 # optionally pass in the name of your root application logger 
 # by default this will be the filename

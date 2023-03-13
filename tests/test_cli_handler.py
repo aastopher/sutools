@@ -46,6 +46,7 @@ def test_cli_logs_on(capsys, monkeypatch, mock_atexit_register):
 
     def func_test():
         log_obj.loggers.func_test.info(expected)
+        return expected
 
     store = meta_handler.Bucket()
     store.add_func(func_test)
