@@ -1,4 +1,4 @@
-import inspect, os, argparse, logging, sys, textwrap
+import inspect, os, argparse, logging, sys, typing
 
 class CLI:
   '''object designed for swift module CLI configuration'''
@@ -37,38 +37,47 @@ class CLI:
         # init arg help and arg description
         ahelp = f'execute {func_name} function'
 
+        # collect command description
         signature = inspect.signature(func_dict[func_name][0])
-        params = [f"{name}: {param.annotation.__name__}" for name, param in signature.parameters.items()]
-        adesc = f"{func_dict[func_name][0].__name__}({', '.join(params)})"
+        params = []
+        for name, param in signature.parameters.items():
+            if param.annotation != inspect.Parameter.empty:
+                if param.default != inspect.Parameter.empty:
+                    params.append(f"{name}: {param.annotation.__name__} = {param.default!r}")
+                else:
+                    params.append(f"{name}: {param.annotation.__name__}")
+            else:
+                if param.default != inspect.Parameter.empty:
+                    params.append(f"{name} = {param.default!r}")
+                else:
+                    params.append(f"{name}")
+        if 'return' in types:
+            adesc = f"{func_dict[func_name][0].__name__}({', '.join(params)}) -> {str(types['return'].__name__)}"
+        else:
+            adesc = f"{func_dict[func_name][0].__name__}({', '.join(params)})"
 
         # if docstring assign arg help
         if items[-1] != None:
           ahelp = items[-1]
 
-        # if return type define arg description
-        if 'return' in types:
-          signature = inspect.signature(func_dict[func_name][0])
-          params = []
-          for name, param in signature.parameters.items():
-              if param.default != inspect.Parameter.empty:
-                  params.append(f"{name}: {param.annotation.__name__} = {param.default}")
-              else:
-                  params.append(f"{name}: {param.annotation.__name__}")
-          func_def = f"{func_dict[func_name][0].__name__}({', '.join(params)})"
-          adesc = f'{func_def} -> {str(types["return"].__name__)}'
-
         # init sub parser
         subp = self.subparsers.add_parser(func_name, help=ahelp, description=adesc, argument_default=argparse.SUPPRESS, add_help=False)
 
+        abbrevs = set()
         for name, atype in zip(names, arg_types):
-          if name in defaults:
-              subp.add_argument(f"-{name[0:2]}", f"--{name}", 
-                                metavar=str(atype) if atype is not None else None, 
-                                type=atype,  
-                                default=defaults[name],
-                                help=f'default: {defaults[name]}')
-          else:
-              subp.add_argument(name, type=atype, help=str(atype) if atype is not None else None)
+            if name in defaults:
+                short_name = name[:2]
+                if short_name in abbrevs:
+                    short_name = name[-1]
+                abbrevs.add(short_name)
+                subp.add_argument(f"-{short_name}", f"--{name}",
+                                  metavar=str(atype) if atype is not None else None,
+                                  type=atype,
+                                  default=defaults[name],
+                                  help=f'default: {defaults[name]}')
+            else:
+                subp.add_argument(name, type=atype, help=str(atype) if atype is not None else None)
+
         
         # overide help & place at end of options
         subp.add_argument('-h', '--help', action='help', help='Show this help message and exit.')

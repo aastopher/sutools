@@ -44,12 +44,21 @@ def calc(x : int, y : int, atype : str = '+') -> int:
     # print(x - y)
 
 @su.register
-def meeting(name : str, greeting : str = 'hello', salutation : str = 'goodbye') -> str:
+def meeting(name : str, greeting = 'hello', salutation : str = 'goodbye') -> str:
     '''meet a person'''
     output = f'\n{greeting} {name}\n{salutation} {name}'
     su.log().meeting.info(output)
-    # return output
+    return output
 
+@su.register
+def meeting2(name , greeting = 'hello', salutation = 'goodbye') -> str:
+    '''meet a person'''
+    output = f'\n{greeting} {name}\n{salutation} {name}'
+    return output
+
+@su.register
+def func_test(test, test2 : str, test3 : str = 'test', test4 = 'test2', test5 : list[dict] = ['test','test again']) -> str:
+        pass
 
 ### LOGGER EXAMPLES ###
 # optionally pass in the name of your root application logger 
