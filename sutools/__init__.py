@@ -5,12 +5,19 @@ import inspect, os, logging, datetime
 store = meta_handler.Bucket()
 
 def register(func):
-    '''register a function to the store'''
+    '''register a function to the store
+    
+    :param func: the function to register
+    '''
     store.add_func(func)
     return func
 
 def cli(desc = None, logs = False):
-    '''init cli and register to store'''
+    '''init cli and register to store
+    
+    :param desc: description of the CLI
+    :param logs: enable logging in CLI
+    '''
 
     if store.log:
         cli_obj = cli_handler.CLI(desc, logs, store.log)
@@ -35,7 +42,22 @@ def logger(name = os.path.basename(inspect.stack()[-1].filename)[:-3],
            streamfmt = logging.Formatter('%(asctime)s, %(msecs)d %(name)s %(levelname)s %(message)s', datefmt='%H:%M:%S'),
            shandler = logging.StreamHandler(),
            stream = False):
-    '''init logger object and register to store'''
+    '''init logger object and register to store
+
+    :param name: name of the logger
+    :param loggers: list of names for the logger to create
+    :param loglvl: logging level to use
+    :param filename: name of the log file
+    :param filepath: name of folder to create logs in
+    :param filefmt: format of the file logger
+    :param fhandler: file handler to use for logging
+    :param filecap: maximum number of log files to keep
+    :param filetimeout: define a timeout period for log files to be removed
+    :param file: toggle file logging
+    :param streamfmt: format of the stream logger
+    :param shandler: stream handler to use for logging
+    :param stream: toggle stream logging
+    '''
 
     # if check for filepath must be inside function because filename is not initialized
     if not filepath:

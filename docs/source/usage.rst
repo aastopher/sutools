@@ -13,7 +13,7 @@ Using the register decorator `@su.register` on your functions will register it w
    @su.register
    def add(x : int, y : int):
        '''add two integers'''
-       print(x + y)
+       return x + y
 
 **NOTE:** Adding type hinting to your functions enforces types in the cli and adds positional arg class identifiers in the help docs for the command.
 
@@ -28,13 +28,13 @@ It is suggested to define the command line interface after `if __name__ == '__ma
 
     # registered functions...
 
-    su.logger(**args) # optional
+    su.logger(*args, **kwargs) # optional
 
     # module level function calls...
 
     if __name__ == '__main__':
         # main code (will run even when using cli commands)...
-        su.cli(**args)
+        su.cli(*args, **kwargs)
         # main code (will NOT run when using cli commands)...
 
 **NOTE:** The CLI should be defined after the logger if you choose to use the two utilities in parallel.
@@ -46,13 +46,15 @@ The logger utility should be instantiated after any registered functions but bef
 
 .. code-block:: python
 
+    """This module does random stuff."""
     import sutools as su
 
     @su.register
-    def add(x : int, y : int):
-        '''add two integers'''
-        su.log().add.info(f'{x} + {y} = {x+y}') # optional log line
-        print(x + y).
+    def meet(name : str, greeting : str = 'hello', farewell : str = 'goodbye') -> str:
+        '''meet a person'''
+        output = f'\n{greeting} {name}\n{farewell} {name}'
+        su.log().meeting.info(output)
+        return output
 
     su.logger() # optional
 
@@ -65,30 +67,51 @@ The logger utility should be instantiated after any registered functions but bef
 
 **NOTE:** Adding type hinting to your functions enforces types in the cli and adds positional arg class identifiers in the help docs for the command.
 
-**help output:**
-
-.. code-block:: console
-
-    usage: module add [-h] x y
-
-    positional arguments:
-    x           <class 'int'>
-    y           <class 'int'>
-
-    options:
-    -h, --help  show this help message and exit
-
 **command usage:**
 
 .. code-block:: console
 
-    python module.py add 1 2
+    python module.py meet foo
 
 **output:**
 
 .. code-block:: console
 
-    3
+    hello foo
+    goodbye foo
+
+**module help output:**
+
+.. code-block:: console
+
+    usage: module [-h] {meet} ...
+
+    This module does random stuff.
+
+    options:
+    -h, --help  show this help message and exit
+
+    commands:
+    {meet}
+        meet      meet a person
+
+**command help output:**
+
+.. code-block:: console
+
+    usage: dev meet [-gr <class 'str'>] [-sa <class 'str'>] [-h] name
+
+    meet(name: str, greeting: str = 'hello', farewell: str = 'goodbye') -> str
+
+    positional arguments:
+    name                  <class 'str'>
+
+    options:
+    -gr <class 'str'>, --greeting <class 'str'>
+                            default: hello
+    -fa <class 'str'>, --farewell <class 'str'>
+                            default: goodbye
+    -h, --help            Show this help message and exit.
 
 logger - initialization standard
 ================================
@@ -101,13 +124,13 @@ The logger utility should be instantiated after any registered functions but bef
 
     # registered functions...
 
-    su.logger(**args)
+    su.logger(*args, **kwargs)
 
     # module level function calls...
 
     if __name__ == '__main__':
         # main code (will run even when using cli commands)...
-        su.cli(**args) # optional
+        su.cli(*args, **kwargs) # optional
         # main code (will NOT run when using cli commands)...
 
 
@@ -127,13 +150,13 @@ logger - usage examples
     def add(x : int, y : int):
         '''add two integers'''
         su.log().add.info(f'{x} + {y} = {x+y}')
-        print(x + y)
+        return x + y
 
     @su.register
     def minus(x : int, y : int):
         '''subtract two integers'''
         su.log().minus.info(f'{x} - {y} = {x-y}')
-        print(x - y)
+        return x - y
 
     su.logger() # logger definition
 
@@ -163,13 +186,13 @@ logger - usage examples
     def add(x : int, y : int):
         '''add two integers'''
         su.log().logger1.info(f'{x} + {y} = {x+y}')
-        print(x + y)
+        return x + y
 
     @su.register
     def minus(x : int, y : int):
         '''subtract two integers'''
         su.log().logger2.info(f'{x} - {y} = {x-y}')
-        print(x - y)
+        return x - y
 
     su.logger(loggers=['logger1','logger2']) # logger definition
 

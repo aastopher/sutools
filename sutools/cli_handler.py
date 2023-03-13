@@ -70,11 +70,18 @@ class CLI:
                 if short_name in abbrevs:
                     short_name = name[-1]
                 abbrevs.add(short_name)
-                subp.add_argument(f"-{short_name}", f"--{name}",
-                                  metavar=str(atype) if atype is not None else None,
-                                  type=atype,
-                                  default=defaults[name],
-                                  help=f'default: {defaults[name]}')
+                try:
+                  subp.add_argument(f"-{short_name}", f"--{name}",
+                                    metavar=str(atype) if atype is not None else None,
+                                    type=atype,
+                                    default=defaults[name],
+                                    help=f'default: {defaults[name]}')
+                except argparse.ArgumentError:
+                   subp.add_argument(f"--{name}",
+                                    metavar=str(atype) if atype is not None else None,
+                                    type=atype,
+                                    default=defaults[name],
+                                    help=f'default: {defaults[name]}')
             else:
                 subp.add_argument(name, type=atype, help=str(atype) if atype is not None else None)
 

@@ -5,22 +5,6 @@ class Logger:
     '''object designed for swift granular logging configuration'''
 
     def __init__(self, name, loggers, loglvl, filename, filepath, filefmt, fhandler, filecap, filetimeout, file, streamfmt, shandler, stream):
-        """Constructor method for the Logger class
-
-        :param name: the name of the logger (str)
-        :param loggers: list of names of the loggers to create (list)
-        :param loglvl: the logging level to use (int)
-        :param filename: the name of the log file (str)
-        :param filepath: the full path of the log file (str)
-        :param filefmt: the format of the log file (logging.Formatter)
-        :param fhandler: the file handler to use for logging (logging.FileHandler)
-        :param filecap: the maximum size of the log file in bytes (int)
-        :param filetimeout: the time interval after which a new log file should be created (int)
-        :param file: whether to log to a file or not (bool)
-        :param streamfmt: the format of the stream (logging.Formatter)
-        :param shandler: the stream handler to use for logging (logging.StreamHandler)
-        :param stream: whether to log to the stream or not (bool)
-        """
 
         # set properties
         self.name = name

@@ -14,7 +14,7 @@ def mock_atexit_register(monkeypatch):
 # Test 1: this should test passing in a cli description
 def test_cli_desc(capsys, monkeypatch):
 
-    def func_test(test, test2 : str, test3 : str = 'test', test4 = 'test2', test5 : str = 'test') -> str:
+    def func_test(test, test2 : str, test3 : str = 'test', test4 = 'test2', teest4 : str = 'test') -> str:
         pass
 
     store = meta_handler.Bucket()
