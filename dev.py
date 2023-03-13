@@ -35,6 +35,7 @@ def multi(x : int, y : int) -> int:
 
 @su.register
 def calc(x : int, y : int, atype : str = '+') -> int:
+    '''caclulates a thing'''
     if atype == '+':
         su.log().calc.info(x + y)
         test_var = 2

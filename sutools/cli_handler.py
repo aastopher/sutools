@@ -36,7 +36,10 @@ class CLI:
 
         # init arg help and arg description
         ahelp = f'execute {func_name} function'
-        adesc = None
+
+        signature = inspect.signature(func_dict[func_name][0])
+        params = [f"{name}: {param.annotation.__name__}" for name, param in signature.parameters.items()]
+        adesc = f"{func_dict[func_name][0].__name__}({', '.join(params)})"
 
         # if docstring assign arg help
         if items[-1] != None:
@@ -44,7 +47,15 @@ class CLI:
 
         # if return type define arg description
         if 'return' in types:
-          adesc = f'returns {types["return"]}'
+          signature = inspect.signature(func_dict[func_name][0])
+          params = []
+          for name, param in signature.parameters.items():
+              if param.default != inspect.Parameter.empty:
+                  params.append(f"{name}: {param.annotation.__name__} = {param.default}")
+              else:
+                  params.append(f"{name}: {param.annotation.__name__}")
+          func_def = f"{func_dict[func_name][0].__name__}({', '.join(params)})"
+          adesc = f'{func_def} -> {str(types["return"].__name__)}'
 
         # init sub parser
         subp = self.subparsers.add_parser(func_name, help=ahelp, description=adesc, argument_default=argparse.SUPPRESS, add_help=False)
