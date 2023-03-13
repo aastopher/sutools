@@ -1,5 +1,4 @@
 from unittest.mock import patch, Mock, mock_open
-from io import StringIO
 import inspect, pytest, sys, argparse, logging
 import sutools as su
 

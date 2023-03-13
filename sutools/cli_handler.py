@@ -1,4 +1,4 @@
-import inspect, os, argparse, logging, sys, typing
+import inspect, os, argparse, logging, sys
 
 class CLI:
   '''object designed for swift module CLI configuration'''

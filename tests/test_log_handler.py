@@ -1,8 +1,6 @@
 from unittest.mock import patch, mock_open, MagicMock, Mock, call
-from io import StringIO
-import logging, sys, datetime, os, time, warnings
+import logging, sys, datetime, os, time
 from sutools import log_handler
-from pathlib import Path
 from freezegun import freeze_time
 import pytest
 

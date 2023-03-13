@@ -1,6 +1,5 @@
-import logging, os, datetime, warnings, atexit, sys
+import logging, os, datetime, warnings, atexit
 from types import SimpleNamespace
-from pathlib import Path
 
 class Logger:
     '''object designed for swift granular logging configuration'''
