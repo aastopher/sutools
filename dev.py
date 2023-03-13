@@ -4,44 +4,44 @@ import sutools as su
 import inspect, logging
 
 
-# @su.register
-# def echo(string: str):
-#     '''echo a string'''
-#     # log.loggers.echo.info('this is a test')
-#     su.log().echo.info('this is a test')
-#     print(string)
+@su.register
+def echo(string: str):
+    '''echo a string'''
+    # log.loggers.echo.info('this is a test')
+    su.log().echo.info('this is a test')
+    print(string)
 
-# @su.register
-# def add(x : int, y : int):
-#     '''add two integers'''
-#     su.log().add.info('this is another test')
-#     return x+y
+@su.register
+def add(x : int, y : int):
+    '''add two integers'''
+    su.log().add.info('this is another test')
+    return x+y
 
-# @su.register
-# def minus(x : int, y : int):
-#     su.log().minus.info(x - y)
-#     # print(x - y)
+@su.register
+def minus(x : int, y : int):
+    su.log().minus.info(x - y)
+    # print(x - y)
 
-# @su.register
-# def do():
-#     su.log().do.debug('this function is do do')
-#     print(f'do {inspect.stack()[0][3]}')
+@su.register
+def do():
+    su.log().do.debug('this function is do do')
+    print(f'do {inspect.stack()[0][3]}')
 
 
-# @su.register
-# def multi(x : int, y : int) -> int:
-#     su.log().multi.info(x * y)
-#     # print(x - y)
+@su.register
+def multi(x : int, y : int) -> int:
+    su.log().multi.info(x * y)
+    # print(x - y)
 
-# @su.register
-# def calc(x : int, y : int, atype : str = '+') -> int:
-#     '''caclulates a thing'''
-#     if atype == '+':
-#         su.log().calc.info(x + y)
-#         test_var = 2
-#     elif atype == '-':
-#         su.log().calc.info(x - y)
-#     # print(x - y)
+@su.register
+def calc(x : int, y : int, atype : str = '+') -> int:
+    '''caclulates a thing'''
+    if atype == '+':
+        su.log().calc.info(x + y)
+        test_var = 2
+    elif atype == '-':
+        su.log().calc.info(x - y)
+    # print(x - y)
 
 @su.register
 def meet(name : str, greeting : str = 'hello', farewell : str = 'goodbye') -> str:
@@ -50,13 +50,13 @@ def meet(name : str, greeting : str = 'hello', farewell : str = 'goodbye') -> st
     su.log().meeting.info(output)
     return output
 
-# @su.register
-# def func_test(test, test2 : str, test3 : str = 'test', test4 = 'test2', test5 : list[dict] = ['test','test again']) -> str:
-#         pass
+@su.register
+def func_test(test, test2 : str, test3 : str = 'test', test4 = 'test2', test5 : list[dict] = ['test','test again']) -> str:
+        pass
 
-# @su.register
-# def test(prop, prop1 = 'string', prop2 = 'string', proop2 = 'string', prop4 = 'string'):
-#         pass
+@su.register
+def test(prop, prop1 = 'string', prop2 = 'string', proop2 = 'string', prop4 = 'string'):
+        pass
 
 ### LOGGER EXAMPLES ###
 # optionally pass in the name of your root application logger 

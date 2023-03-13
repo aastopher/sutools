@@ -29,7 +29,7 @@ import sutools as su
 @su.register
 def add(x : int, y : int):
     '''add two integers'''
-    print(x + y)
+    return x + y
 
 ```
 
@@ -44,13 +44,15 @@ def add(x : int, y : int):
 </br>
 
 ```python
+"""This module does random stuff."""
 import sutools as su
 
 @su.register
-def add(x : int, y : int):
-    '''add two integers'''
-    su.log().add.info(f'{x} + {y} = {x+y}') # optional
-    print(x + y).
+def meet(name : str, greeting : str = 'hello', farewell : str = 'goodbye') -> str:
+        '''meet a person'''
+        output = f'\n{greeting} {name}\n{farewell} {name}'
+        su.log().meeting.info(output)
+        return output
 
 su.logger() # optional
 
@@ -66,16 +68,50 @@ if __name__ == '__main__':
 
 **NOTE:** Adding type hinting to your functions enforces types in the cli and adds positional arg class identifiers in the help docs for the command.
 
-**command specific help output:**
+**command usage:**
+
 ```
-usage: module add [-h] x y
+python module.py meet foo
+```
 
-positional arguments:
-  x           <class 'int'>
-  y           <class 'int'>
+**output**
 
-options:
-  -h, --help  show this help message and exit
+```
+hello foo
+goodbye foo
+```
+
+**module help output:**
+
+```
+    usage: module [-h] {meet} ...
+
+    This module does random stuff.
+
+    options:
+    -h, --help  show this help message and exit
+
+    commands:
+    {meet}
+        meet      meet a person
+```
+
+**command help output:**
+
+```
+    usage: dev meet [-gr <class 'str'>] [-sa <class 'str'>] [-h] name
+
+    meet(name: str, greeting: str = 'hello', farewell: str = 'goodbye') -> str
+
+    positional arguments:
+    name                  <class 'str'>
+
+    options:
+    -gr <class 'str'>, --greeting <class 'str'>
+                            default: hello
+    -fa <class 'str'>, --farewell <class 'str'>
+                            default: goodbye
+    -h, --help            Show this help message and exit.
 ```
 
 ## Logger Usage Examples
@@ -96,13 +132,13 @@ import sutools as su
 def add(x : int, y : int):
     '''add two integers'''
     su.log().add.info(f'{x} + {y} = {x+y}')
-    print(x + y)
+    return x + y
 
 @su.register
 def minus(x : int, y : int):
     '''subtract two integers'''
     su.log().minus.info(f'{x} - {y} = {x-y}')
-    print(x - y).
+    return x - y
 
 su.logger()
 
@@ -136,13 +172,13 @@ import sutools as su
 def add(x : int, y : int):
     '''add two integers'''
     su.log().logger1.info(f'{x} + {y} = {x+y}')
-    print(x + y)
+    return x + y
 
 @su.register
 def minus(x : int, y : int):
     '''subtract two integers'''
     su.log().logger2.info(f'{x} - {y} = {x-y}')
-    print(x - y).
+    return x - y
 
 su.logger(loggers=['logger1','logger2'])
 
