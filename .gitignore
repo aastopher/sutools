@@ -5,7 +5,7 @@
 .DS_Store
 **/docs/build
 **/_build
-dev.py
+.dev.py
 .dev
 .coverage
 **/htmlcov
