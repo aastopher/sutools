@@ -23,7 +23,7 @@ jobs:
           python -m pip install --upgrade pip
           pip install -r requirements.txt
           pip install pytest pytest-cov codecov
-      -name: Run tox tests
+      - name: Run tox tests
         run: tox --parallel auto
         env:
           CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
