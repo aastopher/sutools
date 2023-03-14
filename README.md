@@ -218,5 +218,6 @@ python module.py add 1 2
 
 ## TO-DO
 * comment / clean up tests
+* tox testing?
 * action build docs for release
 * add version tagging & badge

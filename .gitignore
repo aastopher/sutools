@@ -1,11 +1,22 @@
+# testing
+**/.tox
+
+# coverage
+**/htmlcov
+.coverage
+
+# dev
+.dev.py
+.dev
+
+# caches
 **/logs
 **/__pycache__
 **/.pytest_cache
+**/*.egg-info
 **/dist
-.DS_Store
 **/docs/build
 **/_build
-.dev.py
-.dev
-.coverage
-**/htmlcov
+
+# system files
+.DS_Store

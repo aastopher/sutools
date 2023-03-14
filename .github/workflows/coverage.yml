@@ -1,30 +1,61 @@
-name: Codecov
+# name: Codecov
+# on:
+#   push:
+#     branches:
+#       - master
+#   pull_request:
+#     branches:
+#       - master
+# jobs:
+#   codecov:
+#     name: Upload coverage reports to Codecov
+#     runs-on: ubuntu-latest
+#     steps:
+#       - name: Checkout code
+#         uses: actions/checkout@v3
+#       - name: Set up Python
+#         uses: actions/setup-python@v4
+#         with:
+#           python-version: '3.x'
+#       - name: Install dependencies
+#         run: |
+#           python -m pip install --upgrade pip
+#           pip install -r requirements.txt
+#           pip install pytest pytest-cov codecov
+#       - name: Run tests with coverage
+#         run: |
+#           pytest --cov=./ --cov-report=xml
+#       - name: Upload coverage reports to Codecov
+#         uses: codecov/codecov-action@v3
+#         with:
+#           fail_ci_if_error: true
+#           token: ${{ secrets.CODECOV_TOKEN }}
+
+
+name: Build and Test
 on:
   push:
     branches:
-      - master
+      - main
   pull_request:
     branches:
-      - master
+      - main
 jobs:
-  codecov:
-    name: Upload coverage reports to Codecov
+  build-and-test:
+    name: Build and Test
     runs-on: ubuntu-latest
     steps:
       - name: Checkout code
-        uses: actions/checkout@v3
-      - name: Set up Python
-        uses: actions/setup-python@v4
+        uses: actions/checkout@v2
+      - name: Set up Python and tox
+        uses: actions/setup-python@v2
         with:
           python-version: '3.x'
-      - name: Install dependencies
-        run: |
-          python -m pip install --upgrade pip
-          pip install -r requirements.txt
-          pip install pytest pytest-cov codecov
-      - name: Run tests with coverage
-        run: |
-          pytest --cov=./ --cov-report=xml
+          tox-version: '3.x'
+      - name: Install dependencies and run tests with tox
+        run: tox --parallel auto
+        env:
+          CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
       - name: Upload coverage reports to Codecov
         uses: codecov/codecov-action@v3
         with:
