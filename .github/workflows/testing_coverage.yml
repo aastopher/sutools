@@ -1,4 +1,4 @@
-name: Tox Testing
+name: Testing and Coverage
 on:
   push:
     branches:
