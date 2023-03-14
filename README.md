@@ -217,7 +217,6 @@ python module.py add 1 2
 
 ## TO-DO
 * comment / clean up tests
-* formatter - black?
 * add coverage reports
 * write git action for testing on push
 * add version tagging
