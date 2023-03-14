@@ -20,8 +20,8 @@ python:
    install:
    - requirements: docs/requirements.txt
 
-# Build settings for specific versions
-versions:
-  latest: {}
-  tags:
-    - name: "^[0-9]+(.[0-9]+)*$"
+# # Build settings for specific versions
+# versions:
+#   latest: {}
+#   tags:
+#     - name: "^[0-9]+(.[0-9]+)*$"
