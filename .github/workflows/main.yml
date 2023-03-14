@@ -1,3 +1,11 @@
+name: Codecov
+on:
+  push:
+    branches:
+      - master
+  pull_request:
+    branches:
+      - master
 jobs:
   codecov:
     name: Upload coverage reports to Codecov
@@ -12,7 +20,7 @@ jobs:
       - name: Install dependencies
         run: |
           python -m pip install --upgrade pip
-          pip install -r requirements.txt
+          pip install pytest pytest-cov codecov
       - name: Run tests with coverage
         run: |
           pytest --cov=./ --cov-report=xml
@@ -21,4 +29,3 @@ jobs:
         with:
           fail_ci_if_error: true
           token: ${{ secrets.CODECOV_TOKEN }}
-        continue-on-error: false
