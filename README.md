@@ -218,9 +218,5 @@ python module.py add 1 2
 
 ## TO-DO
 * comment / clean up tests
-* add coverage reports
-* write git action for testing on push
-* add version tagging
-  * build docs and coverage reports for release
-* add version badge
-* add pipeline passing / failing badge
+* action build docs for release
+* add version tagging & badge
