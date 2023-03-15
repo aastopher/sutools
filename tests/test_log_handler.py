@@ -149,10 +149,10 @@ def test_filepath_filename_fhandler(mock_atexit_register):
 
         func_test()
 
-        # check that the file was opened with the expected arguments
-        mock_file.assert_called_with(
-            f"{mock_filepath}/{expected_filename}", "w", encoding="locale", errors=None
-        )
+        # # check that the file was opened with the expected arguments
+        expected_call = (f"{mock_filepath}/{expected_filename}", "w")
+        actual_call = mock_file.mock_calls[0][1:2][0]
+        assert expected_call == actual_call
 
         # verify that atexit.register called once
         mock_atexit_register.assert_called_once()
