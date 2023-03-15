@@ -5,22 +5,22 @@
 # Required
 version: 2
 
+formats:
+  - all
+
 # Set the version of Python and other tools you might need
 build:
-  os: ubuntu-22.04
-  tools:
-    python: "3.10"
+   image: latest
+   os: ubuntu-22.04
+   tools:
+      python: "3.x"
+
 
 # Build documentation in the docs/ directory with Sphinx
 sphinx:
-  configuration: docs/source/conf.py
+   configuration: docs/source/conf.py
 
 # Optionally declare the Python requirements required to build your docs
 python:
-  install:
-    - requirements: docs/requirements.txt
-
-# Build triggers
-trigger:
-  # Build on each push to master branch
-  - master
+   install:
+      - requirements: docs/requirements.txt
