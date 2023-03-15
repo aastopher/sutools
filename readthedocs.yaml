@@ -9,10 +9,7 @@ version: 2
 build:
   os: ubuntu-22.04
   tools:
-    python:
-      version: "3.10"
-    sphinx:
-      version: "4.4.0"
+    python: "3.10"
 
 # Build documentation in the docs/ directory with Sphinx
 sphinx:
@@ -25,11 +22,5 @@ python:
 
 # Build triggers
 trigger:
-  # Build on each push to main branch
+  # Build on each push to master branch
   - master
-  # Build when a tag is pushed in the format d+.d+.d+
-  - tag: '/^\d+\.\d+\.\d+$/'
-    # Specify the version that should be built for the tag
-    version: '{tag}'
-    # If tag is not provided, use "latest" as the default version
-    fallback-version: latest
