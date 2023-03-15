@@ -22,7 +22,8 @@ jobs:
           python -m pip install --upgrade pip
           pip install -r requirements.txt
       - name: Run tox tests
-        run: tox --parallel auto
+        # run: tox --parallel auto
+        run: tox
         env:
           CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
       - name: Upload coverage reports to Codecov
