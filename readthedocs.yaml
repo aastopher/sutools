@@ -8,20 +8,25 @@ version: 2
 # Set the version of Python and other tools you might need
 build:
   os: ubuntu-22.04
-  tools:
-    python: "3.10"
+  python:
+    version: "3.10"
 
 # Build documentation in the docs/ directory with Sphinx
 sphinx:
-   configuration: docs/source/conf.py
+  configuration: docs/source/conf.py
 
 # Optionally declare the Python requirements required to build your docs
 python:
-   install:
-   - requirements: docs/requirements.txt
+  install:
+    - requirements: docs/requirements.txt
 
-# # Build settings for specific versions
-# versions:
-#   latest: {}
-#   tags:
-#     - name: "^[0-9]+(.[0-9]+)*$"
+# Build triggers
+trigger:
+  # Build on each push to main branch
+  - main
+  # Build when a tag is pushed
+  - tag: '/^\d+\.\d+\.\d+$/'
+    # Specify the version that should be built for the tag
+    version: '{tag}'
+    # If tag is not provided, use "latest" as the default version
+    fallback-version: latest
