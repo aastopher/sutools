@@ -40,5 +40,8 @@ jobs:
         uses: codecov/codecov-action@v3
         with:
           fail_ci_if_error: true
-          files: /home/runner/coverage.xml
+          directory: ./coverage/reports/
+          env_vars: OS,PYTHON
+          files: /home/runner/work/sutools/sutools/coverage.xml
+          flags: tests
           token: ${{ secrets.CODECOV_TOKEN }}
