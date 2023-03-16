@@ -37,11 +37,7 @@ jobs:
         env:
           CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
       - name: Upload coverage reports to Codecov
-        uses: codecov/codecov-action@v3
+        uses: codecov/codecov-action@v3.1.1
         with:
           fail_ci_if_error: true
-          directory: ./coverage/reports/
-          env_vars: OS,PYTHON
-          files: /home/runner/work/sutools/sutools/coverage.xml
-          flags: tests
           token: ${{ secrets.CODECOV_TOKEN }}
