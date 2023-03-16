@@ -70,7 +70,7 @@ def test_cli(mock_atexit_register, monkeypatch):
 
         su.cli()
 
-    assert su.store.cli != None
+    assert su.store.cli is not None
 
 
 # Test 3: thisfunc_test should test the logger from sutools
