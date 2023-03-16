@@ -1,11 +1,24 @@
 version = 1
 
+test_patterns = [
+  "tests/**",
+  "test_*.py"
+]
+
+exclude_patterns = [
+  ".tox/*",
+  "tests/*"
+  "setup.py"
+]
+
 [[analyzers]]
 name = "python"
+enabled = true
+dependency_file_paths = ["./requirements.txt"]
 
   [analyzers.meta]
   runtime_version = "3.x.x"
 
-[[analyzers]]
-name = "test-coverage"
-enabled = true
+  [[analyzers]]
+  name = "test-coverage"
+  enabled = true
