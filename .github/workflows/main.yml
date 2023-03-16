@@ -34,14 +34,11 @@ jobs:
           pip install -r requirements.txt
       - name: Run tox tests
         run: tox --parallel auto
-        env:
-          CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
+        # env:
+        #   CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
       - name: Upload coverage reports to Codecov
         uses: codecov/codecov-action@v1
         with:
           fail_ci_if_error: true
-          token: ${{ secrets.CODECOV_TOKEN }}
-          directory: ./coverage/reports/
+          # token: ${{ secrets.CODECOV_TOKEN }}
           env_vars: OS,PYTHON
-          files: /home/runner/work/sutools/sutools/coverage.xml
-          flags: tests
