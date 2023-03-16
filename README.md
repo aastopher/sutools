@@ -218,5 +218,4 @@ python module.py add 1 2
 
 ## TO-DO
 * comment / clean up tests
-* action build docs for release
 * add version tagging & badge
