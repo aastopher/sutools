@@ -35,12 +35,10 @@ jobs:
       - name: Run tox tests
         run: tox --parallel auto
         env:
-          CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
-      - name: Upload coverage reports to Codecov
-        uses: codecov/codecov-action@v3
+          DEEPSOURCE_DSN: ${{ secrets.DEEPSOURCE_DSN }}
+      - name: Report test coverage to DeepSource
+        uses: deepsourcelabs/test-coverage-action@master
         with:
-          fail_ci_if_error: true
-          token: ${{ secrets.CODECOV_TOKEN }}
-          env_vars: OS,PYTHON
-          files: ./coverage.xml,!./cache
-          verbose: true
+          key: python
+          coverage-file: coverage.xml
+          dsn: ${{ secrets.DEEPSOURCE_DSN }}
