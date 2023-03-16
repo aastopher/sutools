@@ -4,6 +4,7 @@
 # coverage
 **/htmlcov
 .coverage
+coverage.xml
 
 # dev
 .dev.py
