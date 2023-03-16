@@ -19,6 +19,6 @@ dependency_file_paths = ["./requirements.txt"]
   [analyzers.meta]
   runtime_version = "3.x.x"
 
-  [[analyzers]]
-  name = "test-coverage"
-  enabled = true
+[[analyzers]]
+name = "test-coverage"
+enabled = true
