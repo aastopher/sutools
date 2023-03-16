@@ -1,6 +1,6 @@
 [run]
 branch = False
-source = src
+source = ./
 omit =
     .tox/*
     tests/*
