@@ -6,17 +6,6 @@ name = "python"
   [analyzers.meta]
   runtime_version = "3.x.x"
 
-  [analyzers.black]
-  enabled = true
-
-  [analyzers.flake8]
-  enabled = true
-
-  [analyzers.pytest]
-  enabled = true
-
-  [analyzers.safety]
-  enabled = true
-
-  [analyzers.coverage]
-  enabled = true
+[[analyzers]]
+name = "test-coverage"
+enabled = true
