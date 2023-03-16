@@ -114,7 +114,7 @@ def test_logger_cloggers(mock_os, mock_atexit_register):
         su.logger(
             loggers=expected,
             fhandler=logging.FileHandler(
-                f"test/folder/test_log.log", "w", encoding="locale"
+                "test/folder/test_log.log", "w", encoding="locale"
             ),
         )
 
@@ -133,7 +133,7 @@ def test_log(mock_os, mock_atexit_register):
     with patch("builtins.open", mock_open()):
         su.logger(
             fhandler=logging.FileHandler(
-                f"test/folder/test_log.log", "w", encoding="locale"
+                "test/folder/test_log.log", "w", encoding="locale"
             )
         )
     assert "func_test" in vars(su.log()).keys()
@@ -159,7 +159,7 @@ def test_logger_cli(capsys, mock_os, mock_atexit_register, monkeypatch):
         su.logger(
             file=False,
             fhandler=logging.FileHandler(
-                f"test/folder/test_log.log", "w", encoding="locale"
+                "test/folder/test_log.log", "w", encoding="locale"
             ),
             stream=True,
             shandler=logging.StreamHandler(sys.stdout),
