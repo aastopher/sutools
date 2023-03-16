@@ -29,7 +29,8 @@ class Bucket:
         """adds a logger object to the store"""
         self.log = log_obj
 
-    def _get_defaults(self, func):
+    @staticmethod
+    def _get_defaults(func):
         """helper function to collect default func args"""
 
         # get the signature of the function
