@@ -41,4 +41,9 @@ jobs:
         with:
           fail_ci_if_error: true
           token: ${{ secrets.CODECOV_TOKEN }}
-          working-directory: ./
+          token: ${{ secrets.CODECOV_TOKEN }}
+          directory: ./coverage/reports/
+          env_vars: OS,PYTHON
+          fail_ci_if_error: true
+          files: ./coverage1.xml,!./cache
+          verbose: true
