@@ -41,5 +41,7 @@ jobs:
         with:
           fail_ci_if_error: true
           token: ${{ secrets.CODECOV_TOKEN }}
+          directory: ./coverage/reports/
           env_vars: OS,PYTHON
-          verbose: true
+          files: /home/runner/work/sutools/sutools/coverage.xml
+          flags: tests
