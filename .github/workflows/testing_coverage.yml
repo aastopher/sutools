@@ -35,7 +35,7 @@ jobs:
       - name: Run tox tests
         run: |
           tox --parallel auto
-          tox --listenvs | xargs -n1 -P$(nproc) -I% sh -c 'status=$(cat %/junit.xml | grep -Eo "failures=[\"']?[0-9]+" | grep -Eo "[0-9]+"); if [ "$status" == "0" ]; then shield=$(curl -s https://img.shields.io/badge/tox-%-passing-brightgreen.svg); else shield=$(curl -s https://img.shields.io/badge/tox-%-failing-red.svg); fi && echo $shield > %/badge.svg'
+          tox --listenvs | xargs -n1 -P$(nproc) -I% sh -c 'status=$(cat %/junit.xml | grep -Eo "failures=[\"'\"']?[0-9]+" | grep -Eo "[0-9]+"); if [ "$status" == "0" ]; then shield=$(curl -s "https://img.shields.io/badge/tox-%-passing-brightgreen.svg"); else shield=$(curl -s "https://img.shields.io/badge/tox-%-failing-red.svg"); fi && echo $shield > %/badge.svg'
         env:
           CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
       - name: Upload coverage reports to Codecov
