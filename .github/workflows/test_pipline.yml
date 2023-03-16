@@ -35,21 +35,6 @@ jobs:
       - name: Run tox tests
         run: |
           tox --parallel auto
-
-      - name: Generate badges
-        run: |
-          for env in $(tox --listenvs); do
-            shield=$(curl -s https://img.shields.io/badge/tox-${env}-green.svg)
-            echo $shield > ${env}-badge.svg
-            status=$(cat ${env}/junit.xml | grep -Eo "failures=[\"']?[0-9]+" | grep -Eo "[0-9]+")
-            if [ "$status" == "0" ]; then
-              shield=$(curl -s https://img.shields.io/badge/status-passing-brightgreen.svg)
-            else
-              shield=$(curl -s https://img.shields.io/badge/status-failing-red.svg)
-            fi
-            echo $shield > ${env}-status.svg
-          done
-
         env:
           CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
       - name: Upload coverage reports to Codecov
