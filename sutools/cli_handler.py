@@ -63,7 +63,7 @@ class CLI:
                 adesc = f"{func_dict[func_name][0].__name__}({', '.join(params)})"
 
             # if docstring assign arg help
-            if items[-1] != None:
+            if items[-1] is not None:
                 ahelp = items[-1]
 
             # init sub parser
