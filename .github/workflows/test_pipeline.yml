@@ -36,6 +36,8 @@ jobs:
         run: tox --parallel auto
         env:
           CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
+      - name: Update codecov uploader
+        run: curl -s https://codecov.io/bash > codecov && chmod +x codecov
       - name: Upload coverage reports to Codecov
         uses: codecov/codecov-action@v3
         with:
