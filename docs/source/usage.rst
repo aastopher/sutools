@@ -99,7 +99,7 @@ The logger utility should be instantiated after any registered functions but bef
 
 .. code-block:: console
 
-    usage: dev meet [-gr <class 'str'>] [-sa <class 'str'>] [-h] name
+    usage: dev meet [-gr <class 'str'>] [-fa <class 'str'>] [-h] name
 
     meet(name: str, greeting: str = 'hello', farewell: str = 'goodbye') -> str
 

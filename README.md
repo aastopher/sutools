@@ -98,7 +98,7 @@ goodbye foo
 **command help output:**
 
 ```
-    usage: dev meet [-gr <class 'str'>] [-sa <class 'str'>] [-h] name
+    usage: dev meet [-gr <class 'str'>] [-fa <class 'str'>] [-h] name
 
     meet(name: str, greeting: str = 'hello', farewell: str = 'goodbye') -> str
 
