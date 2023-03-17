@@ -200,13 +200,3 @@ if __name__ == '__main__':
 ```
 
 ***
-
-**command usage:**
-
-```
-python module.py add 1 2
-```
-**output:**
-```
-3
-```
