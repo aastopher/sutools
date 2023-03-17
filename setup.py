@@ -5,8 +5,9 @@ with open("README.md", "r", encoding="utf-8") as fh:
 
 setuptools.setup(
     name="sutools",
-    version="0.1",
+    version="0.1.0",
     author="Aaron Stopher",
+    packages=setuptools.find_packages(include=["sutools"]),
     description="su (Super User) tools; per module utilities, designed to be lightweight, easy to configure, and reduce boilerplate code.",
     long_description=long_description,
     long_description_content_type="text/markdown",
@@ -18,9 +19,7 @@ setuptools.setup(
     classifiers=[
         "Programming Language :: Python :: 3",
         "License :: OSI Approved :: MIT License",
-        "Operating System :: Any",
+        "Operating System :: OS Independent",
     ],
-    package_dir={"": "sutools"},
-    packages=setuptools.find_packages(where="sutools"),
     python_requires=">=3.8",
 )

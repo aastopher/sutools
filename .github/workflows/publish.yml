@@ -1,24 +1,24 @@
-# name: Publish to PyPI
-# on:
-#   push:
-#     tags:
-#       - \*
+name: Publish to PyPI
+on:
+  push:
+    tags:
+      - \*
 
-# jobs:
-#   publish:
-#     runs-on: ubuntu-latest
-#     steps:
-#       - uses: actions/checkout@v3
-#       - name: Set up Python 3.11
-#         uses: actions/setup-python@v4
-#         with:
-#           python-version: 3.11
-#       - name: Install dependencies
-#         run: pip install -r requirements.txt
-#       - name: Build and publish to PyPI
-#         uses: pypa/gh-action-pypi-publish@master
-#         with:
-#           user: __token__
-#           password: ${{ secrets.PYPI_API_TOKEN }}
-#           package_dir: .
-#           twine_options: --skip-existing
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - name: Set up Python 3.11
+        uses: actions/setup-python@v4
+        with:
+          python-version: 3.11
+      - name: Install dependencies
+        run: pip install -r requirements.txt
+      - name: Build and publish to PyPI
+        uses: pypa/gh-action-pypi-publish@master
+        with:
+          user: ${{ secrets.PYPI_USER }}
+          password: ${{ secrets.PYPI_PW }}
+          package_dir: .
+          twine_options: --skip-existing

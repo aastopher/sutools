@@ -13,14 +13,7 @@ Per module utilities, designed to be lightweight, easy to configure, and reduce 
 This package is intended to create an lower barrier for entry for logging and module level cli with sensible defaults; sutools is not intended to replace click, argparse, logging or other utility libraries. If your project requires a more flexible configuration please use the appropriate tooling.
 ***
 
-## Install
-
-</br>
-
-```
-pip install sutools
-```
-***
+## Quick Start:
 
 ## Register Functions with sutools
 
@@ -216,10 +209,3 @@ python module.py add 1 2
 ```
 3
 ```
-
-***
-
-
-## TO-DO
-* comment / clean up tests
-* add version tagging & badge
