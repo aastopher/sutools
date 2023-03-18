@@ -15,6 +15,7 @@ class CLI:
         self.subparsers = self.parser.add_subparsers(title="commands", dest="command")
         self.func_dict = {}  # init empty func dict
         self.log_obj = log_obj  # store copy of the log object for logging compatibility
+        self.input = None
 
         if log_obj:
             self.log = log_obj.loggers  # extract functional logger list
