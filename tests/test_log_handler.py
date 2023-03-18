@@ -165,7 +165,7 @@ def test_filefmt(mock_atexit_register):
         "%(asctime)s, %(name)s %(levelname)s %(message)s", datefmt="%H:%M:%S"
     )
 
-    with patch("builtins.open", mock_open()) as mock_file:
+    with patch("builtins.open", mock_open()):
         log_obj = log_handler.Logger(
             name="test_name",
             loggers=["log"],
@@ -212,7 +212,7 @@ def test_filecap(mock_os, mock_atexit_register):
         mock_os.listdir.return_value = ["file1.log", "file2.log", "file3.log"]
 
         # create an instance of the Logger class
-        log_obj = log_handler.Logger(
+        log_handler.Logger(
             name="test_name",
             loggers=["log"],
             loglvl=logging.INFO,
@@ -273,7 +273,7 @@ def test_filecap_tomany(mock_os, mock_atexit_register):
         mock_os.listdir.return_value = [f[0].split("/")[-1] for f in mock_files]
 
         # create an instance of the Logger class with filecap set to 2
-        log_obj = log_handler.Logger(
+        log_handler.Logger(
             name="test_name",
             loggers=["log"],
             loglvl=logging.INFO,
@@ -378,7 +378,7 @@ def test_timeout(mock_os, mock_atexit_register):
                 # reset the call count for remove mock object
                 mock_os.remove.call_count = 0
 
-                log_obj = log_handler.Logger(
+                log_handler.Logger(
                     name="test_name",
                     loggers=["log"],
                     loglvl=logging.INFO,
@@ -414,7 +414,7 @@ def test_out(mock_os, mock_atexit_register):
         "%(asctime)s, %(name)s %(levelname)s %(message)s", datefmt="%H:%M:%S"
     )
 
-    with patch("builtins.open", mock_open()) as mock_file:
+    with patch("builtins.open", mock_open()):
         # create an instance of the Logger class
         log_obj = log_handler.Logger(
             name="test_name",
@@ -473,7 +473,7 @@ def test_out_file_fail(capsys, mock_os, mock_atexit_register):
         "%(asctime)s, %(name)s %(levelname)s %(message)s", datefmt="%H:%M:%S"
     )
 
-    with patch("builtins.open", mock_open()) as mock_file:
+    with patch("builtins.open", mock_open()):
         # create an instance of the Logger class
         log_obj = log_handler.Logger(
             name="test_name",
@@ -512,7 +512,7 @@ def test_out_folder_fail(capsys, mock_os, mock_atexit_register):
         "%(asctime)s, %(name)s %(levelname)s %(message)s", datefmt="%H:%M:%S"
     )
 
-    with patch("builtins.open", mock_open()) as mock_file:
+    with patch("builtins.open", mock_open()):
         # create an instance of the Logger class
         log_obj = log_handler.Logger(
             name="test_name",

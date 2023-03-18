@@ -19,17 +19,22 @@ def mock_atexit_register(monkeypatch):
 
 # Define a test function for the add_func method of the meta_handler.Bucket class
 def test_add_func():
-    def func_test():
+    def func_test1():
         pass
 
+    def func_test2():
+        pass
+
+    expected = ["func_test1", "func_test2"]
     # Create a new meta_handler.Bucket object
     store = meta_handler.Bucket()
 
-    # Add the func_test function to the store
-    store.add_func(func_test)
+    # Add test functions to the store
+    store.add_func(func_test1)
+    store.add_func(func_test2)
 
     # Assert that the function was added correctly
-    assert "func_test" in store.funcs.keys()
+    assert all(item in store.funcs.keys() for item in expected)
 
 
 # Define a test function for the add_cli method of the meta_handler.Bucket class
