@@ -44,7 +44,6 @@ class Logger:
 
         # convert logger dict to namespace for easy access dot syntax
         self.loggers = SimpleNamespace(**self.loggers)
-        # print(self.loggers) # debug
         self.rootlogger.setLevel(loglvl)  # set default log level
 
         # if file property enabled create file logger
@@ -81,7 +80,6 @@ class Logger:
     def cap(self, filecap):
         """delete any file outside of range based on file age"""
 
-        # parent_folder = Path(self.filepath).parent # collect the parent folder for the log path
         parent_folder = os.path.dirname(self.filepath)
 
         # create list of tuples with filename and its creation time for all files ending with '.log' in parent folder

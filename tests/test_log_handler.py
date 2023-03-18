@@ -206,14 +206,6 @@ def test_filecap(mock_os, mock_atexit_register):
         "%(asctime)s, %(name)s %(levelname)s %(message)s", datefmt="%H:%M:%S"
     )
 
-    # create mock files with different creation times
-    file1 = ("path/to/logs/file1.log", 1646106476)
-    file2 = ("path/to/logs/file2.log", 1646192876)
-    file3 = ("path/to/logs/file3.log", 1646279276)
-
-    # create a list of mock files
-    mock_files = [file1, file2, file3]
-
     with patch("builtins.open", mock_open()):
         # mock the os functions used inside the cap method
         mock_os.path.getctime.return_value = 1646106476
