@@ -34,7 +34,7 @@ def test_add_func():
     store.add_func(func_test2)
 
     # Assert that the function was added correctly
-    assert all(item in store.funcs.keys() for item in expected)
+    assert all(item in store.funcs for item in expected)
 
 
 # Define a test function for the add_cli method of the meta_handler.Bucket class
