@@ -172,7 +172,7 @@ class Logger:
             file_size = os.path.getsize(self.filepath)
             if file_size == 0:
                 os.remove(self.filepath)
-        except Exception as e:
+        except FileNotFoundError as e:
             # print an error message if the file cannot be removed
             print(f"Failed to remove file: {e}")
 
@@ -181,7 +181,7 @@ class Logger:
             m_folder = os.path.dirname(self.filepath)
             if not os.listdir(m_folder):  # check if folder is empty
                 os.rmdir(m_folder)  # remove empty folder
-        except Exception as e:
+        except FileNotFoundError as e:
             # print an error message if the folder cannot be removed
             print(f"Failed to remove module folder: {e}")
 
@@ -190,6 +190,6 @@ class Logger:
             l_folder = os.path.dirname(os.path.dirname(self.filepath))
             if not os.listdir(l_folder):  # check if folder is empty
                 os.rmdir(l_folder)  # remove empty folder
-        except Exception as e:
+        except FileNotFoundError as e:
             # print an error message if the folder cannot be removed
             print(f"Failed to remove log folder: {e}")
