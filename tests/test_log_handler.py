@@ -349,7 +349,7 @@ def test_timeout(mock_os, mock_atexit_register):
             with patch("builtins.open", side_effect=mock_files), patch(
                 "warnings.warn"
             ) as mock_warn:
-                log_obj = log_handler.Logger(
+                log_handler.Logger(
                     name="test_name",
                     loggers=["log"],
                     loglvl=logging.INFO,

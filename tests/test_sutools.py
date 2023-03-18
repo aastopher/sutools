@@ -110,7 +110,7 @@ def test_logger_path(mock_os, mock_atexit_register):
 def test_logger_cloggers(mock_os, mock_atexit_register):
     expected = ["logger1", "logger2", "logger3"]
 
-    with patch("builtins.open", mock_open()) as mock_file:
+    with patch("builtins.open", mock_open()):
         su.logger(
             loggers=expected,
             fhandler=logging.FileHandler(
