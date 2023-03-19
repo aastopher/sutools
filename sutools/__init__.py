@@ -57,6 +57,9 @@ def logger(name = os.path.basename(inspect.stack()[-1].filename)[:-3],
     :param streamfmt: format of the stream logger
     :param shandler: stream handler to use for logging
     :param stream: toggle stream logging
+
+    :Timeout String: <int><time_unit> - '10d': represents 10 days
+    :Time Units: { "m": "minutes", "h": "hours", "d": "days", "o": "months", "y": "years" }
     '''
 
     # if check for filepath must be inside function because filename is not initialized
