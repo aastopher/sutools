@@ -5,7 +5,7 @@ with open("README.md", "r", encoding="utf-8") as fh:
 
 setuptools.setup(
     name="sutools",
-    version="0.1.0",
+    version="0.1.1",
     author="Aaron Stopher",
     packages=setuptools.find_packages(include=["sutools"]),
     description="su (Super User) tools; per module utilities, designed to be lightweight, easy to configure, and reduce boilerplate code.",
@@ -15,7 +15,7 @@ setuptools.setup(
     project_urls={
         "Bug Tracker": "https://github.com/aastopher/sutools/issues",
     },
-    keywords=['logs', 'logger', 'logging', 'CLI', 'cli', 'utils'],
+    keywords=['logs', 'logger', 'logging', 'cli', 'utils'],
     classifiers=[
         "Programming Language :: Python :: 3",
         "License :: OSI Approved :: MIT License",
