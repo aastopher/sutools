@@ -1,5 +1,5 @@
 from unittest.mock import patch, Mock
-import sys, logging, argparse, pytest
+import sys, logging, argparse, pytest, asyncio
 from sutools import cli_handler, log_handler, meta_handler
 
 
@@ -176,3 +176,47 @@ def test_cli_add_funcs(capsys, monkeypatch):
         cli_obj.parse()
 
     assert expected in cli_obj.parser.format_help()
+
+def test_async_func(capsys, monkeypatch, mock_atexit_register):
+    async def func_test():
+        await asyncio.sleep(0.1)
+        print('pass')
+
+    store = meta_handler.Bucket()
+    store.add_func(func_test)
+
+    log_obj = log_handler.Logger(
+        "test_logger",
+        list(store.funcs.keys()),
+        logging.INFO,
+        None,
+        None,
+        None,
+        None,
+        None,
+        None,
+        False,
+        logging.Formatter(
+            "%(asctime)s, %(msecs)d %(name)s %(levelname)s %(message)s",
+            datefmt="%H:%M:%S",
+        ),
+        logging.StreamHandler(sys.stdout),
+        stream=True,
+    )
+
+    cli_obj = cli_handler.CLI("description", False, log_obj=log_obj)
+    cli_obj.add_funcs(store.funcs)
+
+    monkeypatch.setattr(sys, "exit", lambda *args: None)
+
+    namespace = argparse.Namespace(command="func_test")
+
+    monkeypatch.setattr(
+        cli_handler.argparse.ArgumentParser, "parse_args", lambda self: namespace
+    )
+
+    cli_obj.parse()
+
+    captured = capsys.readouterr()
+
+    assert "pass" in captured.out

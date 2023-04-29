@@ -1,4 +1,4 @@
-import inspect, os, argparse, logging, sys
+import inspect, os, argparse, logging, sys, asyncio
 
 
 class CLI:
@@ -127,8 +127,12 @@ class CLI:
             )
             # collect given args from namespace
             args = [getattr(self.input, arg) for arg in arg_names]
+            
             # run function with given args and collect any returns
-            returned = func(*args)
+            if asyncio.iscoroutinefunction(func):
+                returned = asyncio.run(func(*args))
+            else:
+                returned = func(*args)
 
             # print return if not None
             if returned:

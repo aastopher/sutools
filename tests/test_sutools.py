@@ -104,7 +104,7 @@ def test_logger_path(mock_os, mock_atexit_register):
 
         assert su.store.log is not None
         assert mock_os.path.join.call_args[0][0] == mock_filepath
-        assert mock_os.makedirs.called_once()
+        mock_os.makedirs.assert_called_once()
 
 
 def test_logger_cloggers(mock_os, mock_atexit_register):
