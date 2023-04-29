@@ -33,6 +33,20 @@ def add(x : int, y : int):
 
 ```
 
+You can also register async functions, these will be executed using `asyncio.run()` given a valid coroutine function
+
+```python
+import sutools as su
+import asyncio
+
+@su.register
+async def delay_add(x : int, y : int):
+    '''add two integers after 1 sec'''
+    await asyncio.sleep(1)
+    return x + y
+    
+```
+
 **NOTE:** Adding type hinting to your functions enforces types in the cli and adds positional arg class identifiers in the help docs for the command.
 
 </br>
