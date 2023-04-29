@@ -18,8 +18,8 @@ def test_cli_desc(capsys, monkeypatch):
     def func_test(
         test, test2: str, test3: str = "test", test4="test2", teest4: str = "test"
     ) -> str:
-        pass
-
+        pass # pass since we are only testing the function description
+    
     store = meta_handler.Bucket()
     store.add_func(func_test)
 
@@ -157,7 +157,7 @@ def test_cli_log_obj(mock_atexit_register):
 
 def test_cli_add_funcs(capsys, monkeypatch):
     def func_test(x: int, y: int, c: str = "-") -> int:
-        pass
+        pass # pass since we are only testing the function is added to store
 
     expected = func_test.__name__
 
