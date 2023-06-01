@@ -1,7 +1,7 @@
 import inspect
 
 
-class Bucket:
+class Store:
     """internal object for storing function dictionary"""
 
     def __init__(self):

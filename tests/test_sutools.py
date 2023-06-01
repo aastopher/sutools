@@ -19,8 +19,7 @@ def mock_atexit_register(monkeypatch):
     return mock_atexit_register
 
 
-# #### Methods
-
+##### Methods
 
 # Test 1: this should test the register decorator from sutools
 # the result should be that the su.store contains a

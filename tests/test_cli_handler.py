@@ -20,7 +20,7 @@ def test_cli_desc(capsys, monkeypatch):
     ) -> str:
         pass # pass since we are only testing the function description
     
-    store = meta_handler.Bucket()
+    store = meta_handler.Store()
     store.add_func(func_test)
 
     expected = "Test CLI"
@@ -45,7 +45,7 @@ def test_cli_logs_on(capsys, monkeypatch, mock_atexit_register):
         log_obj.loggers.func_test.info(expected)
         return expected
 
-    store = meta_handler.Bucket()
+    store = meta_handler.Store()
     store.add_func(func_test)
 
     log_obj = log_handler.Logger(
@@ -89,7 +89,7 @@ def test_cli_logs_off(capsys, monkeypatch, mock_atexit_register):
         log_obj.loggers.func_test.info("fail")
         print("pass")
 
-    store = meta_handler.Bucket()
+    store = meta_handler.Store()
     store.add_func(func_test)
 
     log_obj = log_handler.Logger(
@@ -167,7 +167,7 @@ def test_cli_add_funcs(capsys, monkeypatch):
         "sutools.cli_handler.argparse.ArgumentParser.parse_args", return_value=namespace
     ):
         cli_obj = cli_handler.CLI("description", False)
-        store = meta_handler.Bucket()
+        store = meta_handler.Store()
         store.add_func(func_test)
         cli_obj.add_funcs(store.funcs)
 
@@ -182,7 +182,7 @@ def test_async_func(capsys, monkeypatch, mock_atexit_register):
         await asyncio.sleep(0.1)
         print('pass')
 
-    store = meta_handler.Bucket()
+    store = meta_handler.Store()
     store.add_func(func_test)
 
     log_obj = log_handler.Logger(

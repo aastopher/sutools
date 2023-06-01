@@ -1,16 +1,20 @@
-from sutools import cli_handler, log_handler, meta_handler
+from sutools import cli_handler, log_handler, meta_handler, bench_handler
 import inspect, os, logging, datetime
 
 # init store
-store = meta_handler.Bucket()
+store = meta_handler.Store()
+benchy = bench_handler.Benchy()
+
 
 def register(func):
     '''register a function to the store
     
     :param func: the function to register
     '''
-    store.add_func(func)
+    original_func = getattr(func, "__wrapped__", func)
+    store.add_func(original_func)
     return func
+
 
 def cli(desc = None, logs = False):
     '''init cli and register to store

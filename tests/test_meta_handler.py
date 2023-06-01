@@ -17,7 +17,7 @@ def mock_atexit_register(monkeypatch):
 ### Tests
 
 
-# Define a test function for the add_func method of the meta_handler.Bucket class
+# Define a test function for the add_func method of the meta_handler.Store class
 def test_add_func():
     def func_test1():
         pass
@@ -26,8 +26,8 @@ def test_add_func():
         pass
 
     expected = ["func_test1", "func_test2"]
-    # Create a new meta_handler.Bucket object
-    store = meta_handler.Bucket()
+    # Create a new meta_handler.Store object
+    store = meta_handler.Store()
 
     # Add test functions to the store
     store.add_func(func_test1)
@@ -37,10 +37,10 @@ def test_add_func():
     assert all(item in store.funcs for item in expected)
 
 
-# Define a test function for the add_cli method of the meta_handler.Bucket class
+# Define a test function for the add_cli method of the meta_handler.Store class
 def test_add_cli():
-    # Create a new meta_handler.Bucket object
-    store = meta_handler.Bucket()
+    # Create a new meta_handler.Store object
+    store = meta_handler.Store()
 
     # Create a new cli_handler.CLI object
     cli_obj = cli_handler.CLI("desc", False)
@@ -52,10 +52,10 @@ def test_add_cli():
     assert isinstance(store.cli, cli_handler.CLI)
 
 
-# Define a test function for the add_log method of the meta_handler.Bucket class
+# Define a test function for the add_log method of the meta_handler.Store class
 def test_add_log(mock_atexit_register):
-    # Create a new meta_handler.Bucket object
-    store = meta_handler.Bucket()
+    # Create a new meta_handler.Store object
+    store = meta_handler.Store()
 
     # Create a new log_handler.Logger object
     log_obj = log_handler.Logger(

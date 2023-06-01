@@ -1,5 +1,5 @@
-sutools usage
--------------
+usage
+-----
 
 register functions with sutools
 ===============================
@@ -166,16 +166,16 @@ logger - usage examples
         return x + y
 
     @su.register
-    def minus(x : int, y : int):
+    def subtract(x : int, y : int):
         '''subtract two integers'''
-        su.log().minus.info(f'{x} - {y} = {x-y}')
+        su.log().subtract.info(f'{x} - {y} = {x-y}')
         return x - y
 
     su.logger() # logger definition
 
     # module level function calls
     add(1,2)
-    minus(1,2)
+    subtract(1,2)
 
     if __name__ == '__main__':
         # main code (will run even when using cli commands)...
@@ -187,7 +187,7 @@ logger - usage examples
 .. code-block:: console
 
     16:16:34, 961 add INFO 1 + 2 = 3
-    16:16:34, 961 minus INFO 1 - 2 = -1
+    16:16:34, 961 subtract INFO 1 - 2 = -1
 
 **using custom logger names**
 
@@ -202,7 +202,7 @@ logger - usage examples
         return x + y
 
     @su.register
-    def minus(x : int, y : int):
+    def subtract(x : int, y : int):
         '''subtract two integers'''
         su.log().logger2.info(f'{x} - {y} = {x-y}')
         return x - y
@@ -211,7 +211,7 @@ logger - usage examples
 
     # module level function calls
     add(1,2)
-    minus(1,2)
+    subtract(1,2)
 
     if __name__ == '__main__':
         # main code (will run even when using cli commands)...
@@ -223,4 +223,80 @@ logger - usage examples
 .. code-block:: console
 
     16:16:34, 961 add INFO 1 + 2 = 3
-    16:16:34, 961 minus INFO 1 - 2 = -1
+    16:16:34, 961 subtract INFO 1 - 2 = -1
+
+benchy - usage example
+======================
+
+The `benchy` decorator is designed to collect performance timing and call info for selected functions. This can be used in combination with `@su.register`, the decorators are order independent.
+
+.. code-block:: python
+
+    import sutools as su
+
+    @su.benchy
+    @su.register
+    def add(x : int, y : int):
+        '''add two integers'''
+        return x + y
+
+    @su.register
+    @su.benchy
+    def subtract(x : int, y : int):
+        '''subtract two integers'''
+        return x - y
+
+    @su.benchy
+    @su.register
+    def calc(x : int, y : int, atype : str = '+') -> int:
+        '''caclulates a thing'''
+        if atype == '+':
+            res = x + y
+        elif atype == '-':
+            res = x - y
+        return res
+
+    add(1,2)
+    add(2,2)
+    subtract(1,2)
+    calc(2,3, atype='-')
+
+
+After the functions have been executed, the benchmark report can be accessed with `su.benchy.report`.
+
+.. code-block:: python
+
+    # print the benchmark report
+    print(su.benchy.report)
+
+example output
+
+.. code-block:: bash
+
+    {'add': [{'args': [{'type': 'int', 'value': 1}, {'type': 'int', 'value': 2}],
+            'benchmark': 0.00015466799959540367,
+            'kwargs': None,
+            'result': {'type': 'int', 'value': 3}},
+            {'args': [{'type': 'int', 'value': 2}, {'type': 'int', 'value': 2}],
+            'benchmark': 6.068096263334155e-05,
+            'kwargs': None,
+            'result': {'type': 'int', 'value': 4}}],
+    'calc': [{'args': [{'type': 'int', 'value': 2}, {'type': 'int', 'value': 3}],
+            'benchmark': 4.855601582676172e-05,
+            'kwargs': {'atype': {'length': 1, 'type': 'str'}},
+            'result': {'type': 'int', 'value': 5}}],
+    'subtract': [{'args': [{'type': 'int', 'value': 1}, {'type': 'int', 'value': 2}],
+            'benchmark': 5.205394700169563e-05,
+            'kwargs': None,
+            'result': {'type': 'int', 'value': -1}}]}
+
+The output of the benchmark report will adhere to the following format. `function > call records`. Call records consist of `{args, kwargs, result, benchmark}` there will be a record for each call of a given function.
+
+**NOTE:** given an iterable for arg, kwarg, or result the object will be summarized in terms of vector length.
+
+.. code-block:: bash
+
+    {'function_name': [{'args': [{'type': 'arg_type', 'value': int}]
+                        'benchmark': float,
+                        'kwargs': {'kwarg_name': {'type': 'arg_type', 'length': int, }}
+                        'result': {'type': 'arg_type', 'value': float}}]}
