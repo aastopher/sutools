@@ -215,3 +215,81 @@ if __name__ == '__main__':
 ```
 
 ***
+</br>
+
+## Benchy Usage Example
+
+</br>
+
+The `benchy` decorator is designed to collect performance timing and call info for selected functions. This can be used in combination with `@su.register`, the decorators are order independent.
+
+```python
+import sutools as su
+
+@su.benchy
+@su.register
+def add(x : int, y : int):
+    '''add two integers'''
+    return x + y
+
+@su.register
+@su.benchy
+def subtract(x : int, y : int):
+    '''subtract two integers'''
+    return x - y
+
+@su.benchy
+@su.register
+def calc(x : int, y : int, atype : str = '+') -> int:
+    '''calculates a thing'''
+    if atype == '+':
+        res = x + y
+    elif atype == '-':
+        res = x - y
+    return res
+
+add(1,2)
+add(2,2)
+subtract(1,2)
+calc(2,3, atype='-')
+
+```
+
+After the functions have been executed, the benchmark report can be accessed with `su.benchy.report`.
+
+```python
+# print the benchmark report
+print(su.benchy.report)
+```
+
+**Example output**
+
+```json
+{'add': [{'args': [{'type': 'int', 'value': 1}, {'type': 'int', 'value': 2}],
+        'benchmark': 0.00015466799959540367,
+        'kwargs': None,
+        'result': {'type': 'int', 'value': 3}},
+        {'args': [{'type': 'int', 'value': 2}, {'type': 'int', 'value': 2}],
+        'benchmark': 6.068096263334155e-05,
+        'kwargs': None,
+        'result': {'type': 'int', 'value': 4}}],
+'calc': [{'args': [{'type': 'int', 'value': 2}, {'type': 'int', 'value': 3}],
+        'benchmark': 4.855601582676172e-05,
+        'kwargs': {'atype': {'length': 1, 'type': 'str'}},
+        'result': {'type': 'int', 'value': 5}}],
+'subtract': [{'args': [{'type': 'int', 'value': 1}, {'type': 'int', 'value': 2}],
+        'benchmark': 5.205394700169563e-05,
+        'kwargs': None,
+        'result': {'type': 'int', 'value': -1}}]}
+```
+
+The output of the benchmark report will adhere to the following format: `function > call records`. Call records consist of `{args, kwargs, result, benchmark}` there will be a record for each call of a given function.
+
+**NOTE:** given an iterable for `arg`, `kwarg`, or `result` the object will be summarized in terms of vector length.
+
+```json
+{'function_name': [{'args': [{'type': 'arg_type', 'value': int}]
+                    'benchmark': float,
+                    'kwargs': {'kwarg_name': {'type': 'arg_type', 'length': int, }}
+                    'result': {'type': 'arg_type', 'value': float}}]}
+```

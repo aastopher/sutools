@@ -292,7 +292,7 @@ example output
 
 The output of the benchmark report will adhere to the following format. `function > call records`. Call records consist of `{args, kwargs, result, benchmark}` there will be a record for each call of a given function.
 
-**NOTE:** given an iterable for arg, kwarg, or result the object will be summarized in terms of vector length.
+**NOTE:** given an iterable for `arg`, `kwarg`, or `result` the object will be summarized in terms of vector length.
 
 .. code-block:: bash
 
