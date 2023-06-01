@@ -264,7 +264,7 @@ print(su.benchy.report)
 
 **Example output**
 
-```json
+```
 {'add': [{'args': [{'type': 'int', 'value': 1}, {'type': 'int', 'value': 2}],
         'benchmark': 0.00015466799959540367,
         'kwargs': None,
@@ -287,7 +287,7 @@ The output of the benchmark report will adhere to the following format: `functio
 
 **NOTE:** given an iterable for `arg`, `kwarg`, or `result` the object will be summarized in terms of vector length.
 
-```json
+```
 {'function_name': [{'args': [{'type': 'arg_type', 'value': int}]
                     'benchmark': float,
                     'kwargs': {'kwarg_name': {'type': 'arg_type', 'length': int, }}
