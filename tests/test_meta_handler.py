@@ -20,10 +20,14 @@ def mock_atexit_register(monkeypatch):
 # Define a test function for the add_func method of the meta_handler.Store class
 def test_add_func():
     def func_test1():
-        pass
+        '''
+        null function, testing function storage
+        '''
 
     def func_test2():
-        pass
+        '''
+        null function, testing function storage
+        '''
 
     expected = ["func_test1", "func_test2"]
     # Create a new meta_handler.Store object

@@ -36,9 +36,9 @@ def test_benchy_and_register():
     assert "func_data" in benchy.report
 
     # assert that functions were registered
-    assert "func_add" in su.store.funcs.keys()
-    assert "func_minus" in su.store.funcs.keys()
-    assert "func_data" in su.store.funcs.keys()
+    assert "func_add" in su.store.funcs
+    assert "func_minus" in su.store.funcs
+    assert "func_data" in su.store.funcs
 
     # clear global registers
     su.benchy.report = {}
