@@ -48,8 +48,6 @@ def test_register():
     defaults = _get_defaults(func_test)
     desc = func_test.__doc__
 
-    # expected_dict = {func_test.__name__: (func_test, names, types, defaults, desc)}
-
     expected_dict = {func_test.__name__: {'func':func_test, 
                                         'names':names, 
                                         'types':types, 
@@ -62,7 +60,7 @@ def test_register():
 
 # Test 2: this should test the register decorator from sutools
 # the result should be that the su.store contains a proper function dict for variadic functions
-def test_register():
+def test_register_variadic():
     def _get_meta(func):
         '''helper function to collect default func args'''
 
@@ -95,8 +93,6 @@ def test_register():
         return args, kwargs
 
     names, types, defaults, desc, variadic = _get_meta(func_test)
-
-    # expected_dict = {func_test.__name__: (func_test, names, types, defaults, desc)}
 
     expected_dict = {func_test.__name__: {'func':func_test, 
                                         'names':names, 
