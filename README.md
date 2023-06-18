@@ -128,6 +128,54 @@ goodbye foo
     -h, --help            Show this help message and exit.
 ```
 
+## CLI Using Variadic Functions
+
+Variadic functions are compatible with sutools cli utility. When calling kwargs from the cli; `key=value` should be used instead of `--` and `-`, these are reserved for default arguments.
+
+```python
+"""This module does random stuff."""
+import sutools as su
+
+@su.register
+def variadic(*args, **kwargs):
+    
+    print("Positional arguments:")
+    for arg in args:
+        print(arg)
+
+    print("Keyword arguments:")
+    for key, value in kwargs.items():
+        print(f"{key} = {value}")
+
+    su.logger() # optional
+
+# module level function calls...
+
+if __name__ == '__main__':
+    # main code (will run even when using cli commands)...
+    su.cli(desc = __doc__)
+    # main code (will NOT run when using cli commands)...
+```
+
+**command usage:**
+
+```
+python module.py variadic 1 2 3 foo=1 bar=2
+```
+
+**output:**
+
+```
+Positional arguments:
+1
+2
+3
+Keyword arguments:
+foo = 1
+bar = 2
+```
+
+
 ## Logger Usage Examples
 
 </br>

@@ -69,7 +69,7 @@ The logger utility should be instantiated after any registered functions but bef
         su.log().meeting.info(output)
         return output
 
-    su.logger() # optional
+        su.logger() # optional
 
     # module level function calls...
 
@@ -112,7 +112,7 @@ The logger utility should be instantiated after any registered functions but bef
 
 .. code-block:: console
 
-    usage: dev meet [-gr <class 'str'>] [-fa <class 'str'>] [-h] name
+    usage: module meet [-gr <class 'str'>] [-fa <class 'str'>] [-h] name
 
     meet(name: str, greeting: str = 'hello', farewell: str = 'goodbye') -> str
 
@@ -125,6 +125,54 @@ The logger utility should be instantiated after any registered functions but bef
     -fa <class 'str'>, --farewell <class 'str'>
                             default: goodbye
     -h, --help            Show this help message and exit.
+
+cli - using variadic functions
+==============================
+
+Variadic functions are compatible with sutools cli utility. When calling kwargs from the cli; `key=value` should be used instead of `--` and `-`, these are reserved for default arguments.
+
+.. code-block:: python
+
+    """This module does random stuff."""
+    import sutools as su
+
+    @su.register
+    def variadic(*args, **kwargs):
+        
+        print("Positional arguments:")
+        for arg in args:
+            print(arg)
+
+        print("Keyword arguments:")
+        for key, value in kwargs.items():
+            print(f"{key} = {value}")
+
+        su.logger() # optional
+
+    # module level function calls...
+
+    if __name__ == '__main__':
+        # main code (will run even when using cli commands)...
+        su.cli(desc = __doc__)
+        # main code (will NOT run when using cli commands)...
+
+**command usage:**
+
+.. code-block:: console
+
+    python module.py variadic 1 2 3 foo=1 bar=2
+
+**output:**
+
+.. code-block:: console
+
+    Positional arguments:
+    1
+    2
+    3
+    Keyword arguments:
+    foo = 1
+    bar = 2
 
 logger - initialization standard
 ================================
@@ -251,9 +299,9 @@ The `benchy` decorator is designed to collect performance timing and call info f
     def calc(x : int, y : int, atype : str = '+') -> int:
         '''caclulates a thing'''
         if atype == '+':
-            res = x + y
+            res = add(x, y)
         elif atype == '-':
-            res = x - y
+            res = subtract(x, y)
         return res
 
     add(1,2)
