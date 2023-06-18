@@ -1,4 +1,4 @@
-import inspect, os, argparse, logging, sys, asyncio
+import inspect, os, argparse, logging, sys, asyncio, ast
 
 
 class CLI:
@@ -34,19 +34,24 @@ class CLI:
 
         # iterate through registered functions
         for func_name, items in func_dict.items():
-            names = items[1]  # collect arg names
-            types = items[2]  # collect types of arg
+            names = items['names']  # collect arg names
+            types = items['types']  # collect types of arg
             arg_types = [types.get(name, None) for name in names]
-            defaults = items[3]  # collect default args
+            defaults = items['defaults']  # collect default args
 
             # init arg help and arg description
             ahelp = f"execute {func_name} function"
 
             # collect command description
-            signature = inspect.signature(func_dict[func_name][0])
+            signature = inspect.signature(func_dict[func_name]['func'])
+
+            # collect names and params for a given function
             params = []
             for name, param in signature.parameters.items():
+                
+                # check if function contains annotations
                 if param.annotation != inspect.Parameter.empty:
+                    # if default arg exists display in docs
                     if param.default != inspect.Parameter.empty:
                         params.append(
                             f"{name}: {param.annotation.__name__} = {param.default!r}"
@@ -58,14 +63,16 @@ class CLI:
                         params.append(f"{name} = {param.default!r}")
                     else:
                         params.append(f"{name}")
-            if "return" in types:
-                adesc = f"{func_dict[func_name][0].__name__}({', '.join(params)}) -> {str(types['return'].__name__)}"
-            else:
-                adesc = f"{func_dict[func_name][0].__name__}({', '.join(params)})"
 
-            # if docstring assign arg help
-            if items[-1] is not None:
-                ahelp = items[-1]
+            # define return type if exists for docs
+            if "return" in types:
+                adesc = f"{func_dict[func_name]['func'].__name__}({', '.join(params)}) -> {str(types['return'].__name__)}"
+            else:
+                adesc = f"{func_dict[func_name]['func'].__name__}({', '.join(params)})"
+
+            # define help string
+            if items['desc'] is not None:
+                ahelp = items['desc']
 
             # init sub parser
             subp = self.subparsers.add_parser(
@@ -76,13 +83,20 @@ class CLI:
                 add_help=False,
             )
 
+            # create abbreviations for named short name
             abbrevs = set()
             for name, atype in zip(names, arg_types):
+                # if arg is contains a default define a short name
                 if name in defaults:
+                    # default abbreviation is the first 2 characters
                     short_name = name[:2]
+                    # if space is taken define short name as just the list character
                     if short_name in abbrevs:
                         short_name = name[-1]
                     abbrevs.add(short_name)
+
+                    # if there exists a short name with the same first and 
+                    # last chars do not define one
                     try:
                         subp.add_argument(
                             f"-{short_name}",
@@ -101,9 +115,15 @@ class CLI:
                             help=f"default: {defaults[name]}",
                         )
                 else:
-                    subp.add_argument(
-                        name, type=atype, help=str(atype) if atype is not None else None
-                    )
+                    # if variadic allow any number of args
+                    if items['variadic']:
+                        subp.add_argument(
+                            name, nargs='*', type=atype, help=str(atype) if atype is not None else None
+                        )
+                    else:
+                        subp.add_argument(
+                            name, type=atype, help=str(atype) if atype is not None else None
+                        )
 
             # overide help & place at end of options
             subp.add_argument(
@@ -118,23 +138,40 @@ class CLI:
         # if command in input namespace
         if self.input.command:
             # retrieve function and arg names for given command
-            func_tup = self.func_dict[self.input.command]
+            func_meta = self.func_dict[self.input.command]
+            args = []
+            kwargs = {}
 
-            # unpack just the args and function
-            func, arg_names = (
-                func_tup[0],
-                func_tup[1],
-            )
-            # collect given args from namespace
-            args = [getattr(self.input, arg) for arg in arg_names]
+            # if variadic define args and kwargs
+            if func_meta['variadic']:
+                
+                func = func_meta['func']
+                for arg in vars(self.input)['*args']:
+                    if '=' in arg:
+                        k,v = arg.split('=')
+                        kwargs[k] = v
+                    else:
+                        args.append(arg)
+            else:
+
+                # unpack just the args and function
+                func, arg_names = (
+                    func_meta['func'],
+                    func_meta['names'],
+                )
+            
+                # collect args from input namespace
+                args = [getattr(self.input, arg) for arg in arg_names]
             
             # run function with given args and collect any returns
             if asyncio.iscoroutinefunction(func):
-                returned = asyncio.run(func(*args))
+                returned = asyncio.run(func(*args, **kwargs))
             else:
-                returned = func(*args)
+                returned = func(*args, **kwargs)
 
             # print return if not None
             if returned:
                 print(returned)
-            sys.exit()  # exit the interpreter so the entire script is not run
+                
+            # exit the interpreter so the entire script is not run
+            sys.exit() 

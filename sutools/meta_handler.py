@@ -15,11 +15,32 @@ class Store:
         types = inspect.getfullargspec(func).annotations  # collect types of args
         defaults = self._get_defaults(func)
         desc = None
+        variadic = False
 
+        # if docstring exists and no description defined set desc
         if func.__doc__:
             desc = func.__doc__
 
-        self.funcs.update({func.__name__: (func, names, types, defaults, desc)})
+        # collect function signature to check if variadic [args, kwargs]
+        signature = inspect.signature(func)
+        for name, param in signature.parameters.items():
+            param_kind = signature.parameters[name].kind
+            variadic = param_kind in [inspect.Parameter.VAR_POSITIONAL, inspect.Parameter.VAR_KEYWORD]
+            # correct names and types definition
+            if variadic:
+                names.append(str(param))
+                types = {}
+
+        # define function meta info
+        func_meta = {'func':func, 
+                    'names':names, 
+                    'types':types, 
+                    'defaults':defaults, 
+                    'desc':desc, 
+                    'variadic':variadic}
+        
+        # update function in store
+        self.funcs.update({func.__name__: func_meta})
 
     def add_cli(self, cli_obj):
         """adds a cli object to the store"""
