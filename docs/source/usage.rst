@@ -131,7 +131,7 @@ cli - using variadic functions
 
 Variadic functions are compatible with sutools cli utility. When calling kwargs from the cli; `key=value` should be used instead of `--` and `-`, these are reserved for default arguments.
 
-**NOTE:** since input is from `stdin` it will always be of type `<string>` for sutools will not infer the data type you must infer your needed type within the function.
+**NOTE:** since input is from `stdin` it will always be of type `<string>`, sutools will not infer the data type you must infer your needed type within the function.
 
 .. code-block:: python
 
