@@ -5,7 +5,7 @@ with open("README.md", "r", encoding="utf-8") as fh:
 
 setuptools.setup(
     name="sutools",
-    version="0.2.2",
+    version="0.2.3",
     author="Aaron Stopher",
     packages=setuptools.find_packages(include=["sutools"]),
     description="su (Super User) tools; per module utilities, designed to be lightweight, easy to configure, and reduce boilerplate code.",
