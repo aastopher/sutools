@@ -220,3 +220,53 @@ def test_async_func(capsys, monkeypatch, mock_atexit_register):
     captured = capsys.readouterr()
 
     assert "pass" in captured.out
+
+def test_variadic_func(capsys, monkeypatch, mock_atexit_register):
+    def func_test(*args, **kwargs):
+        print('pass')
+
+    store = meta_handler.Store()
+    store.add_func(func_test)
+
+    log_obj = log_handler.Logger(
+        "test_logger",
+        list(store.funcs.keys()),
+        logging.INFO,
+        None,
+        None,
+        None,
+        None,
+        None,
+        None,
+        False,
+        logging.Formatter(
+            "%(asctime)s, %(msecs)d %(name)s %(levelname)s %(message)s",
+            datefmt="%H:%M:%S",
+        ),
+        logging.StreamHandler(sys.stdout),
+        stream=True,
+    )
+
+    cli_obj = cli_handler.CLI("description", False, log_obj=log_obj)
+    cli_obj.add_funcs(store.funcs)
+
+    monkeypatch.setattr(sys, "exit", lambda *args: None)
+
+    def run_cli_parse(namespace_dict):
+        namespace = argparse.Namespace(**namespace_dict)
+
+        monkeypatch.setattr(
+            cli_handler.argparse.ArgumentParser, "parse_args", lambda self: namespace
+        )
+
+        cli_obj.parse()
+
+        captured = capsys.readouterr()
+
+        assert "pass" in captured.out
+
+    # test variadic with args
+    run_cli_parse({'command': 'func_test', '*args': ['1', '2', '3', 'foo=1', 'bar=2']})
+
+    # test variadic without args
+    run_cli_parse({'command': 'func_test'})

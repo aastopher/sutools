@@ -144,14 +144,17 @@ class CLI:
 
             # if variadic define args and kwargs
             if func_meta['variadic']:
-                
                 func = func_meta['func']
-                for arg in vars(self.input)['*args']:
-                    if '=' in arg:
-                        k,v = arg.split('=')
-                        kwargs[k] = v
-                    else:
-                        args.append(arg)
+                try:
+                    for arg in vars(self.input)['*args']:
+                        if '=' in arg:
+                            k,v = arg.split('=')
+                            kwargs[k] = v
+                        else:
+                            args.append(arg)
+                except KeyError:
+                    # pass because args & kwargs are already defined empty
+                    pass
             else:
 
                 # unpack just the args and function
@@ -172,6 +175,6 @@ class CLI:
             # print return if not None
             if returned:
                 print(returned)
-                
+
             # exit the interpreter so the entire script is not run
             sys.exit() 
