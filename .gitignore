@@ -7,8 +7,9 @@
 coverage.xml
 
 # dev
-.dev.py
-.dev
+dev1.py
+dev2.py
+**/dev
 
 # caches
 **/logs
