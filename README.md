@@ -4,7 +4,7 @@
 [![DeepSource](https://deepsource.io/gh/aastopher/sutools.svg/?label=active+issues&show_trend=true&token=RVDa2T7M-E-YSg2DVFbr1ro-)](https://deepsource.io/gh/aastopher/sutools/?ref=repository-badge)
 
 
-**Important Notice: deprecating sutools for [`stakk`](https://github.com/aastopher/stakk)**
+## **Important Notice: deprecating sutools for [`stakk`](https://github.com/aastopher/stakk)**
 
 I'm excited to announce that the development focus has shifted from `sutools` to my new library, [`stakk`](https://github.com/aastopher/stakk). This new library builds upon the foundation of `sutools`, with a more refined approach and a shifted focus to a stack pattern and down the line some agent focused utilities. As a result, `sutools` will no longer receive updates or support. `stakk` is designed to provide a more robust and feature-rich experience. Thank you for your understanding!
 
